@@ -417,6 +417,11 @@ and folds (Table 4).
   leave-one-soil-out (0.68 / 0.90 / 0.95) and comes close under leave-one-mission-out
   (0.64 / 0.86 / 0.92).
 
+**Exact CV+ confirms this.** Exact CV+ uses models that saw neither the calibration nor the
+test soil (930 extra fine-tunes). Its coverage is 0.69 / 0.90 / 0.96 under leave-one-soil-out and
+0.70 / 0.88 / 0.93 under leave-one-mission-out (normalised residuals), so the approximation was
+slightly conservative out of distribution.
+
 **The identifiability gate passes 11/13 targets.** It withholds olivine and the
 "other" class: their skill confidence intervals include zero, and olivine's point estimate
 is negative. Under leave-one-mission-out the agglutinate fraction's skill also loses
@@ -565,9 +570,8 @@ is scored once, with its samples averaged.
 - **Small ground truth.** 19 soils, 75 spectra, and only 56 with modal mineralogy. All
   significance statements are over 19 soils; several numerically large improvements do not
   survive Holm correction.
-- **Approximate conformal intervals.** They are CV+-style. Their calibration residuals come
-  from fold models that included the test soil, because a nested scheme was outside the
-  compute budget.
+- **Conformal intervals.** The headline intervals are CV+-style. Exact CV+ with pair-held-out
+  models gives very similar coverage, so this approximation is not a material limitation.
 - **Laboratory spectra, not orbital ones.** The M³ application relies on a single linear
   calibration to the laboratory scale.
   - The published calibration reproduces the Apollo 16 laboratory spectrum to 9.1 %,

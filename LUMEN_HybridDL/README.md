@@ -72,6 +72,8 @@ python step07_m3_apply.py                # M3: calibration, Apollo 16, Shapley m
 python step08_report.py                  # writes RESULTS.md
 python step00b_fetch_m3_sites.py         # (network) stage M3 spectra at the 18 landing sites; done once
 python step04_lumen.py regen-lomo        # save the A4 LOMO member weights (checked against step04)
+python step11_nested_cvplus.py run       # exact CV+: 930 pair-held-out fine-tunes (~2.3 h on 4 cores)
+python step11_nested_cvplus.py score
 python step10_m3_sites.py                # M3 landing-site validation (Addendum A)
 python step09_paper.py                   # writes PAPER_DRAFT.md (asserts every claim in its prose)
 ```

@@ -212,6 +212,9 @@ def main() -> int:
     rw = kr[(kr["protocol"] == "LOSO") & (kr["set"] != "all") & kr["spearman_korokhin_nFe"].notna()]
     assert (rw["spearman_lumen_IsFeO"].values >= rw["spearman_korokhin_nFe"].values - 1e-9).all()
 
+    cx = pd.read_csv(T / "step11_cvplus_summary.csv").set_index(["protocol", "method", "level"])
+    V["cvx_loso"] = " / ".join("%.2f" % cx.loc[("LOSO", "cvplus_normalised", l), "coverage_spectrum"] for l in (0.68, 0.9, 0.95))
+    V["cvx_lomo"] = " / ".join("%.2f" % cx.loc[("LOMO", "cvplus_normalised", l), "coverage_spectrum"] for l in (0.68, 0.9, 0.95))
     # --- M3 landing sites (Addendum A)
     m3 = pd.read_csv(T / "step10_metrics.csv").set_index("method")
     m3t = pd.read_csv(T / "step10_tests.csv")

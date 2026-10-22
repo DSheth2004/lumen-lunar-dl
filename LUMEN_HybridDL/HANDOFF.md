@@ -284,8 +284,10 @@ Every item of §6 except the optional §6.8 is done, run, committed and pushed o
   - LUMEN does not transfer from lab spectra to M³ (FeO MAE 6.4 wt %, biased low). Methods
     trained on M³ site spectra do better, but none is good (R² ≤ 0.27).
   - The next scientific step is an orbital fine-tuning signal, or a learned M³ → lab mapping.
-- **M³ destriping** was not applied; stripes are visible in the maps.
-- **Nested CV+** (19 × 18 × 5 models) would make the conformal intervals exact.
+- **M³ destriping:** done as a sensitivity (Addendum B, D25). Stripe amplitude falls 26–47 %, and
+  the maps correlate 0.90–0.99 with the undestriped ones.
+- **Exact CV+:** done (Addendum B, D24, step11; 930 pair-held-out fine-tunes). It confirms
+  nominal coverage under LOSO and gives slightly better LOMO coverage than the approximation.
 - **Products** are not in git (`products/`, regenerable): the synthetic set, the pretrained
   and final checkpoints, and the maps. Rebuild with the README commands.
 

@@ -161,6 +161,12 @@ def section_uncertainty(L):
     w = cov[cov["level"] == 0.90].pivot_table(index="target", columns=["protocol", "method"],
                                              values="coverage_spectrum").reindex(le.TARGETS)
     L += ["Per-target 90 % coverage (spectra):", "", md_table(w, "%.2f"), ""]
+    if (T / "step11_cvplus_summary.csv").exists():
+        cx = pd.read_csv(T / "step11_cvplus_summary.csv")
+        L += ["### Exact CV+ (Addendum B, D24)", "",
+              "Pair-held-out models (171 soil pairs, 15 mission pairs, 5 members each). Each calibration "
+              "residual comes from a model that saw neither the calibration nor the test group:", "",
+              md_table(cx.set_index(["protocol", "method", "level"]), "%.3f"), ""]
 
 
 def section_head_to_head(L):

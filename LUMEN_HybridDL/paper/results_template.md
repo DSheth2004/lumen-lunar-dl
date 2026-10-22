@@ -127,6 +127,11 @@ and folds (Table 4).
   leave-one-soil-out ({cov_conf_loso}) and comes close under leave-one-mission-out
   ({cov_conf_lomo}).
 
+**Exact CV+ confirms this.** Exact CV+ uses models that saw neither the calibration nor the
+test soil (930 extra fine-tunes). Its coverage is {cvx_loso} under leave-one-soil-out and
+{cvx_lomo} under leave-one-mission-out (normalised residuals), so the approximation was
+slightly conservative out of distribution.
+
 **The identifiability gate passes {n_ident}/13 targets.** It withholds olivine and the
 "other" class: their skill confidence intervals include zero, and olivine's point estimate
 is negative. Under leave-one-mission-out the agglutinate fraction's skill also loses

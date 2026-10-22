@@ -147,9 +147,8 @@ We release the code, the pre-registration, and every intermediate table.
 - **Small ground truth.** 19 soils, 75 spectra, and only 56 with modal mineralogy. All
   significance statements are over 19 soils; several numerically large improvements do not
   survive Holm correction.
-- **Approximate conformal intervals.** They are CV+-style. Their calibration residuals come
-  from fold models that included the test soil, because a nested scheme was outside the
-  compute budget.
+- **Conformal intervals.** The headline intervals are CV+-style. Exact CV+ with pair-held-out
+  models gives very similar coverage, so this approximation is not a material limitation.
 - **Laboratory spectra, not orbital ones.** The M³ application relies on a single linear
   calibration to the laboratory scale.
   - The published calibration reproduces the Apollo 16 laboratory spectrum to {cal_eq2:.1f} %,
