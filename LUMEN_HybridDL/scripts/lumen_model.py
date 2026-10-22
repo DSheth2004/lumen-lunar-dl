@@ -222,7 +222,7 @@ def pretrain(feat, syn, train_idx, val_idx, seed, epochs, batch=512, lr=2e-3, wd
             nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             opt.step()
             sched.step()
-            tot += float(loss)
+            tot += float(loss.detach())
         ev = evaluate_synthetic(model, feat, syn, val_idx)
         ev.update({"epoch": ep + 1, "train_loss": tot / steps_per_epoch, "seconds": time.time() - t0})
         hist.append(ev)
