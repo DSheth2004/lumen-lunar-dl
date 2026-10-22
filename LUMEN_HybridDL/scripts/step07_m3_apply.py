@@ -65,6 +65,17 @@ def to_square_rows(cube, n_rows):
     return (1 - f) * cube[i0] + f * cube[i1]
 
 
+def destripe(cube, window=31):
+    """D25: per band, divide each sample column by (column mean / running median of the
+    column means) -- a column-gain flat field that keeps the large-scale scene signal."""
+    from scipy.ndimage import median_filter
+    c = np.asarray(cube, float)
+    colmean = np.nanmean(c, axis=0)                                   # (bands, samples)
+    smooth = median_filter(colmean, size=(1, window), mode="nearest")
+    gain = colmean / smooth
+    return c / gain[None, :, :]
+
+
 def pixels(cube):
     """(lines, 85, samples) -> (lines*samples, 71 input bands), invalid rows flagged."""
     R = np.transpose(np.asarray(cube, float), (0, 2, 1)).reshape(-1, cube.shape[1])[:, lc.input_band_index()]
@@ -223,6 +234,34 @@ def main() -> int:
     ar.to_csv(lc.TABLES / "step07_aristarchus.csv", index=False)
     print(ar.round(2).to_string(index=False))
 
+    # ---- D25 destriping sensitivity -------------------------------------------
+    Rd, okd = pixels(destripe(sq))
+    Rd = EQ2[0] * Rd + EQ2[1]
+    ed = flat_outputs(predict(models, scaler, lam, np.where(okd[:, None], Rd, 0.1)))
+    drows = []
+    for t in mapped:
+        a = maps[t][valid]
+        b = np.where(okd, ed[t], np.nan).reshape(shape)
+        def stripe(img):
+            cm = np.nanmean(img, axis=0)
+            from scipy.ndimage import median_filter
+            return float(np.nanstd(cm - median_filter(cm, 31, mode="nearest")))
+        drows.append({"target": t, "pearson_vs_undestriped": pearsonr(a, b[valid])[0],
+                      "mean_shift": float(np.nanmean(b) - np.nanmean(maps[t])),
+                      "column_stripe_sd_before": stripe(maps[t]), "column_stripe_sd_after": stripe(b),
+                      "mare_minus_highland_after": float(np.nanmean(b[~high]) - np.nanmean(b[high]))})
+        maps["destriped_" + t] = b.astype(np.float32)
+    dd = pd.DataFrame(drows)
+    dd.to_csv(lc.TABLES / "step07_destriping_sensitivity.csv", index=False)
+    print("  destriping sensitivity (D25):")
+    print(dd.round(3).to_string(index=False))
+    kd = []
+    for kname, lname in pairs:
+        if lname in maps and kname in kp:
+            b = maps["destriped_" + lname][valid]
+            kd.append({"korokhin": kname, "lumen": lname, "pearson_destriped": pearsonr(kp[kname][valid], b)[0]})
+    pd.DataFrame(kd).to_csv(lc.TABLES / "step07_vs_korokhin_maps_destriped.csv", index=False)
+
     figures(maps, mapped, kp, ksum, valid, lum5)
     lc.done(STAGE, t0)
     return 0
@@ -230,6 +269,13 @@ def main() -> int:
 
 def figures(maps, mapped, kp, ksum, valid, lum5):
     import matplotlib.pyplot as plt
+    if "destriped_FeO" in maps:
+        fig, axs = plt.subplots(1, 2, figsize=(7, 4.6))
+        for a, key, ttl in zip(axs, ("FeO", "destriped_FeO"), ("FeO (primary)", "FeO, destriped (D25)")):
+            v = maps[key]
+            a.imshow(v, cmap="viridis", aspect="auto", vmin=np.nanpercentile(v, 1), vmax=np.nanpercentile(v, 99))
+            a.set_title(ttl); a.set_xticks([]); a.set_yticks([]); a.grid(False)
+        lp.save(fig, lc.FIGURES / "step07_destriping.png")
     show = [t for t in ["FeO", "TiO2", "Al2O3", lc.MAT, "PLG", "AGG"] if t in mapped][:4]
     if not show:
         return

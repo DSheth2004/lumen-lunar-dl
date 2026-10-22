@@ -232,6 +232,10 @@ def section_m3(L):
           "### Shapley scene (Korokhin 2024), 500 × 304 grid, identifiable targets only", "",
           md_table(st.set_index("target"), "%.3f"), "",
           "### Pixel-by-pixel against Korokhin's ANN maps", "", md_table(kc.set_index(["korokhin", "lumen"]), "%.3f"), "",
+          "### Destriping sensitivity (Addendum B, D25)", "",
+          "A column-gain flat field (per band, 31-sample running median) applied before prediction. "
+          "The undestriped maps stay primary.", "",
+          md_table(pd.read_csv(T / "step07_destriping_sensitivity.csv").set_index("target"), "%.3f"), "",
           "### Aristarchus ROIs (Jung 2026)", "",
           "Descriptive only. Jung's medians describe space-weathering-corrected material from their "
           "posterior; LUMEN describes the surface soil. There is no ground truth here.", "",
