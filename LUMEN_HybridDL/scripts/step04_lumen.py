@@ -153,6 +153,41 @@ def _run_job(job):
     return str(out_path), time.time() - t
 
 
+def _regen_job(job):
+    """Re-run one stored LOMO A4 job, save its weights, report reproducibility."""
+    import torch
+    import lumen_model as lm
+    protocol, fold, config, k = job
+    X, meta = _W["X"], _W["meta"]
+    test = dict(folds(meta, protocol))[fold]
+    model = lm.finetune(config, _W["states"][k], real_dict(X, meta, np.flatnonzero(~test)), _W["feat"],
+                        _W["syn_targets"], _W["pool"], _W["scaler"],
+                        seed=_job_seed(protocol, fold, config, k), lam=_W["lam"])
+    torch.save(model.state_dict(), lc.PRODUCTS / ("lomo_%s_%s_member%d.pt" % (config, fold, k)))
+    o = lm.member_outputs(model, _W["scaler"](lc.spectral_features(X, _W["lam"])))
+    d = np.load(JOB_DIR / ("%s_%s_%s_m%d.npz" % job))
+    idx = d["test_idx"]
+    return {"fold": fold, "member": k,
+            "max_abs_diff_comp": float(np.abs(o["comp_mean"][idx] - d["comp_mean"][idx]).max()),
+            "max_abs_diff_scalars": float(np.abs(o["scal_mean"][idx] - d["scal_mean"][idx]).max())}
+
+
+def cmd_regen_lomo(args):
+    """Weights of the A4 LOMO members, for the M3 landing-site test (Addendum A, D22)."""
+    t0 = lc.banner(STAGE, "regenerate and save the A4 LOMO member weights")
+    lc.verify_manifest(STAGE)
+    _, meta = load_lab()
+    jobs = [("LOMO", fold, "A4_full", k) for fold, _ in folds(meta, "LOMO") for k in range(N_MEMBERS)]
+    with get_context("fork").Pool(args.workers, initializer=_worker_init) as pool:
+        rows = pool.map(_regen_job, jobs)
+    df = pd.DataFrame(rows)
+    df.to_csv(lc.TABLES / "step04_lomo_regeneration_check.csv", index=False)
+    print(df.round(6).to_string(index=False))
+    print("  max |difference| vs the stored step04 predictions: composition %.2e, scalars %.2e"
+          % (df["max_abs_diff_comp"].max(), df["max_abs_diff_scalars"].max()))
+    lc.done(STAGE, t0)
+
+
 def cmd_finetune(args):
     import lumen_model as lm
     t0 = lc.banner(STAGE, "fine-tune: LOSO + LOMO x %d configurations x %d members"
@@ -248,11 +283,12 @@ def cmd_collect(args):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("command", choices=["pretrain", "finetune", "collect"])
+    ap.add_argument("command", choices=["pretrain", "finetune", "collect", "regen-lomo"])
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--workers", type=int, default=os.cpu_count() or 4)
     args = ap.parse_args()
-    {"pretrain": cmd_pretrain, "finetune": cmd_finetune, "collect": cmd_collect}[args.command](args)
+    {"pretrain": cmd_pretrain, "finetune": cmd_finetune, "collect": cmd_collect,
+     "regen-lomo": cmd_regen_lomo}[args.command](args)
     return 0
 
 

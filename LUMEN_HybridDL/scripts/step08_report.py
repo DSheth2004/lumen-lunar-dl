@@ -238,6 +238,32 @@ def section_m3(L):
           md_table(ar.set_index(["roi", "category"]), "%.2f"), ""]
 
 
+def section_m3_sites(L):
+    if not (T / "step10_metrics.csv").exists():
+        return
+    M = pd.read_csv(T / "step10_metrics.csv")
+    Tt = pd.read_csv(T / "step10_tests.csv")
+    P = pd.read_csv(T / "step10_predictions.csv")
+    lum = pd.read_csv(T / "step10_lumen_site_outputs.csv")
+    q = pd.read_csv(T / "step10_strip_quality.csv")
+    L += ["## 6b. M³ landing-site validation (step10, pre-registered as Addendum A)", "",
+          "FeO from real M³ L2 spectra at the returned-sample sites of Fernández-Díaz et al.'s 50-sample ground "
+          "truth, one row per distinct coordinate (pseudo-replicates averaged).",
+          "",
+          "- **LUMEN-M3** uses no landing-site data: Apollo sites are predicted by the A4 members that held out that "
+          "mission.",
+          "- **All other methods** are trained or fitted leave-one-site-out on the other sites.",
+          "- %d strips were found within 0.01° of a site; %d contributed (≥ 5 / 9 valid pixels)."
+          % (len(q), int(q["contributes"].sum())), "",
+          md_table(M.set_index("method"), "%.3f"), "",
+          "LUMEN-M3 against each comparator (paired Wilcoxon over sites, Holm over comparators):", "",
+          md_table(Tt.set_index("versus"), "%.3g"), "",
+          "Per site:", "", md_table(P.set_index("site_id"), "%.2f"), "",
+          "LUMEN's other outputs at the sites (no ground truth):", "",
+          md_table(lum.set_index("site_id")[["model", "PLG", "LCP", "HCP", "OLV", "ILM", "AGG", "TiO2",
+                                             "Al2O3", "logIsFeO", "FeO_strip_min", "FeO_strip_max"]], "%.2f"), ""]
+
+
 def section_deviations(L):
     txt = (lc.PROJECT_ROOT / "METHOD_NOTES.md").read_text()
     dev = txt.split("## Deviations", 1)[1].strip() if "## Deviations" in txt else "(none)"
@@ -259,6 +285,7 @@ def main() -> int:
     section_uncertainty(L)
     section_head_to_head(L)
     section_m3(L)
+    section_m3_sites(L)
     section_deviations(L)
     (lc.PROJECT_ROOT / "RESULTS.md").write_text("\n".join(L) + "\n")
     print("  RESULTS.md: %d lines" % len(L))
