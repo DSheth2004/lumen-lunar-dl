@@ -135,6 +135,7 @@ def train_fd_autoencoder(W, seed, log):
     """FD's 7-layer AE (in -> 32 -> 16 -> 6 -> 16 -> 32 -> in), as specified in the hand-off."""
     import torch
     import torch.nn as nn
+    torch.set_num_threads(1)                 # a tiny MLP: more threads only add contention
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     d = W.shape[1]
