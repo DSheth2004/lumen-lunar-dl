@@ -1,0 +1,27 @@
+check,value,expected,ok
+Table 2 x0 = mid-range of Table 1 input AR,0.24305,0.2431,True
+Table 2 x0 = mid-range of Table 1 input CBR,0.628764779802233,0.6288,True
+Table 2 x0 = mid-range of Table 1 input CIR1,1.0237580147877428,0.9832,False
+Table 2 x0 = mid-range of Table 1 input CIR2,1.0441554317387916,0.9996,False
+Table 2 x0 = mid-range of Table 1 input CIR3,1.0803742409807828,1.0402,False
+Table 2 x0 = mid-range of Table 1 input D,1.1099464253299993,1.1336,False
+Table 2 xk = 2 / range of Table 1 input AR,5.600672080649678,5.6007,True
+Table 2 xk = 2 / range of Table 1 input CBR,6.56149089763932,6.5615,True
+Table 2 xk = 2 / range of Table 1 input CIR1,4.379483899984538,5.3248,False
+Table 2 xk = 2 / range of Table 1 input CIR2,3.7690005984440456,4.5291,False
+Table 2 xk = 2 / range of Table 1 input CIR3,3.689874035738696,4.3326,False
+Table 2 xk = 2 / range of Table 1 input D,4.033044070087161,4.4592,False
+"published significant net, multiply, AR in fraction: k on Table 1 (paper: 0.99)",0.3992702368352083,,
+"published two_net_system net, multiply, AR in fraction: k on Table 1 (paper: Fig. 22, high)",0.7002915392983379,,
+"published significant net, multiply, AR in %: k on Table 1 (paper: 0.99)",-0.3736114711088948,,
+"published two_net_system net, multiply, AR in %: k on Table 1 (paper: Fig. 22, high)",-0.7309546489773725,,
+"published significant net, divide, AR in fraction: k on Table 1 (paper: 0.99)",-0.17810322600231837,,
+"published two_net_system net, divide, AR in fraction: k on Table 1 (paper: Fig. 22, high)",0.25649430506329984,,
+"published significant net, divide, AR in %: k on Table 1 (paper: 0.99)",0.28470666713329235,,
+"published two_net_system net, divide, AR in %: k on Table 1 (paper: Fig. 22, high)",-0.549594966191916,,
+"retrained moderate net: median k on Table 1 over 5 seeds (paper 0.95, gate +-0.03)",0.9398901606949432,0.95,True
+our Clementine filter at 415 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %,-0.19972038952102422,0.0,
+our Clementine filter at 750 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %,0.024377459321145434,0.0,
+our Clementine filter at 900 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %,0.1371915648152755,0.0,
+our Clementine filter at 950 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %,0.23778321365056643,0.0,
+our Clementine filter at 1000 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %,0.25395650535076086,0.0,

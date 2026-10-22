@@ -1,0 +1,24 @@
+{
+ "scene": "M3G20090728T214215",
+ "rfl_url": "https://planetarydata.jpl.nasa.gov/img/data/m3/CH1M3_0004/DATA/20090415_20090816/200907/L2/M3G20090728T214215_V01_RFL.IMG",
+ "loc_url": "https://planetarydata.jpl.nasa.gov/img/data/m3/CH1M3_0003/DATA/20090415_20090816/200907/L1B/M3G20090728T214215_V03_LOC.IMG",
+ "strip_lines": 26649,
+ "first_line": 13918,
+ "last_line_exclusive": 14806,
+ "fig3_fit_first_line": 13936,
+ "fig3_fit_span_lines": 852,
+ "fig3_ncc": 0.849422037601471,
+ "ncc_margin": 0.08294188976287842,
+ "cross_track_m": 260.84706935208095,
+ "along_track_m": 146.85179469062268,
+ "rows_after_square_resampling": 500,
+ "implied_pixels_of_fig3_frame": 145816.43464005957,
+ "apollo16": {
+  "scene": "M3G20090607T110414",
+  "rfl_url": "https://planetarydata.jpl.nasa.gov/img/data/m3/CH1M3_0004/DATA/20090415_20090816/200906/L2/M3G20090607T110414_V01_RFL.IMG",
+  "first_line": 10986,
+  "centre_line": 11016,
+  "centre_sample": 177,
+  "dist_deg": 0.0022637957514338516
+ }
+}

@@ -1,0 +1,54 @@
+
+==============================================================================
+[step03] Paper 3 (Korokhin 2024) on Copernicus, M3 and IIRS
+==============================================================================
+  M3_full      21 grid points 0.54-2.54 um, 98421 pixels, <A> median 0.2353
+  M3_common    14 grid points 0.94-2.44 um, 98421 pixels, <A> median 0.2513
+  IIRS_common  14 grid points 0.94-2.44 um, 98421 pixels, <A> median 0.2891
+  IIRS_scaled  14 grid points 0.94-2.44 um, 98421 pixels, <A> median 0.2521
+  M3_common seed 2 iter 1: optimum epoch 107 of 500, sigma_Rel 2.69%, 15.0 min
+  IIRS_common seed 1 iter 1: optimum epoch 53 of 500, sigma_Rel 7.09%, 16.0 min
+  IIRS_scaled seed 0 iter 1: optimum epoch 138 of 500, sigma_Rel 3.99%, 16.2 min
+  IIRS_common seed 2 iter 1: optimum epoch 77 of 500, sigma_Rel 4.27%, 16.4 min
+  M3_common seed 1 iter 1: optimum epoch 210 of 500, sigma_Rel 3.53%, 16.7 min
+  M3_common seed 0 iter 1: optimum epoch 92 of 500, sigma_Rel 3.84%, 16.5 min
+  M3_full seed 1 iter 1: optimum epoch 168 of 500, sigma_Rel 3.82%, 17.7 min
+  IIRS_scaled seed 1 iter 1: optimum epoch 60 of 500, sigma_Rel 4.90%, 16.7 min
+  IIRS_scaled seed 2 iter 1: optimum epoch 85 of 500, sigma_Rel 3.64%, 17.0 min
+  IIRS_common seed 0 iter 1: optimum epoch 72 of 500, sigma_Rel 5.57%, 17.5 min
+  M3_full seed 0 iter 1: optimum epoch 51 of 500, sigma_Rel 4.76%, 19.2 min
+  M3_full seed 2 iter 1: optimum epoch 73 of 500, sigma_Rel 2.74%, 19.6 min
+  M3_common seed 1 iter 2: optimum epoch 20 of 1520, sigma_Rel 1.83%, 36.3 min
+  IIRS_scaled seed 0 iter 2: optimum epoch 10 of 1510, sigma_Rel 3.13%, 36.9 min
+  IIRS_common seed 1 iter 2: optimum epoch 120 of 1620, sigma_Rel 3.59%, 40.3 min
+  IIRS_common seed 2 iter 2: optimum epoch 160 of 1660, sigma_Rel 3.31%, 40.1 min
+  IIRS_scaled seed 2 iter 2: optimum epoch 160 of 1660, sigma_Rel 3.19%, 41.0 min
+  M3_full seed 1 iter 2: optimum epoch 30 of 1530, sigma_Rel 2.44%, 47.2 min
+  IIRS_common seed 0 iter 2: optimum epoch 260 of 1760, sigma_Rel 3.38%, 47.8 min
+  M3_full seed 0 iter 2: optimum epoch 500 of 2000, sigma_Rel 1.87%, 74.2 min
+  M3_common seed 1 iter 3: optimum epoch 300 of 1800, sigma_Rel 1.73%, 58.7 min
+  M3_full seed 2 iter 2: optimum epoch 1210 of 2710, sigma_Rel 1.64%, 93.5 min
+  IIRS_common seed 1 iter 3: optimum epoch 120 of 1620, sigma_Rel 3.41%, 56.8 min
+  IIRS_common seed 0 iter 3: optimum epoch 110 of 1610, sigma_Rel 3.38%, 49.7 min
+  IIRS_scaled seed 0 iter 3: optimum epoch 250 of 1750, sigma_Rel 2.93%, 64.8 min
+  M3_common seed 0 iter 2: optimum epoch 2150 of 3650, sigma_Rel 1.41%, 101.7 min
+  M3_full seed 1 iter 3: optimum epoch 60 of 1560, sigma_Rel 1.62%, 55.3 min
+  IIRS_common seed 2 iter 3: optimum epoch 400 of 1900, sigma_Rel 3.26%, 64.8 min
+  IIRS_scaled seed 2 iter 3: optimum epoch 500 of 2000, sigma_Rel 3.17%, 63.4 min
+  M3_full seed 0 iter 3: optimum epoch 200 of 1700, sigma_Rel 1.50%, 32.6 min
+  IIRS_scaled seed 1 iter 2: optimum epoch 3010 of 4510, sigma_Rel 3.39%, 114.2 min
+  M3_full seed 2 iter 3: optimum epoch 180 of 1680, sigma_Rel 1.43%, 23.3 min
+  IIRS_scaled seed 1 iter 3: optimum epoch 120 of 1620, sigma_Rel 3.33%, 14.5 min
+  M3_common seed 0 iter 3: optimum epoch 1770 of 3270, sigma_Rel 1.33%, 30.2 min
+  M3_common seed 2 iter 2: optimum epoch 8470 of 9970, sigma_Rel 1.41%, 145.2 min
+  M3_common seed 2 iter 3: optimum epoch 2720 of 4220, sigma_Rel 1.35%, 15.8 min
+  M3_full: 3 seeds; mean seed-to-seed SD per parameter: S 1.46, nFe 0.000929, Gr 0.8, CPX 1.5, OPX 0.144, OLV 0.38, PLG 0.9, ILM 0.408
+  M3_common: 3 seeds; mean seed-to-seed SD per parameter: S 3.41, nFe 0.00115, Gr 0.21, CPX 0.367, OPX 0.0406, OLV 0.0688, PLG 0.648, ILM 0.644
+  IIRS_common: 3 seeds; mean seed-to-seed SD per parameter: S 1.04, nFe 0.00217, Gr 0.524, CPX 1.12, OPX 0.0862, OLV 0.0378, PLG 0.603, ILM 0.669
+  IIRS_scaled: 3 seeds; mean seed-to-seed SD per parameter: S 3.27, nFe 0.00498, Gr 0.575, CPX 1.52, OPX 0.0725, OLV 0.0698, PLG 0.61, ILM 2.14
+  1550-nm band-depth ilmenite, M3_full      median 3.73 wt%
+  1550-nm band-depth ilmenite, M3_common    median 3.01 wt%
+  1550-nm band-depth ilmenite, IIRS_common  median 1.75 wt%
+  1550-nm band-depth ilmenite, IIRS_scaled  median 1.75 wt%
+
+  STEP 03 DONE

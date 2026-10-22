@@ -1,0 +1,5 @@
+claim,bound,observed,worst_sample
+olivine < 7 %,7.0,5.784844544559451,15071
+ilmenite < 10 % (15071 excepted),10.0,17.56096804835494,12001
+ilmenite < 10 % (including 15071),10.0,22.129928282462483,15071
+plagioclase < 30 %,30.0,16.82828028853428,71061

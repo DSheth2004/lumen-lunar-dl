@@ -1,0 +1,24 @@
+spectrum,role,paper_source,expected_relab_id,label_relab_id,expected_sample,label_specimen,expected_max_um,label_max_um,id_ok,sample_ok,size_ok,all_ok
+c1lr215,basis CPX (deep-brown pyroxene),Table 4,LR-CMP-215,LR-CMP-215,70017,"70017,535 deep-brown pyroxene D <45 um",45.0,45.0,True,True,True,True
+c1lr220,basis OPX (light-brown pyroxene),Table 4,LR-CMP-220,LR-CMP-220,70035,"70035,188 light-brown pyroxene D <45 um",45.0,45.0,True,True,True,True
+c1lr212,basis OLV,Table 4,LR-CMP-212,LR-CMP-212,15555,"15555,965 olivine D <45 um",45.0,45.0,True,True,True,True
+c1lr217,basis PLG,Table 4,LR-CMP-217,LR-CMP-217,70017,"70017,535 plagioclase D <45 um",45.0,45.0,True,True,True,True
+c1lr218,basis ILM,Table 4,LR-CMP-218,LR-CMP-218,70017,"70017,535 ilmenite D <45 um",45.0,45.0,True,True,True,True
+c1ms16,mixture 1: OLV+PYX 50:50,"Table 1, Fig. 4",MS-CMP-016,MS-CMP-016,,Olv-Pyx mix 50/50,,,True,True,True,True
+c1ms14,mixture 1 end-member OLV,Fig. 4,MS-CMP-014,MS-CMP-014,,Olivine,75.0,75.0,True,True,True,True
+c1ms15,mixture 1 end-member PYX,Fig. 4,MS-CMP-015,MS-CMP-015,,Pyroxene,75.0,75.0,True,True,True,True
+c1xt36,mixture 2: OLV+OPX+ANO 33:33:33,"Table 1, Fig. 5",XT-CMP-036,XT-CMP-036,,33.3/33.3/33.3 Olivine/Bronzite/Anorthite,75.0,75.0,True,True,True,True
+c2po81,mixture 2 end-member OLV,Fig. 5,PO-CMP-081-C,PO-CMP-081-C,,Green Olivine 45-75 um,75.0,75.0,True,True,True,True
+c1pe41,mixture 2 end-member OPX,Fig. 5,PE-CMP-041-C,PE-CMP-041-C,,Chichi-jima bronzite 45-75 um,75.0,75.0,True,True,True,True
+c1pa60,mixture 2 end-member ANO,Fig. 5,PA-CMP-060-C,PA-CMP-060-C,,Split Rock anorthite 45-75 um,75.0,75.0,True,True,True,True
+c1sc07,mixture 3: OLV+PYX+MET 40:30:30,"Table 1, Fig. 6",SC-EAC-007,SC-EAC-007,,OLV:PYX:MET 30:40:30,90.0,90.0,True,True,True,True
+c1sc02,mixture 3 end-member OLV,Fig. 6,SC-EAC-002,SC-EAC-002,,OLV003 olivine,90.0,90.0,True,True,True,True
+c1sc09,mixture 3 end-member low-Ca PYX,Fig. 6,SC-EAC-009,SC-EAC-009,,PYX117,90.0,90.0,True,True,True,True
+c1sc06,mixture 3 end-member Odessa metal,Fig. 6,SC-EAC-006,SC-EAC-006,,MET101 Odessa,90.0,90.0,True,True,True,True
+c1sc37,C&G set PLG,"Table 2, Fig. 7",SC-EAC-037,SC-EAC-037,,PLG108,90.0,90.0,True,True,True,True
+c1sc36,C&G set OPX,"Table 2, Fig. 7",SC-EAC-036,SC-EAC-036,,PYX032,90.0,90.0,True,True,True,True
+c1sc35,C&G set CPX,"Table 2, Fig. 7",SC-EAC-035,SC-EAC-035,,PYX036,90.0,90.0,True,True,True,True
+c1sc34,C&G set ILM,"Table 2, Fig. 7",SC-EAC-034,SC-EAC-034,,ILM101,90.0,90.0,True,True,True,True
+c2ls45,Noble set AGG; Table 7 / Table 8 agglutinate,"Table 3, 7, 8",LS-CMP-045,LS-CMP-045,10084,"10084,1776",1000.0,1000.0,True,True,True,True
+c1sb06,Noble set OPX,"Table 3, Fig. 8",SB-RGB-006,SB-RGB-006,,Orthopyroxene 1,,,True,True,True,True
+c1sw12,Noble set PLG,"Table 3, Fig. 8",SW-CMP-012,SW-CMP-012,,Plagiclase Cum.,500.0,500.0,True,True,True,True

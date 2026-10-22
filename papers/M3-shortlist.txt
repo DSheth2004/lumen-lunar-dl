@@ -1,0 +1,239 @@
+M3 MINERAL PROPERTY IDENTIFICATION - SHORTLIST
+Parth & Dhrumil | compiled 2026-08-31
+
+Scope: Chandrayaan-1 M3 only. Journal implementation papers only (no conference,
+no preprints). Publishers: IEEE / Elsevier / MDPI / Springer / Nature / Wiley-AGU.
+Two categories, kept strictly separate:
+  HAPKE = the Hapke radiative-transfer model does the retrieval.
+  DL    = a trained neural network does the retrieval.
+
+
+================================================================================
+HAPKE  (5 of 5)
+================================================================================
+
+H1. Unmixing Mineral Abundance and Mg# With Radiative Transfer Theory:
+    Modeling and Applications
+    Sun & Lucey | J. Geophysical Research: Planets 126, 2021 | AGU / Wiley
+    https://doi.org/10.1029/2020JE006691
+    MINERAL PROPERTY : olivine, LCP, HCP, plagioclase vol% abundance + Mg#
+    METHOD           : new optical constants for olivine/OPX/CPX; radiative
+                       transfer with soil porosity and opposition effect; forward
+                       + inverse modelling against a spectral library
+    ACCURACY         : better than 3 vol% (olivine, LCP, HCP), 6 vol%
+                       (plagioclase), 10 for Mg#
+    WHY              : the reference implementation for quantitative M3 unmixing.
+                       Publishes its own optical constants, states its error
+                       budget per mineral, and delivers a global Mg# map from M3
+                       images. Start here - everything else is a variation on it.
+
+H2. Remote Compositional Analyses of Space-weathered Lunar Maria
+    Jung, Lapotre, Milliken & Minson | Planetary Science Journal 7(1) 18, 2026
+    | AAS, published by IOP  [note: outside your stated publisher list]
+    https://doi.org/10.3847/PSJ/ae2b57
+    MINERAL PROPERTY : modal mineral abundance WITH per-pixel uncertainty, space
+                       weathering separated from composition
+    METHOD           : probabilistic MCMC inversion of the Hapke model; weathered
+                       surface = mixture of fresh + fully weathered components,
+                       agglutinates as an explicit end-member; calibrated on
+                       Apollo mare soils of known mineralogy, then applied to M3
+    WHY              : the only paper here that returns a posterior instead of a
+                       point estimate. Your Stage 06 gate rejects Olivine on a
+                       best-minus-second-best margin, which has no statistical
+                       meaning; this replaces it with a credible interval.
+
+H3. Quantitative Mineral Maps of the Lunar South Polar Region Derived From the
+    Moon Mineralogy Mapper (M3) Data
+    Du, Liu, Tong, Jin, Xie, Feng, Jin & Zhang
+    | J. Geophysical Research: Planets 131(1) e2024JE008842, 2026 | AGU / Wiley
+    https://doi.org/10.1029/2024JE008842
+    MINERAL PROPERTY : high-Ca pyroxene, low-Ca pyroxene, olivine, plagioclase
+                       abundance at ~193 m/px
+    METHOD           : radiative-transfer unmixing of a co-registered M3 + LOLA
+                       cube built to survive extreme illumination geometry
+    WHY              : newest end-to-end M3 abundance product for exactly your
+                       four minerals, and the best worked example of retrieving
+                       under bad illumination - where your 19 remaining shadowed
+                       pyroxene pixels sit. Cross-checked against Kaguya SP.
+
+H4. An Integrated Framework for Global Detection and Quantification of Lunar
+    Pyroclastic Deposits
+    Misra, Bhatt, Hess & Wohler | Planetary Science Journal 7(1) 24, 2026
+    | AAS, published by IOP  [note: outside your stated publisher list]
+    https://doi.org/10.3847/PSJ/ae317c
+    MINERAL PROPERTY : volcanic glass abundance (~75 wt% at Aristarchus)
+                       separated from the common mineral end-members
+    METHOD           : reflectance -> single-scattering albedo via Hapke (2002);
+                       submicroscopic iron (npFe0 + mpFe0) folded into the
+                       end-member simulation; linear unmixing in the SSA domain
+    WHY              : glass overlaps the silicates in VNIR, which is why a
+                       melt-glass-rich scene contaminates a mineral call. This is
+                       the published recipe for quantifying it instead of letting
+                       it leak into your olivine and pyroxene fractions.
+
+H5. A Novel Clustering-Based Methodology for Mapping Lunar Surface Minerals
+    Using Moon Mineralogy Mapper (M3) Hyperspectral Data
+    Messinios, Koutroumbas & Sykioti | Remote Sensing 18(5) 776, 2026 | MDPI
+    https://doi.org/10.3390/rs18050776
+    MINERAL PROPERTY : mineral identification + relative abundance - augite 55%,
+                       impact melt-glass 31.4%, olivine 9.4%, plagioclase 4.4%,
+                       ilmenite 3.4%
+    METHOD           : Hapke photometric conversion to SSA, continuum removal,
+                       per-pixel absorption-position detection, scene-wide
+                       histogram of absorption locations, k-means on 6-D binary
+                       absorption-pattern vectors
+    WHY              : closest to the pipeline you already run - same 85 bands,
+                       same 140 m/px, same band-parameter logic, with the SSA
+                       conversion added in front. The absorption histogram is a
+                       defensible way to decide which features a scene actually
+                       supports, instead of assuming Band I and Band II are both
+                       usable (yours: 26% both / 25% one / 49% neither).
+
+
+================================================================================
+DL  (4 verified - see the note at the bottom on the fifth slot)
+================================================================================
+
+D1. A Hapke Physics-Guided Deep Autoencoder for Lunar Hyperspectral Unmixing
+    Lin, Liu, Han, Liu, Bo & Zhang | Remote Sensing 18(8) 1123, 2026 | MDPI
+    https://doi.org/10.3390/rs18081123
+    MINERAL PROPERTY : plagioclase, high-Ca pyroxene, low-Ca pyroxene, olivine -
+                       fractional abundance per pixel
+    METHOD           : PGU-Net. 1-D convolutional encoder with dual attention;
+                       decoder does linear mixing in the SSA domain plus a
+                       learned non-linear correction; abundances read off the
+                       latent layer under sum-to-one and non-negativity
+    IMPLEMENTABLE    : yes - blind unmixing, no labelled pixels needed. Inputs
+                       are M3 L2 reflectance + an endmember library you have.
+                       Runs on the Copernicus cube as-is.
+    WHY              : the only DL paper that puts the physics inside the network
+                       rather than beside it, so every abundance it emits is
+                       physically admissible by construction. Its validation
+                       ladder (synthetic -> Cuprite benchmark -> M3 vs Kaguya MI)
+                       mirrors your Stage 01-06 structure.
+
+D2. Applying machine learning to a nonlinear spectral mixing model for mapping
+    lunar soils composition using CHANDRAYAAN-1 M3 data
+    Korokhin, Surkov, Mall, Kaydash, Velichko, Velikodsky & Shalygina
+    | Planetary and Space Science 244, 105870, 2024 | Elsevier
+    https://doi.org/10.1016/j.pss.2024.105870
+    MINERAL PROPERTY : clinopyroxene, orthopyroxene, olivine, plagioclase
+                       abundance + AVERAGE GRAIN SIZE + nanophase iron +
+                       optical maturity, all per pixel
+    METHOD           : Shkuratov (1999) non-linear mixing model as forward
+                       simulator -> generate a large synthetic spectral set with
+                       randomised mixture parameters -> train an MLP on it ->
+                       apply the trained net as the inverse to M3. A flat grey
+                       end-member absorbs agglutinate glass and photometric
+                       residuals.
+    IMPLEMENTABLE    : yes, and no ground-truth bottleneck - the training set is
+                       synthetic, you generate it. Test area (Shapley) spans mare
+                       and highland, like Copernicus.
+    WHY              : the only paper in either list that SOLVES for grain size
+                       instead of fixing it. That is the direct answer to your
+                       Stage 01-02 result that particle size alone moves Band I
+                       depth 5.1x, in opposite directions for mare and highland.
+    NOTE             : uses the Shkuratov model, NOT Hapke. Do not cite it as a
+                       Hapke implementation.
+
+D3. High resolution olivine abundance mapping in the Copernicus crater combining
+    spectral data of Chandrayaan-1 M3 and Kaguya MI
+    Surkov, Mall & Korokhin | Planetary and Space Science 256, 106039, 2025
+    | Elsevier | OPEN ACCESS (CC)
+    https://doi.org/10.1016/j.pss.2025.106039
+    MINERAL PROPERTY : olivine abundance in vol% - 0 to 35 vol% across the
+                       region, up to 90 vol% at central-peak boulder outcrops
+    METHOD           : multilayer perceptron learns the M3 -> Kaguya MI
+                       spectral-spatial correlation and super-resolves the
+                       olivine map. One data frame per instrument, no mosaic.
+    IMPLEMENTABLE    : yes, with one dependency - a co-registered Kaguya MI frame
+                       over Copernicus.
+    WHY              : your crater, your problem mineral, your instrument. Gives
+                       you an independent published olivine abundance for
+                       Copernicus to test your leave-one-reference-out gate
+                       against, which is exactly what an external check needs.
+
+D4. Global Lunar FeO Mapping via Wavelet-Autoencoder Feature Learning from M3
+    Hyperspectral Data
+    Fernandez-Diaz, Sanchez Lasheras, Gracia Rodriguez, Iglesias Alvarez,
+    Marques Sierra & de Cos Juez | Mathematics 14(2) 254, 2026 | MDPI
+    https://doi.org/10.3390/math14020254
+    MINERAL PROPERTY : FeO abundance in wt% (global map at ~150 m/px)
+    METHOD           : Daubechies-4 wavelet compression of each spectrum to 42
+                       coefficients -> symmetric deep autoencoder to a 6-D latent
+                       code -> supervised regression on the latent codes
+    ACCURACY         : MAE ~1.204 wt% FeO; 10-fold CV plus a held-out 10% split
+    IMPLEMENTABLE    : yes, but supervised - needs the 50 returned-sample FeO
+                       values to train the regressor.
+    WHY              : the wavelet-then-autoencoder front end is a principled way
+                       to compress 85 M3 bands without hand-picking band
+                       parameters. Also the only M3 DL paper with proper held-out
+                       + k-fold validation, which is the standard your Stage 06
+                       generalisation claim has to meet.
+
+
+================================================================================
+ON THE FIFTH DL SLOT
+================================================================================
+
+Four is what the literature actually supports, not where the search stopped.
+Lunar deep learning is built on Kaguya MI, Chang'E-1 IIM, Clementine and Diviner,
+because those come with dense returned-sample ground truth at Apollo, Luna and
+Chang'E sites - which supervised training needs. Your own taxonomy shows it:
+rows 1, 2, 7, 29, 40, 66 and 76 are all non-M3.
+
+M3's advantage is spectral resolution, and that is exploited mainly by physics-
+based inversion, which needs no labels. So the M3 DL papers that do exist are
+nearly all physics-guided - D1 and D2 both wrap a scattering model into the
+network.
+
+Two candidates for a fifth slot, and the exact reason each is not in the list:
+
+  - Ni, Zhao, Meng, Du, Lu & Wang, "Signal Compensation of M3 Under Low-
+    Illumination Conditions Using a CycleGAN-Based Network", IEEE JSTARS 18,
+    8504-8522, 2025.  https://doi.org/10.1109/JSTARS.2025.3549768
+    Deep learning, M3, IEEE, open access - but it restores shadowed spectra and
+    identifies NO mineral. No L4 property node. Promote it only if the brief is
+    "DL on M3" rather than "DL for mineral property".
+
+  - Fazel Hesar et al., "Connecting Meteorite Spectra to Lunar Surface
+    Composition Using Hyperspectral Imaging and Machine Learning", Universe
+    12(4) 93, 2026.  https://doi.org/10.3390/universe12040093
+    Does identify olivine and pyroxene at 93.7% accuracy - but the learners are
+    SVM and k-means, not deep, and M3 is used only for validation, not as the
+    primary data.
+
+
+================================================================================
+EXCLUDED, AND WHY
+================================================================================
+
+Zheng et al. 2026, IEEE JSTARS - physics-guided diffusion unmixing. Chang'E-1
+  IIM, not M3.
+Han et al. 2026, Geo-spatial Information Science - two-layer Bayesian Hapke that
+  inverts grain-size DISTRIBUTION as a continuous variable. Excellent method,
+  but applied to Chang'E-3/5 in-situ spectra, not M3.
+Ahmad et al. 2022, Planet. Space Sci. 220 - Chandrayaan-2 IIRS + M3 unmixing.
+  Strictly LINEAR (N-FINDR + FCLS), no radiative transfer, so not a Hapke paper.
+Patel et al. 2026, Icarus 451 - Chandrayaan-2 IIRS, classical linear unmixing,
+  and carries a published corrigendum (Icarus 453, 117047).
+Arun et al. 2023 (graph neural network, IIRS) and Majumdar, Purohit & Mall 2023
+  (global pyroxene ML) - conference papers, not journal.
+M3 stripe removal (IEEE TGRS 2022) and spatial-spectral 3D compensation
+  (Remote Sensing 18(5) 682, 2026) - restoration, no mineral outcome.
+
+
+================================================================================
+PUBLISHER CHECK
+================================================================================
+
+DL     : MDPI x2, Elsevier x2                        4 of 4 on your list
+HAPKE  : Wiley/AGU x2, MDPI x1, AAS-IOP x2           3 of 5 on your list
+
+H2 and H4 are in The Planetary Science Journal - the American Astronomical
+Society's journal, with IOP as publishing house (the same arrangement AGU has
+with Wiley), Q1 and top-10% SCImago. Flagged so you can decide. If both must go,
+the replacements on your list are Moriarty & Petro 2024, JGR Planets 129,
+https://doi.org/10.1029/2023JE008266 and Ahmad et al. 2022, Planet. Space Sci.
+220, 105537 - but you lose the uncertainty estimation (H2) and the glass
+quantification (H4), and nothing on the approved list replaces either.

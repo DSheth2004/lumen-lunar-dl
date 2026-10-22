@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+# regenerable arrays (synthetic library, checkpoints, maps): rebuilt by the scripts
+products/

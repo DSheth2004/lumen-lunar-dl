@@ -1,0 +1,46 @@
+target_id,source,quantity,published_value,tolerance,tolerance_basis,status_source,gated
+T1_d_dc,Table 1 note,d_dc 970nm band depth of pulverized fresh mare basalts (15058/15555/70017/70035),0.358,0.0005,closed-form from fixed spectra; only rounding,step02_gate.csv,yes
+T1_d_sw,Table 1 note,d_sw 970nm band depth of most space-weathered soils (15041/79221/10084),0.12,0.0005,closed-form from fixed spectra; only rounding,step02_gate.csv,yes
+T1_dmix_12001,Table 1,d_mix 12001 (LR-CMP-010),0.145,0.0005,published to 3 dp,step02_table1_reproduction.csv,yes
+T1_dmix_12030,Table 1,d_mix 12030 (LR-CMP-032),0.163,0.0005,published to 3 dp,step02_table1_reproduction.csv,yes
+T1_dmix_15071,Table 1,d_mix 15071 (LR-CMP-020),0.161,0.0005,published to 3 dp,step02_table1_reproduction.csv,yes
+T1_dmix_71061,Table 1,d_mix 71061 (LR-CMP-057),0.144,0.0005,published to 3 dp,step02_table1_reproduction.csv,yes
+T1_delta_12001,Table 1,Delta 12001,0.893,0.002,published to 3 dp; Eq 4 amplifies d rounding,step02_table1_reproduction.csv,yes
+T1_delta_12030,Table 1,Delta 12030,0.819,0.002,published to 3 dp,step02_table1_reproduction.csv,yes
+T1_delta_15071,Table 1,Delta 15071,0.826,0.002,published to 3 dp,step02_table1_reproduction.csv,yes
+T1_delta_71061,Table 1,Delta 71061,0.897,0.002,published to 3 dp,step02_table1_reproduction.csv,yes
+T1_ism_12001,Table 1,calculated I_sm 12001,43.04,0.3,Eq 3 evaluated on a rounded Delta; 0.001 in Delta moves I_sm by ~0.18,step02_table1_reproduction.csv,yes
+T1_ism_12030,Table 1,calculated I_sm 12030,31.26,0.3,as above,step02_table1_reproduction.csv,yes
+T1_ism_15071,Table 1,calculated I_sm 15071,32.13,0.3,as above,step02_table1_reproduction.csv,yes
+T1_ism_71061,Table 1,calculated I_sm 71061,43.85,0.3,as above,step02_table1_reproduction.csv,yes
+FC1_ssa_range,Figure C1,SSA of each of the 9 end-members lies inside its published panel,9.0,0.0,panel axis limits read from the figure; a loose containment test,step03_gate.csv,yes
+TC1_identity,Table C1,"RELAB specimen code, sample id and lab grain-size range of all 9 end-members",9.0,0.0,exact string match against the PDS4 labels,step00_relab_metadata.csv,yes
+TC1_n,Table C1,real refractive index n of each end-member matches the released optical-constant files,8.0,0.0,exact; agglutinate is a known disagreement (1.49 printed vs 2.16 released),step03_effective_grain_size.csv,yes
+F3_r2_12001_MAP,Figure 3e,R2 of the MAP fit to the depth-corrected SSA of 12001,0.9887,0.02,different sampler seed and proposal; fit quality not the exact model,step05_lscc_unmixing.csv,yes
+F3_r2_12001_mode,Figure 3e,R2 of the mode fit 12001,0.9883,0.02,as above,step05_lscc_unmixing.csv,no
+F3_r2_12030_MAP,Figure 3f,R2 of the MAP fit 12030,0.9902,0.02,as above,step05_lscc_unmixing.csv,yes
+F3_r2_12030_mode,Figure 3f,R2 of the mode fit 12030,0.9812,0.02,as above,step05_lscc_unmixing.csv,no
+F3_r2_15071_MAP,Figure 3g,R2 of the MAP fit 15071,0.9888,0.02,as above,step05_lscc_unmixing.csv,yes
+F3_r2_15071_mode,Figure 3g,R2 of the mode fit 15071,0.9853,0.02,as above,step05_lscc_unmixing.csv,no
+F3_r2_71061_MAP,Figure 3h,R2 of the MAP fit 71061,0.992,0.02,as above,step05_lscc_unmixing.csv,yes
+F3_r2_71061_mode,Figure 3h,R2 of the mode fit 71061,0.9909,0.02,as above,step05_lscc_unmixing.csv,no
+S3_rms_all,Section 3,rms of accepted models for the LSCC depth-corrected spectra consistently exceeds 0.98,0.98,0.0,stated as a floor in the text; tested as a floor,step05_lscc_unmixing.csv,yes
+S3_olivine_err,Section 3,olivine abundance differs from LSCC lab values by less than 7 percent,7.0,0.0,stated in the text as an upper bound,step05_vs_ground_truth.csv,yes
+S3_ilmenite_err,Section 3,ilmenite deviations typically less than 10 percent (15071 excepted),10.0,0.0,stated in the text as typical,step05_vs_ground_truth.csv,yes
+S3_plag_err,Section 3,plagioclase discrepancies of 20 to 30 percent in some samples,30.0,0.0,stated in the text as an upper bound,step05_vs_ground_truth.csv,yes
+F5b_dmix,Figure 5b,d_mix of the Aristarchus ROI b (21.37N 320.54E),0.211,0.005,read from the figure annotation,step06_m3_aristarchus.csv,no
+F5b_dsw,Figure 5b,d_sw of the space-weathered pixels near ROI b,0.083,0.005,read from the figure annotation,step06_m3_aristarchus.csv,no
+F5b_delta,Figure 5b,Delta for ROI b,0.536,0.01,closed form from the two band depths above,step06_m3_aristarchus.csv,yes
+F5b_thetasw,Figure 5b,theta_sw for ROI b,0.064,0.005,closed form,step06_m3_aristarchus.csv,yes
+F5b_ism,Figure 5b,I_sm for ROI b,6.4,0.5,closed form,step06_m3_aristarchus.csv,yes
+F5c_dmix,Figure 5c,d_mix of the Aristarchus ROI c (31.76N 315.82E),0.14,0.005,read from the figure annotation,step06_m3_aristarchus.csv,no
+F5c_dsw,Figure 5c,d_sw of the space-weathered pixels near ROI c,0.061,0.005,read from the figure annotation,step06_m3_aristarchus.csv,no
+F5c_delta,Figure 5c,Delta for ROI c,0.733,0.01,closed form,step06_m3_aristarchus.csv,yes
+F5c_thetasw,Figure 5c,theta_sw for ROI c,0.206,0.005,closed form,step06_m3_aristarchus.csv,yes
+F5c_ism,Figure 5c,I_sm for ROI c,20.6,0.5,closed form,step06_m3_aristarchus.csv,yes
+F6c_r2_MAP,Figure 6c,R2 of the MAP fit to ROI b depth-corrected SSA,0.9755,0.02,different sampler seed,step06_m3_aristarchus.csv,yes
+F6c_r2_mode,Figure 6c,R2 of the mode fit to ROI b,0.9657,0.02,as above,step06_m3_aristarchus.csv,no
+F6d_r2_MAP,Figure 6d,R2 of the MAP fit to ROI c depth-corrected SSA,0.987,0.02,as above,step06_m3_aristarchus.csv,yes
+F6d_r2_mode,Figure 6d,R2 of the mode fit to ROI c,0.9842,0.02,as above,step06_m3_aristarchus.csv,no
+S3_m3_rms,Section 3,rms for the MAP and mode estimates of the M3 ROIs exceed 0.97,0.97,0.0,stated as a floor in the text,step06_m3_aristarchus.csv,no
+EQ3_coefficient,Eq 3 vs Fig 2,"coefficient of I_sm = C * Delta^3.731; Eq 3 gives 65.68, Fig 2 annotation gives 65.58",65.68,0.0,decided empirically against Table 1; see step02_eq3_coefficient.csv,step02_eq3_coefficient.csv,yes

@@ -1,0 +1,30 @@
+DL
+
+1. A Hapke Physics-Guided Deep Autoencoder for Lunar Hyperspectral Unmixing
+   https://doi.org/10.3390/rs18081123
+
+2. Applying machine learning to a nonlinear spectral mixing model for mapping lunar soils composition using CHANDRAYAAN-1 M3 data
+   https://doi.org/10.1016/j.pss.2024.105870
+
+3. High resolution olivine abundance mapping in the Copernicus crater combining spectral data of Chandrayaan-1 M3 and Kaguya MI
+   https://doi.org/10.1016/j.pss.2025.106039
+
+4. Global Lunar FeO Mapping via Wavelet-Autoencoder Feature Learning from M3 Hyperspectral Data
+   https://doi.org/10.3390/math14020254
+
+HAPKE
+
+1. Unmixing Mineral Abundance and Mg# With Radiative Transfer Theory: Modeling and Applications
+   https://doi.org/10.1029/2020JE006691
+
+2. Remote Compositional Analyses of Space-weathered Lunar Maria
+   https://doi.org/10.3847/PSJ/ae2b57
+
+3. Quantitative Mineral Maps of the Lunar South Polar Region Derived From the Moon Mineralogy Mapper (M3) Data
+   https://doi.org/10.1029/2024JE008842
+
+4. An Integrated Framework for Global Detection and Quantification of Lunar Pyroclastic Deposits
+   https://doi.org/10.3847/PSJ/ae317c
+
+5. A Novel Clustering-Based Methodology for Mapping Lunar Surface Minerals Using Moon Mineralogy Mapper (M3) Hyperspectral Data
+   https://doi.org/10.3390/rs18050776

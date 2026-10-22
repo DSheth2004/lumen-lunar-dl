@@ -1,0 +1,644 @@
+
+##############################################################################
+# [run_all] step00  --  stage RELAB, LSCC, ground truth, Fe n,k; seal data/
+##############################################################################
+
+==============================================================================
+[step00] stage RELAB, LSCC, ground truth and Fe optical constants
+==============================================================================
+  casc02  Table 2 OLV -> not available locally
+  c2ls09  Table 3 CPX -> not available locally
+  cals35  Table 3 GLS -> not available locally
+  cjb308  Table 3 ILM -> not available locally
+  c2po26  Table 3 OLV -> not available locally
+  identity check: 23 / 23 spectra match the paper's IDs, samples and sizes
+  shuffled negative control: 23 of 23 rows moved, 23 of them rejected
+  LSCC Kdata: 19 soils staged
+  highland LSCC (Taylor 2010): 100 arithmetic checks pass; Al2O3/CaO/FeO/MgO equal to Shkuratov 2005a Table 1 in 13/13 rows (shuffled control: 1 rows agree, 1 of 13 unmoved); Table 2 vs Table 3 pyroxene agree in 26/30 (shuffled: 0)
+  manifest: 77 files sealed
+[run_all] step00 ok (3 s)
+
+##############################################################################
+# [run_all] step00b  --  transcribe the paper's tables; check their arithmetic
+##############################################################################
+
+==============================================================================
+[step00b] transcribe the paper's tables and check their arithmetic
+==============================================================================
+  72 arithmetic checks on the printed tables: 65 consistent, 7 not
+   INCONSISTENT sum_c              t06_gray_albedo_site4 A_Gr=0.5           printed    94.190  recomputed    92.510  
+   INCONSISTENT sum_c              t08_m3_sites_agglutinate site=1.0        printed   118.110  recomputed   126.670  difference equals c_OPX: the printed total omits the OPX term
+   INCONSISTENT sum_c              t09_m3_sites_nm site=1.0                 printed   111.800  recomputed   118.340  difference equals c_OPX: the printed total omits the OPX term
+   INCONSISTENT sum_c              t13_m3_sites_ann_iter1 site=1.0          printed   100.250  recomputed   101.900  difference equals c_OPX: the printed total omits the OPX term
+   INCONSISTENT sum_c              t13_m3_sites_ann_iter1 site=4.0          printed   106.970  recomputed   106.770  
+   INCONSISTENT sum_c              t14_m3_sites_ann_iter2 site=1.0          printed    99.250  recomputed   100.850  difference equals c_OPX: the printed total omits the OPX term
+   INCONSISTENT sum_c              t15_m3_sites_ann_iter3 site=1.0          printed    99.080  recomputed   100.680  difference equals c_OPX: the printed total omits the OPX term
+  implied site mean albedo <A> (RELAB system):
+    site 1: 0.2004  (range 0.2000-0.2013)
+    site 2: 0.1732  (range 0.1726-0.1743)
+    site 3: 0.3582  (range 0.3556-0.3595)
+    site 4: 0.2632  (range 0.2620-0.2648)
+  implied <A> of agglutinate LS-CMP-045 (Table 7): 0.05677
+[run_all] step00b ok (1 s)
+
+##############################################################################
+# [run_all] step00c  --  digitize Figs. 3, 12, A1 from the PDF
+##############################################################################
+
+==============================================================================
+[step00c] digitize Figs. 3, 12 and A1 from the supplied PDF
+==============================================================================
+  Fig.3: 4 site crosses recorded (image box (4, 4, 591, 858))
+  Fig.12 site 1: frame x 122-915 y 17-547, tick pitch 38.00 px/0.1um, 20/21 points
+  Fig.12 site 2: frame x 135-929 y 17-547, tick pitch 37.75 px/0.1um, 21/21 points
+  Fig.12 site 3: frame x 122-915 y 26-555, tick pitch 38.00 px/0.1um, 20/21 points
+  Fig.12 site 4: frame x 135-929 y 26-555, tick pitch 37.75 px/0.1um, 21/21 points
+  Fig.A1: frame x 122-1013 y 11-609, tick pitch 38.50 px/0.1um, 115/116 points
+  site 1: mean of digitized Fig.12 spectrum 0.1965   <A> implied by tables 0.2004
+  site 2: mean of digitized Fig.12 spectrum 0.1727   <A> implied by tables 0.1732
+  site 3: mean of digitized Fig.12 spectrum 0.3504   <A> implied by tables 0.3582
+  site 4: mean of digitized Fig.12 spectrum 0.2606   <A> implied by tables 0.2632
+[run_all] step00c ok (2 s)
+
+##############################################################################
+# [run_all] step01  --  Shkuratov model self-tests; Table 5 tau_Gr; alpha_Fe
+##############################################################################
+
+==============================================================================
+[step01] Shkuratov-model self-tests and the paper's closed-form values
+==============================================================================
+ A_Gr  tau_printed  tau_ours  abs_diff
+ 0.05        1.304   1.30417   0.00017
+ 0.10        0.441   0.44137   0.00037
+ 0.20        0.180   0.18018   0.00018
+ 0.30        0.095   0.09485   0.00015
+ 0.40        0.053   0.05326   0.00026
+ 0.50        0.030   0.02994   0.00006
+  darkest representable albedo: n=1.6 -> 0.0190, n=2.0 -> 0.0431
+  CPX (c1lr215): 461/461 wavelengths representable, max |A_back - A_lab| = 3.44e-15
+  OPX (c1lr220): 461/461 wavelengths representable, max |A_back - A_lab| = 3.55e-15
+  OLV (c1lr212): 461/461 wavelengths representable, max |A_back - A_lab| = 4.11e-15
+  PLG (c1lr217): 461/461 wavelengths representable, max |A_back - A_lab| = 9.33e-15
+  ILM (c1lr218): 461/461 wavelengths representable, max |A_back - A_lab| = 1.72e-15
+  alpha_Fe computed/Fig.A1: median 0.969 below 1.94 um (Johnson & Christy), 0.889 above (Ordal substitute); worst deviation 21.0% -> primary = digitized
+
+  G1 tau_Gr = Table 5 to printed rounding              3.70e-04 (tol 5e-04)  PASS
+  G2 A -> tau -> A round trip                          1.54e-13 (tol 1e-10)  PASS
+  G3 lossless medium has albedo 1                      0.00e+00 (tol 1e-12)  PASS
+  G4 basis spectrum survives k-conversion + mixture    9.33e-15 (tol 1e-10)  PASS
+  G5 albedo decreases with S and with nFe              0.00e+00 (tol 0e+00)  PASS
+[run_all] step01 ok (1 s)
+
+##############################################################################
+# [run_all] step02  --  Table 1: three RELAB mixtures
+##############################################################################
+
+==============================================================================
+[step02] Table 1: restore the make-up of three RELAB mixtures
+==============================================================================
+  mixture 1 free (primary)   S   32.4 um (paper 32.9)  proportions 46:54 (paper 56:44, true 50:50)  sigma_rel 1.54% (paper 1.6)  [2 s]
+  mixture 1 sum-constrained  S   32.6 um (paper 32.9)  proportions 46:54 (paper 56:44, true 50:50)  sigma_rel 1.56% (paper 1.6)  [1 s]
+  mixture 2 free (primary)   S   44.6 um (paper 43.3)  proportions 33:37:29 (paper 39:34:27, true 33:33:33)  sigma_rel 1.04% (paper 1.1)  [6 s]
+  mixture 2 sum-constrained  S   45.6 um (paper 43.3)  proportions 33:37:31 (paper 39:34:27, true 33:33:33)  sigma_rel 1.04% (paper 1.1)  [3 s]
+  mixture 3 free (primary)   S   39.7 um (paper 39.4)  proportions 23:38:39 (paper 40:23:37, true 40:30:30)  sigma_rel 1.00% (paper 1.0)  [6 s]
+  mixture 3 sum-constrained  S   59.0 um (paper 39.4)  proportions 10:29:61 (paper 40:23:37, true 40:30:30)  sigma_rel 7.38% (paper 1.0)  [2 s]
+[run_all] step02 ok (23 s)
+
+##############################################################################
+# [run_all] step03  --  basis set, end-member identities, Table 7
+##############################################################################
+
+==============================================================================
+[step03] basis set, end-member identities, Table 7 (agglutinate)
+==============================================================================
+  CPX c1lr215  70017,535 deep-brown pyroxene D <45 um   | Silicate (Ino), Pyroxene Clinopyroxene Augite, Mineral separate from A
+  OPX c1lr220  70035,188 light-brown pyroxene D <45 um  | Silicate (Ino), Pyroxene Clinopyroxene Pigeonite, Mineral separate fro
+  OLV c1lr212  15555,965 olivine D <45 um               | Silicate (Neso), Olivine , Mineral separate from Apollo 15 basalt (LRM
+  PLG c1lr217  70017,535 plagioclase D <45 um           | Silicate (Tecto), Feldspar Plagioclase, Mineral separate from Apollo 1
+  ILM c1lr218  70017,535 ilmenite D <45 um              | Oxide, Ilmenite, Mineral separate from Apollo 17 basalt (LRMCC)
+
+  Table 7 (LS-CMP-045)   ours     paper
+    S            50.9096   57.1000
+    nFe           0.0527    0.0520
+    Gr           17.4568   17.2900
+    CPX           8.2127    7.9100
+    OPX           0.0000    0.0000
+    OLV           3.8746    3.5400
+    PLG           5.1705    6.0900
+    ILM           9.2029    3.1900
+    sum_c        43.9175   38.0200
+    sigma         0.0009    0.0009
+    sigma_rel     1.5792    1.5500
+  <A> over 0.30-2.60 um: 0.05674 (implied by the paper's sigma/sigma_Rel: 0.05677)
+  13 s, 175031 function evaluations
+[run_all] step03 ok (16 s)
+
+##############################################################################
+# [run_all] step04  --  recover the M3 scene and sites from Fig. 3; stage M3
+##############################################################################
+
+==============================================================================
+[step04] recover the Shapley scene and test sites from Fig. 3; stage M3 data
+==============================================================================
+  5 strips with a plausible footprint; 2 contain Shapley's centre
+  M3G20090201T085853_V01_RFL  NCC 0.766  flips(ud,lr)=(False,False)  span 465 lines from 8313  pixel 152 x 156 m  -> 478 square rows = 145258 px (paper: 152000)
+      geolocated Shapley centre lands at Fig. 3 raster (445, 706); the large crater there is centred near (97, 650)
+  M3G20090728T214215_V01_RFL  NCC 0.849  flips(ud,lr)=(False,False)  span 852 lines from 13936  pixel 261 x 147 m  -> 480 square rows = 145816 px (paper: 152000)
+      geolocated Shapley centre lands at Fig. 3 raster (100, 647); the large crater there is centred near (97, 650)
+  winner M3G20090728T214215_V01_RFL, NCC margin over runner-up 0.083 (rule: >= 0.05)
+  site 1: strip line 14117, sample 246 -> 11.6459 N, 58.6459 E
+  site 2: strip line 14087, sample 274 -> 11.8049 N, 58.8987 E
+  site 3: strip line 14567, sample 154 -> 9.4414 N, 57.8349 E
+  site 4: strip line 14632, sample 120 -> 9.1250 N, 57.5437 E
+  Apollo 16: M3G20090607T110414 line 11016 sample 177 (0.0023 deg from the LM site)
+  staged 888 raw lines (13918-14805) x 85 bands x 304 samples; manifest resealed
+[run_all] step04 ok (4649 s)
+
+##############################################################################
+# [run_all] step05  --  M3 -> 21-point RELAB-system spectra; Eq. 2
+##############################################################################
+
+==============================================================================
+[step05] M3 L2 -> 21-point RELAB-system spectra (Eq. 2), 304 x 500 scene
+==============================================================================
+  recipe step 1: 73 native bands (541-2577 nm), Gaussian FWHM 3.0 band pixels; largest channel-mean change 1.109 % (thesis criterion 0.2 %; 9 channels outside)
+  recipe step 2: stripe comb located on 950 nm -> Omega = |k_line| <= 3/888 cyc/line, |k_sample| >= 1/12 cyc/sample; scene mean change -0.00000 %
+ ks_lo  offcomb_ref_dex  comb_row0_excess_dex  w_line  in_omega  stripes_dominate
+ 0.007            0.847                 0.840       3     False              True
+ 0.020            0.889                 0.460       5     False              True
+ 0.040            0.465                -0.038      -1     False             False
+ 0.083            0.152                 0.666       3      True              True
+       cube  stripe_power_940nm  col_step_median
+  destriped             0.02364          0.00226
+no_destripe             0.02512          0.00458
+  approx_v1             0.02360          0.00186
+  scene 500 x 304 = 152000 pixels; <A> 0.155-0.342; Otsu mare/highland split at <A> = 0.218 (38.8% highland)
+  site 1: Fig. 3 cross -> row 112, sample 246; refined by (+6, -3) to row 118, sample 243 (2 pixels within 1 point of the best match)
+  site 2: Fig. 3 cross -> row 95, sample 274; refined by (-7, +7) to row 88, sample 281 (4 pixels within 1 point of the best match)
+  site 3: Fig. 3 cross -> row 365, sample 154; refined by (-4, +3) to row 361, sample 157 (9 pixels within 1 point of the best match)
+  site 4: Fig. 3 cross -> row 402, sample 120; refined by (+6, -6) to row 408, sample 114 (72 pixels within 1 point of the best match)
+  site 1 (row 118, sample 243): <A> 0.1952 vs 0.2004 implied by the tables; rms vs Fig. 12 0.0057 (2.9%)
+  site 2 (row 88, sample 281): <A> 0.1720 vs 0.1732 implied by the tables; rms vs Fig. 12 0.0043 (2.5%)
+  site 3 (row 361, sample 157): <A> 0.3564 vs 0.3582 implied by the tables; rms vs Fig. 12 0.0021 (0.6%)
+  site 4 (row 408, sample 114): <A> 0.2597 vs 0.2632 implied by the tables; rms vs Fig. 12 0.0030 (1.2%)
+  Eq.(2) re-derived (recipe, 62231 <45 um): A_RELAB = 1.669 A_M3 + 0.0156 (rel. rms 1.21%); published 1.685 / 0.0355 gives 7.98% (paper: 1.4%)
+processing lab_fraction_um  slope  intercept  rel_rms_pct
+    recipe             <45 1.6692     0.0156       1.2137
+ approx_v1             <45 1.6858     0.0143       1.3545
+    recipe           20-45 1.4787    -0.0047       2.8163
+ approx_v1           20-45 1.4944    -0.0060       2.5688
+    recipe           10-20 1.8820     0.0009       1.4728
+ approx_v1           10-20 1.9016    -0.0008       1.4439
+    recipe             <10 1.9488     0.0422       2.5022
+ approx_v1             <10 1.9681     0.0407       2.7260
+[run_all] step05 ok (10 s)
+
+##############################################################################
+# [run_all] step06  --  Nelder-Mead at the sites: Tables 5, 6, 8, 9, 10
+##############################################################################
+
+==============================================================================
+[step06] Nelder-Mead fits at the four M3 sites (Tables 5, 6, 8, 9, 10)
+==============================================================================
+
+  Table 9 (destriped)
+      site        S      nFe       Gr      CPX      OPX      OLV      PLG      ILM    sum_c  sig_rel
+     1.000  134.133    0.076   52.463   11.808   10.287    8.238   26.650    4.931  114.376    0.890
+     2.000   44.485    0.144   49.800   29.374    0.586    1.812   11.527   12.402  105.502    1.073
+     3.000   12.550    0.036    0.020    1.982    3.227    0.000   84.287    5.539   95.055    0.644
+     4.000   31.949    0.063   24.676    5.394    3.745    0.001   59.505    9.238  102.560    0.690
+
+  Table5 (site 1, gray-albedo sweep)
+      A_Gr        S      nFe       Gr      CPX      OPX      OLV      PLG      ILM    sum_c  sig_rel
+     0.050  133.927    0.076  126.317   11.498    9.991    8.001   25.943    4.799  186.549    0.889
+     0.100  133.977    0.076   71.306   11.566   10.056    8.054   26.101    4.828  131.911    0.890
+     0.200  134.248    0.076   42.835   11.964   10.441    8.360   27.014    4.997  105.610    0.890
+     0.300  134.370    0.076   33.207   12.146   10.619    8.501   27.435    5.074   96.982    0.891
+     0.400  134.438    0.076   28.577   12.245   10.714    8.577   27.658    5.116   92.887    0.891
+     0.500  134.481    0.076   26.014   12.301   10.770    8.621   27.790    5.140   90.636    0.891
+
+  Table6 (site 4, gray-albedo sweep)
+      A_Gr        S      nFe       Gr      CPX      OPX      OLV      PLG      ILM    sum_c  sig_rel
+     0.050   31.909    0.063   60.091    5.333    3.694    0.000   58.776    9.109  137.004    0.690
+     0.100   31.890    0.063   33.849    5.360    3.700    0.001   58.922    9.141  110.972    0.690
+     0.200   31.987    0.063   20.028    5.443    3.768    0.000   59.865    9.305   98.409    0.690
+     0.300   31.829    0.063   15.432    5.568    3.754    0.000   60.204    9.402   94.359    0.690
+     0.400   32.018    0.063   13.267    5.526    3.795    0.000   60.463    9.422   92.474    0.690
+     0.500   32.040    0.063   12.046    5.522    3.812    0.005   60.605    9.442   91.432    0.690
+
+  Table 8 (agglutinate LS-CMP-045 in place of the gray component; 'Gr' = c_AGG)
+      site        S      nFe       Gr      CPX      OPX      OLV      PLG      ILM    sum_c  sig_rel
+     1.000   80.723    0.030   60.897    7.205    9.269    4.078   37.564    0.000  119.013    0.935
+     2.000   19.514    0.058  114.175    0.000    8.793    3.254   17.280    0.000  143.503    0.828
+     3.000    6.465    0.035   19.164    0.000    0.148    0.000   82.012    3.973  105.297    0.582
+     4.000   15.430    0.048   47.983    0.000    3.090    0.022   60.219    5.060  116.374    0.564
+
+  Table 10 (site 1, starting c_PLG)
+  initial_PLG        S      nFe       Gr      CPX      OPX      OLV      PLG      ILM    sum_c  sig_rel
+     0.000  134.140    0.076   52.463   11.807   10.288    8.238   26.651    4.930  114.376    0.890
+    10.000  134.139    0.076   52.463   11.806   10.288    8.238   26.651    4.930  114.376    0.890
+    20.000  134.133    0.076   52.463   11.808   10.287    8.238   26.650    4.931  114.376    0.890
+    50.000  134.133    0.076   52.464   11.807   10.287    8.238   26.649    4.930  114.376    0.890
+
+  Table 10 sensitivity: single simplex from S0 = 30 um, no corridor
+  initial_PLG        S      nFe       Gr      CPX      OPX      OLV      PLG      ILM    sum_c  sig_rel
+     0.000   97.688    0.042   22.848   10.329   10.826    6.549   41.397    4.993   96.941    1.103
+    10.000   29.632    0.048   38.619   22.700   11.378   17.085    0.000    8.130   97.913    1.503
+    20.000   29.928    0.050   40.646   19.117   13.508   17.934    0.117    7.286   98.609    1.494
+    50.000   46.336    0.055   45.666   19.600    8.862   13.117    7.853    8.229  103.327    1.281
+[run_all] step06 ok (393 s)
+
+##############################################################################
+# [run_all] step07  --  ANN, three iterations x 5 seeds: Tables 12-15
+##############################################################################
+
+==============================================================================
+[step07] ANN mapping, three iterations (Tables 12-15)
+==============================================================================
+  numpy forward pass vs torch on identical weights: max |diff| = 2.22e-16
+  seed 0 iteration 1: optimum epoch 218 of 500, scene-mean sigma_Rel 3.29%, 0.121 s/epoch
+  seed 2 iteration 1: optimum epoch 88 of 500, scene-mean sigma_Rel 2.94%, 0.121 s/epoch
+  seed 1 iteration 1: optimum epoch 181 of 500, scene-mean sigma_Rel 3.07%, 0.122 s/epoch
+  seed 3 iteration 1: optimum epoch 260 of 500, scene-mean sigma_Rel 2.12%, 0.122 s/epoch
+  seed 4 iteration 1: optimum epoch 157 of 500, scene-mean sigma_Rel 3.93%, 0.120 s/epoch
+  seed 0 iteration 2: optimum epoch 30 of 1530, scene-mean sigma_Rel 1.51%, 0.740 s/epoch
+  seed 4 iteration 2: optimum epoch 40 of 1540, scene-mean sigma_Rel 1.50%, 0.742 s/epoch
+  seed 1 iteration 2: optimum epoch 40 of 1540, scene-mean sigma_Rel 1.59%, 0.743 s/epoch
+  seed 3 iteration 2: optimum epoch 60 of 1560, scene-mean sigma_Rel 1.73%, 0.748 s/epoch
+  seed 1 iteration 3: optimum epoch 30 of 1530, scene-mean sigma_Rel 1.27%, 0.875 s/epoch
+  seed 0 iteration 3: optimum epoch 50 of 1550, scene-mean sigma_Rel 1.23%, 0.879 s/epoch
+  seed 3 iteration 3: optimum epoch 90 of 1590, scene-mean sigma_Rel 1.17%, 0.858 s/epoch
+  seed 4 iteration 3: optimum epoch 100 of 1600, scene-mean sigma_Rel 1.19%, 0.873 s/epoch
+  seed 2 iteration 2: optimum epoch 1880 of 3380, scene-mean sigma_Rel 2.27%, 0.775 s/epoch
+  seed 2 iteration 3: optimum epoch 190 of 1690, scene-mean sigma_Rel 1.47%, 0.417 s/epoch
+          optimal_epoch          sigma_rel_mean  ... sigma_rel_highland t_epoch_s       
+                   mean      std           mean  ...                std      mean    std
+iteration                                        ...                                    
+1                 180.8   64.874          3.070  ...              0.853     0.121  0.001
+2                 410.0  821.827          1.722  ...              0.944     0.750  0.015
+3                  92.0   61.806          1.265  ...              0.319     0.780  0.203
+
+[3 rows x 10 columns]
+[run_all] step07 ok (4194 s)
+
+##############################################################################
+# [run_all] step09  --  maps, histograms, MLR / Lucey comparisons
+##############################################################################
+
+==============================================================================
+[step09] maps, histograms and comparisons (Figs. 19-29), tag=full
+==============================================================================
+param  n_peaks  bimodal  peak_lo  peak_hi     p1    p99  median  training_range_midpoint
+    S        2        1    5.739   36.091  1.572 71.905  30.462                     60.0
+  nFe        2        1    0.070    0.106  0.050  0.112   0.093                      0.1
+   Gr        2        1   32.438   33.764 31.970 34.596  33.545                     30.0
+  CPX        2        1   22.031   32.582 19.939 39.659  23.327                     25.0
+  OPX        2        1    1.322    1.613  1.175  1.767   1.391                      1.5
+  OLV        2        1    0.659    1.651  0.500  2.659   1.523                      1.5
+  PLG        2        1   23.838   26.346 22.137 28.133  24.313                     17.5
+  ILM        1        0   12.990      NaN  7.376 15.876  13.079                     10.0
+   target          source truth_column log_base  n  r_log_pred_vs_log_true  r_published  median_abs_log10_error  median_pred  median_true
+      CPX Shkuratov 2005a          CPX       10 56                   0.782         0.93                   0.281        5.705        2.950
+      CPX Shkuratov 2005a          CPX        e 56                   0.782         0.93                   0.300        2.130        2.950
+      PLG Shkuratov 2005a          PLG       10 56                   0.838         0.93                   0.088       22.586       18.550
+      PLG Shkuratov 2005a          PLG        e 56                   0.838         0.93                   0.698        3.872       18.550
+    IsFeO Shkuratov 2005a        IsFeO       10 56                   0.837         0.88                   0.066       68.387       67.000
+    IsFeO Shkuratov 2005a        IsFeO        e 56                   0.837         0.88                   1.046        6.265       67.000
+       Is    Pieters 2006           Is       10 56                   0.930         0.92                   0.079      759.216      573.792
+       Is    Pieters 2006           Is        e 56                   0.930         0.92                   1.549       17.818      573.792
+      OPX    Pieters 2006          OPX       10 56                   0.626         0.51                   0.254        1.372        1.870
+      OPX    Pieters 2006          OPX        e 56                   0.626         0.51                   0.255        1.147        1.870
+   Augite    Pieters 2006       Augite       10 56                   0.732         0.93                   0.183        1.785        2.470
+   Augite    Pieters 2006       Augite        e 56                   0.732         0.93                   0.403        1.286        2.470
+IsFeO_P06    Pieters 2006        IsFeO       10 56                   0.843         0.92                   0.066       68.508       67.000
+IsFeO_P06    Pieters 2006        IsFeO        e 56                   0.843         0.92                   1.042        6.270       67.000
+C:\Users\Admin\Desktop\RMS\paper-implementations\Korokhin2024_ShkuratovANN_cleanrun\scripts\step09_maps_comparisons.py:294: UserWarning: This pattern is interpreted as a regular expression, and has match groups. To actually get the groups, use str.extract.
+  proof = chk[chk["check"].str.startswith("Table 2") & chk["check"].str.contains("input (AR|CBR)$", regex=True)]
+                                                                                      check  value  expected    ok
+                                                 Table 2 x0 = mid-range of Table 1 input AR  0.243     0.243  True
+                                                Table 2 x0 = mid-range of Table 1 input CBR  0.629     0.629  True
+                                               Table 2 x0 = mid-range of Table 1 input CIR1  1.024     0.983 False
+                                               Table 2 x0 = mid-range of Table 1 input CIR2  1.044     1.000 False
+                                               Table 2 x0 = mid-range of Table 1 input CIR3  1.080     1.040 False
+                                                  Table 2 x0 = mid-range of Table 1 input D  1.110     1.134 False
+                                                 Table 2 xk = 2 / range of Table 1 input AR  5.601     5.601  True
+                                                Table 2 xk = 2 / range of Table 1 input CBR  6.561     6.562  True
+                                               Table 2 xk = 2 / range of Table 1 input CIR1  4.379     5.325 False
+                                               Table 2 xk = 2 / range of Table 1 input CIR2  3.769     4.529 False
+                                               Table 2 xk = 2 / range of Table 1 input CIR3  3.690     4.333 False
+                                                  Table 2 xk = 2 / range of Table 1 input D  4.033     4.459 False
+            published significant net, multiply, AR in fraction: k on Table 1 (paper: 0.99)  0.399       NaN   NaN
+published two_net_system net, multiply, AR in fraction: k on Table 1 (paper: Fig. 22, high)  0.700       NaN   NaN
+                   published significant net, multiply, AR in %: k on Table 1 (paper: 0.99) -0.374       NaN   NaN
+       published two_net_system net, multiply, AR in %: k on Table 1 (paper: Fig. 22, high) -0.731       NaN   NaN
+              published significant net, divide, AR in fraction: k on Table 1 (paper: 0.99) -0.178       NaN   NaN
+  published two_net_system net, divide, AR in fraction: k on Table 1 (paper: Fig. 22, high)  0.256       NaN   NaN
+                     published significant net, divide, AR in %: k on Table 1 (paper: 0.99)  0.285       NaN   NaN
+         published two_net_system net, divide, AR in %: k on Table 1 (paper: Fig. 22, high) -0.550       NaN   NaN
+         retrained moderate net: median k on Table 1 over 5 seeds (paper 0.95, gate +-0.03)  0.940     0.950  True
+      our Clementine filter at 415 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff % -0.200     0.000   NaN
+      our Clementine filter at 750 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %  0.024     0.000   NaN
+      our Clementine filter at 900 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %  0.137     0.000   NaN
+      our Clementine filter at 950 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %  0.238     0.000   NaN
+     our Clementine filter at 1000 nm vs Korokhin 2008 Table 1 (n = 56): median rel. diff %  0.254     0.000   NaN
+                    id      r                                                           comparison
+         C_nFe_Is_mare  0.609                                                   MLR Is (published)
+         C_nFe_Is_high  0.711                                                   MLR Is (published)
+                 C_S_d  0.860                                                    MLR d (refit_all)
+            C_PLG_mare  0.459                                                  MLR PLG (published)
+            C_PLG_high  0.687                                                  MLR PLG (published)
+            C_OLV_high  0.481                                                  MLR OLV (refit_all)
+            C_OLV_mare  0.351                                                  MLR OLV (refit_all)
+            C_CPX_mare -0.466                                                  MLR CPX (published)
+            C_CPX_high -0.671                                                  MLR CPX (published)
+             C_OPX_all -0.806                                                  MLR OPX (published)
+       C_ILM_TiO2_mare  0.461                                                     TiO2 Lucey Eq. 7
+       C_ILM_TiO2_high  0.685                                                     TiO2 Lucey Eq. 7
+         C_ILM_BD_mare  0.269                           ilmenite, 1550-nm band depth (Surkov 2020)
+         C_ILM_BD_high -0.048                           ilmenite, 1550-nm band depth (Surkov 2020)
+     C_ILM_TiO2ANN_all  0.662           TiO2, moderately non-linear ANN (Korokhin 2008), retrained
+    C_ILM_TiO2ANN_mare -0.062           TiO2, moderately non-linear ANN (Korokhin 2008), retrained
+    C_ILM_TiO2ANN_high  0.607           TiO2, moderately non-linear ANN (Korokhin 2008), retrained
+       C_nFe_OMAT_mare -0.263                                                     OMAT Lucey Eq. 6
+       C_nFe_OMAT_high -0.877                                                     OMAT Lucey Eq. 6
+          C_CPX_A_high  0.969                                                                  <A>
+          C_PLG_A_high  0.838                                                                  <A>
+            C_Gr_A_all -0.895                                                                  <A>
+C_ILM_ANN_over_BD_mare 16.914 median ANN c_ILM / median band-depth ilmenite, mare (a ratio, not r)
+  MLR: published (Shkuratov 2005a, Pieters 2006) for CPX, PLG, IsFeO, Is, OPX, Augite, IsFeO_P06; refits on 56 LSCC spectra from 19 soils
+  band-depth ilmenite: median 0.83 wt% (mare) / 0.53 wt% (highland); 99th pct 2.9
+[run_all] step09 ok (37 s)
+
+##############################################################################
+# [run_all] step08  --  controls: recovery, range dependence, Nelder-Mead
+##############################################################################
+
+==============================================================================
+[step08] controls: recovery, range-dependence, inheritance, Nelder-Mead (tag=full)
+==============================================================================
+  C1 synthetic recovery (1 % noise), mean over seeds:
+                    r2        skill_ratio       
+                  mean    std        mean    std
+iteration param                                 
+1         CPX    0.826  0.018       0.417  0.021
+          Gr     0.317  0.063       0.826  0.038
+          ILM    0.913  0.047       0.288  0.071
+          OLV    0.170  0.096       0.910  0.052
+          OPX    0.057  0.021       0.971  0.011
+          PLG    0.489  0.045       0.714  0.031
+          S      0.604  0.070       0.627  0.055
+          nFe    0.849  0.021       0.387  0.026
+2         CPX    0.346  0.180       0.801  0.121
+          Gr    -0.498  0.355       1.217  0.149
+          ILM    0.457  0.116       0.733  0.077
+          OLV   -0.228  0.137       1.106  0.064
+          OPX   -0.041  0.039       1.020  0.019
+          PLG   -0.037  0.213       1.013  0.113
+          S      0.358  0.105       0.799  0.065
+          nFe    0.615  0.095       0.616  0.079
+3         CPX    0.347  0.161       0.802  0.109
+          Gr    -0.527  0.354       1.228  0.151
+          ILM    0.613  0.138       0.614  0.116
+          OLV   -0.367  0.276       1.164  0.119
+          OPX   -0.059  0.070       1.029  0.034
+          PLG   -0.216  0.281       1.096  0.136
+          S      0.345  0.063       0.808  0.040
+          nFe    0.590  0.057       0.639  0.046
+
+  C2 map medians: real iteration 1 vs no-information net vs shifted ranges
+ control param  map_median  real_iter1_median  sigma_rel_mean  range_midpoint  shifted_midpoint  follows_range
+ shifted   CPX      19.729             24.749           1.988            25.0              25.0            NaN
+ shifted    Gr      42.292             34.039           1.988            30.0              40.0          0.825
+ shifted   ILM       9.976             11.842           1.988            10.0              10.0            NaN
+ shifted   OLV       4.680              1.917           1.988             1.5               5.0          0.789
+ shifted   OPX       4.532              1.229           1.988             1.5               5.0          0.944
+ shifted   PLG      21.299             24.483           1.988            17.5              17.5            NaN
+ shifted     S      30.603             36.242           1.988            60.0              60.0            NaN
+ shifted   nFe       0.123              0.104           1.988             0.1               0.1            NaN
+shuffled   CPX      25.799             24.749          33.059            25.0              25.0            NaN
+shuffled    Gr      30.076             34.039          33.059            30.0              40.0            NaN
+shuffled   ILM      10.089             11.842          33.059            10.0              10.0            NaN
+shuffled   OLV       1.548              1.917          33.059             1.5               5.0            NaN
+shuffled   OPX       1.500              1.229          33.059             1.5               5.0            NaN
+shuffled   PLG      17.990             24.483          33.059            17.5              17.5            NaN
+shuffled     S      59.358             36.242          33.059            60.0              60.0            NaN
+shuffled   nFe       0.099              0.104          33.059             0.1               0.1            NaN
+
+  C2c iteration 3 vs iteration 1 (mean over seeds)
+       median_iter1  median_iter3  iqr_iter1  iqr_iter3  pixel_corr_iter1_iter3
+param                                                                          
+CPX          24.643        23.294      8.526      8.448                   0.982
+Gr           33.963        33.624      0.953      1.183                   0.724
+ILM          11.694        13.087      2.496      2.765                   0.920
+OLV           1.851         1.515      0.618      0.880                   0.674
+OPX           1.288         1.394      0.235      0.295                   0.646
+PLG          25.204        24.355      3.139      3.018                   0.887
+S            35.171        29.947     25.188     32.803                   0.976
+nFe           0.101         0.093      0.043      0.033                   0.979
+
+  C3 ANN vs Nelder-Mead on 1000 pixels
+param   branch  nm_median  ann_median  corr_ann_nm  mean_abs_diff
+    S     mare     43.954      38.714       -0.051         13.914
+    S highland     29.392       6.605        0.922         23.235
+  nFe     mare      0.135       0.103        0.680          0.034
+  nFe highland      0.064       0.068        0.911          0.006
+   Gr     mare     42.796      33.750        0.770          9.101
+   Gr highland     26.427      32.439        0.713          8.862
+  CPX     mare     19.967      21.979       -0.682          6.337
+  CPX highland      7.147      32.377       -0.461         25.440
+  OPX     mare      0.000       1.322       -0.033          1.175
+  OPX highland      2.808       1.630        0.002          1.637
+  OLV     mare      1.691       1.719        0.677          0.870
+  OLV highland      0.000       0.733        0.049          0.786
+  PLG     mare     24.846      23.682        0.714          7.703
+  PLG highland     56.684      26.307        0.763         31.715
+  ILM     mare     11.824      13.862        0.918          2.075
+  ILM highland      9.688      10.752        0.949          1.206
+                                                0
+nm_seconds_per_pixel_single_core           15.360
+nm_extrapolated_scene_hours_single_core   648.553
+nm_sigma_rel_mean                           0.866
+ann_training_minutes_3_iterations           2.556
+ann_mapping_seconds                         0.499
+nm_wall_seconds                          4180.953
+paper_nm_scene_hours                       35.000
+[run_all] step08 ok (5088 s)
+
+##############################################################################
+# [run_all] step10  --  LSCC mare soils: retrieved vs measured
+##############################################################################
+
+==============================================================================
+[step10] LSCC mare + highland soils: retrieved vs measured mineralogy and maturity
+==============================================================================
+  10084 <10    S   30.5  nFe 0.093  props fit   12    0   15   57   15 | true   20    7    3   55   16  (sigma_Rel 0.72%)
+  10084 10-20  S   39.3  nFe 0.129  props fit   28    0   24   24   24 | true   24   11    3   48   15  (sigma_Rel 0.87%)
+  10084 20-45  S   56.9  nFe 0.137  props fit   39    0   33    0   28 | true   29   11    3   41   16  (sigma_Rel 1.27%)
+  12001 <10    S   37.6  nFe 0.073  props fit    6    6    4   76    8 | true   16   25    7   47    5  (sigma_Rel 0.75%)
+  12001 10-20  S   52.5  nFe 0.107  props fit   15   14   19   38   15 | true   22   25   11   37    5  (sigma_Rel 0.97%)
+  12001 20-45  S   76.6  nFe 0.131  props fit   21   18   26   17   18 | true   24   25    9   35    7  (sigma_Rel 1.07%)
+  12030 <10    S   27.6  nFe 0.037  props fit    4   11    4   72    8 | true   16   24    6   46    8  (sigma_Rel 0.56%)
+  12030 10-20  S   35.8  nFe 0.055  props fit   15   32   25   12   16 | true   20   31    9   33    8  (sigma_Rel 0.73%)
+  12030 20-45  S   56.0  nFe 0.075  props fit   18   38   37    0    7 | true   26   34    8   27    5  (sigma_Rel 0.75%)
+  15041 <10    S   37.6  nFe 0.076  props fit    1   10    5   77    6 | true    8   13    2   73    3  (sigma_Rel 0.73%)
+  15041 10-20  S   61.0  nFe 0.114  props fit   13   14   15   42   15 | true   18   29    7   45    2  (sigma_Rel 0.95%)
+  15041 20-45  S   83.0  nFe 0.135  props fit   13   18   25   23   20 | true   19   34    8   36    3  (sigma_Rel 1.06%)
+  15071 <10    S   41.3  nFe 0.073  props fit    5    9    3   76    7 | true   11   22    6   59    4  (sigma_Rel 0.66%)
+  15071 10-20  S   55.7  nFe 0.102  props fit   10   19   19   38   14 | true   17   24    7   48    4  (sigma_Rel 0.88%)
+  15071 20-45  S   70.6  nFe 0.117  props fit    5   27   26   28   14 | true   19   29    8   39    4  (sigma_Rel 0.87%)
+  70181 <10    S   32.8  nFe 0.083  props fit    5    3    6   75   10 | true    8    8   11   62   11  (sigma_Rel 0.75%)
+  70181 20-45  S   42.4  nFe 0.145  props fit   38    8   25    3   26 | true   21   14    8   37   20  (sigma_Rel 0.86%)
+  71061 <10    S   26.7  nFe 0.052  props fit    0    0    0   88   12 | true   12   10   10   48   20  (sigma_Rel 1.42%)
+  71061 10-20  S   56.7  nFe 0.089  props fit   20    1    9   43   28 | true   17   13   11   36   23  (sigma_Rel 0.90%)
+  71061 20-45  S   69.3  nFe 0.051  props fit   35    3   21    6   35 | true   26   16    8   29   21  (sigma_Rel 0.67%)
+  71501 <10    S   46.1  nFe 0.082  props fit   14    0    0   74   12 | true   12   10    8   51   19  (sigma_Rel 0.56%)
+  71501 10-20  S   46.9  nFe 0.113  props fit   31    0   13   32   24 | true   16   13    7   43   21  (sigma_Rel 0.81%)
+  71501 20-45  S   53.3  nFe 0.116  props fit   55    0   15    0   30 | true   25   14    7   31   23  (sigma_Rel 0.94%)
+  79221 <10    S   24.8  nFe 0.089  props fit    0    6   17   65   12 | true    5    7    7   63   18  (sigma_Rel 0.80%)
+  79221 10-20  S   32.4  nFe 0.138  props fit    7   13   35   23   21 | true   14   13   10   46   17  (sigma_Rel 0.92%)
+  79221 20-45  S   45.0  nFe 0.144  props fit   22   16   36    0   26 | true   19   12   11   40   17  (sigma_Rel 0.87%)
+  14141 <10    S   17.7  nFe 0.017  props fit    2   11    0   84    3 | true    6   19    4   67    4  (sigma_Rel 0.43%)
+  14141 10-20  S   21.2  nFe 0.030  props fit    0   33   10   48    9 | true    5   21    4   67    3  (sigma_Rel 0.68%)
+  14141 20-45  S   32.6  nFe 0.046  props fit    0   62   20    0   17 | true    8   30    8   51    4  (sigma_Rel 1.06%)
+  14163 <10    S   22.0  nFe 0.042  props fit    0   11    0   86    3 | true    4   11    1   80    4  (sigma_Rel 0.61%)
+  14163 10-20  S   42.6  nFe 0.066  props fit    0   19   10   61   10 | true    9   30    6   52    3  (sigma_Rel 0.73%)
+  14163 20-45  S   49.1  nFe 0.152  props fit    8   39   35    0   17 | true   11   32    6   49    2  (sigma_Rel 1.24%)
+  14259 <10    S   20.7  nFe 0.058  props fit    0   10    0   86    4 | true    9   17    3   64    7  (sigma_Rel 0.79%)
+  14259 10-20  S   41.7  nFe 0.076  props fit    0   14    7   69    9 | true    8   25    5   57    4  (sigma_Rel 0.83%)
+  14259 20-45  S   96.3  nFe 0.121  props fit    0   24   16   44   16 | true   13   38    6   39    4  (sigma_Rel 0.97%)
+  14260 <10    S   32.0  nFe 0.068  props fit    0    8    1   88    3 | true    7   21    5   61    5  (sigma_Rel 0.79%)
+  14260 10-20  S   48.3  nFe 0.075  props fit    0   13    7   72    8 | true    9   31    5   53    3  (sigma_Rel 0.75%)
+  14260 20-45  S   56.3  nFe 0.111  props fit    0   27   23   30   20 | true   12   30    7   48    3  (sigma_Rel 0.96%)
+  61141 <10    S   11.9  nFe 0.034  props fit    0    7    0   91    2 | true    1    1    1   96    1  (sigma_Rel 0.71%)
+  61141 10-20  S   20.7  nFe 0.046  props fit    0   12   12   68    7 | true    3    8    3   85    1  (sigma_Rel 0.58%)
+  61141 20-45  S   41.8  nFe 0.083  props fit    0   13   16   58   13 | true    3    6    4   86    1  (sigma_Rel 0.72%)
+  61221 <10    S   11.3  nFe 0.010  props fit    3    6    0   89    2 | true    1    2    2   94    2  (sigma_Rel 0.26%)
+  61221 10-20  S   37.5  nFe 0.027  props fit    3   13    3   78    4 | true    3    5    3   89    0  (sigma_Rel 0.21%)
+  61221 20-45  S   17.4  nFe 0.026  props fit    0   44   43    0   12 | true    3    7    6   83    1  (sigma_Rel 0.46%)
+  62231 <10    S   15.2  nFe 0.037  props fit    0    6    0   92    2 | true    1    2    1   95    1  (sigma_Rel 0.72%)
+  62231 10-20  S   26.1  nFe 0.045  props fit    4    9    8   72    7 | true    4    8    4   83    1  (sigma_Rel 0.54%)
+  62231 20-45  S   78.7  nFe 0.109  props fit    0   16    9   64   11 | true    4    7    6   83    1  (sigma_Rel 0.73%)
+  64801 <10    S    8.1  nFe 0.033  props fit    1    8    0   89    2 | true    2    6    2   90    1  (sigma_Rel 0.83%)
+  64801 10-20  S   31.4  nFe 0.043  props fit    3    8    0   83    5 | true    2    6    3   90    1  (sigma_Rel 0.55%)
+  64801 20-45  S   63.8  nFe 0.065  props fit   11    6    0   73   10 | true    3    7    4   86    1  (sigma_Rel 0.62%)
+  67461 <10    S    5.2  nFe 0.013  props fit    2   15    0   83    0 | true    2    3    1   94    0  (sigma_Rel 0.67%)
+  67461 10-20  S   20.0  nFe 0.020  props fit    0   17    1   80    2 | true    2    4    2   91    0  (sigma_Rel 0.48%)
+  67461 20-45  S   14.2  nFe 0.030  props fit    0   24   21   51    5 | true    4    6    3   86    0  (sigma_Rel 0.56%)
+  67481 <10    S    4.6  nFe 0.016  props fit    0   13    0   85    1 | true    2    4    2   91    0  (sigma_Rel 0.69%)
+  67481 10-20  S   16.4  nFe 0.022  props fit    0   15    3   80    3 | true    3    5    4   88    0  (sigma_Rel 0.49%)
+  67481 20-45  S   44.4  nFe 0.041  props fit    0   14    7   74    6 | true    3    6    6   85    0  (sigma_Rel 0.64%)
+
+  [mare] mineral proportions, n = 9 soils (per-soil mean over fractions):
+mineral  n_soils  mae_fit  mae_mean_of_others  bias_fit  spearman_fit_vs_true  true_mean  fit_mean  fit_beats_baseline
+    CPX        9     6.44                3.18     -0.84                  0.38      17.73     16.89               False
+    OPX        9     8.08                8.28     -7.82                  0.80      17.91     10.09                True
+    OLV        9     9.93                1.84      9.93                 -0.05       7.57     17.49               False
+    PLG        9     9.24                5.97     -6.48                  0.33      44.62     38.14               False
+    ILM        9     5.21                7.53      5.21                  0.75      12.18     17.39                True
+  [mare] grain size: S rises with the sieve fraction in 8 of 8 soils; Spearman(S, fraction) = 0.75
+  [mare] maturity: Spearman(c_nFe, Is/FeO) per fraction: 10-20 0.67, 20-45 0.85, <10 0.57
+
+  [highland] mineral proportions, n = 10 soils (per-soil mean over fractions):
+mineral  n_soils  mae_fit  mae_mean_of_others  bias_fit  spearman_fit_vs_true  true_mean  fit_mean  fit_beats_baseline
+    CPX       10     4.27                3.21     -3.62                 -0.32       4.85      1.23               False
+    OPX       10     8.63               10.78      4.05                  0.08      13.23     17.28                True
+    OLV       10     5.20                1.02      4.50                  0.42       3.89      8.40               False
+    PLG       10    14.64               16.63    -10.20                  0.38      76.15     65.95                True
+    ILM       10     5.27                1.64      5.27                  0.84       1.88      7.14               False
+  [highland] grain size: S rises with the sieve fraction in 8 of 10 soils; Spearman(S, fraction) = 0.67
+  [highland] maturity: Spearman(c_nFe, Is/FeO) per fraction: 10-20 0.70, 20-45 0.56, <10 0.81
+
+  [all] mineral proportions, n = 19 soils (per-soil mean over fractions):
+mineral  n_soils  mae_fit  mae_mean_of_others  bias_fit  spearman_fit_vs_true  true_mean  fit_mean  fit_beats_baseline
+    CPX       19     5.30                6.78     -2.30                  0.74      10.95      8.64                True
+    OPX       19     8.37                9.18     -1.57                  0.28      15.45     13.88                True
+    OLV       19     7.44                2.21      7.07                  0.52       5.63     12.71               False
+    PLG       19    12.08               18.44     -8.44                  0.80      61.21     52.78                True
+    ILM       19     5.24                6.26      5.24                  0.89       6.76     12.00                True
+  [all] grain size: S rises with the sieve fraction in 16 of 18 soils; Spearman(S, fraction) = 0.63
+  [all] maturity: Spearman(c_nFe, Is/FeO) per fraction: 10-20 0.37, 20-45 0.44, <10 0.55
+[run_all] step10 ok (1117 s)
+
+##############################################################################
+# [run_all] targets  --  write paper_targets.csv
+##############################################################################
+156 targets: {'yes': 65, 'no': 91}
+[run_all] targets ok (1 s)
+
+##############################################################################
+# [run_all] audit  --  score everything against the published values
+##############################################################################
+
+==============================================================================
+[audit] scoring reproduced values against the published ones
+==============================================================================
+  gated target                     published  observed   |err|    status
+  C_ILM_BD_mare                    0.54       0.269      0.271    FAIL
+  C_ILM_TiO2ANN_all                0.91       0.6623     0.248    FAIL
+  C_ILM_TiO2_high                  0.87       0.6847     0.185    FAIL
+  C_PLG_mare                       0.92       0.4592     0.461    FAIL
+  C_nFe_Is_high                    0.83       0.7106     0.119    FAIL
+  C_nFe_Is_mare                    0.85       0.6092     0.241    FAIL
+  E2_intercept                     0.0355     0.01562    0.0199   FAIL
+  T10_claim_nonunique              1          0          1        FAIL
+  T12_claim_highland_better_iter2  1          0          1        FAIL
+  T12_sigrel_iter1                 2.39       3.065      0.675    FAIL
+  T1_m1_OLV                        56         45.75      10.3     FAIL
+  T1_m1_PYX                        44         54.25      10.3     FAIL
+  T1_m2_OLV                        39         33.08      5.92     FAIL
+  T1_m3_OLV                        40         22.71      17.3     FAIL
+  T1_m3_PYX                        23         38.37      15.4     FAIL
+  T7_ILM                           3.19       9.203      6.01     FAIL
+  T8_claim_sum_over_110            1          0          1        FAIL
+  T9_claim_cpx_gt_opx              1          0          1        FAIL
+  T9_sigrel_site2                  0.7        1.073      0.373    FAIL
+  C_CPX_A_high                     0.98       0.9695     0.0105   PASS
+  C_ILM_BD_claim_high_none         1          1          0        PASS
+  E2_msd                           1.4        1.214      0.186    PASS
+  E2_slope                         1.685      1.669      0.0158   PASS
+  F20_claim_PLG_bimodal            1          1          0        PASS
+  F20_claim_S_bimodal              1          1          0        PASS
+  T12_claim_highland_worse_iter1   1          1          0        PASS
+  T12_claim_order                  1          1          0        PASS
+  T12_sigrel_iter2                 1.26       1.594      0.334    PASS
+  T12_sigrel_iter3                 1.12       1.229      0.109    PASS
+  T15_claim_site1_largest_S        1          1          0        PASS
+  T15_claim_site1_low_nFe          1          1          0        PASS
+  T1_m1_S                          32.9       32.37      0.534    PASS
+  T1_m1_sigrel                     1.6        1.544      0.0559   PASS
+  T1_m2_ANO                        27         29.46      2.46     PASS
+  T1_m2_PYX                        34         37.47      3.47     PASS
+  T1_m2_S                          43.3       44.59      1.29     PASS
+  T1_m2_sigrel                     1.1        1.04       0.0604   PASS
+  T1_m3_MET                        37         38.92      1.92     PASS
+  T1_m3_S                          39.4       39.69      0.29     PASS
+  T1_m3_sigrel                     1          1.005      0.00496  PASS
+  T5_claim_weak_Agr                1.04       0.7963     0.244    PASS
+  T5_sd_S                          0.41       0.2372     0.173    PASS
+  T5_tau_005                       1.304      1.304      0.00017  PASS
+  T5_tau_010                       0.441      0.4414     0.00037  PASS
+  T5_tau_020                       0.18       0.1802     0.000177 PASS
+  T5_tau_030                       0.095      0.09485    0.000151 PASS
+  T5_tau_040                       0.053      0.05326    0.000259 PASS
+  T5_tau_050                       0.03       0.02994    6.44e-05 PASS
+  T6_claim_weak_Agr                1.27       0.7842     0.486    PASS
+  T6_sd_S                          1.32       0.08234    1.24     PASS
+  T7_CPX                           7.91       8.213      0.303    PASS
+  T7_Gr                            17.29      17.46      0.167    PASS
+  T7_OLV                           3.54       3.875      0.335    PASS
+  T7_OPX                           0          0          0        PASS
+  T7_PLG                           6.09       5.171      0.919    PASS
+  T7_S                             57.1       50.91      6.19     PASS
+  T7_nFe                           0.052      0.0527     0.000699 PASS
+  T7_sigrel                        1.55       1.579      0.0292   PASS
+  T8_claim_site2_agg_over100       1          1          0        PASS
+  T9_claim_olv_only_site1          1          1          0        PASS
+  T9_claim_plg_highland            1          1          0        PASS
+  T9_claim_site1_largest_S         1          1          0        PASS
+  T9_sigrel_site1                  0.77       0.89       0.12     PASS
+  T9_sigrel_site3                  0.43       0.6438     0.214    PASS
+  T9_sigrel_site4                  0.64       0.6897     0.0497   PASS
+  156 targets: 65 gated -> 46 PASS, 19 FAIL, 0 NOT RUN; 91 reported-only
+
+[run_all] 14 stages ran; the audit reports gated targets that do not reproduce.
+[run_all] see RESULTS.md -- this is a result, not a crash.

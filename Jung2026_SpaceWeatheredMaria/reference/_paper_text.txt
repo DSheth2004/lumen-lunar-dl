@@ -1,0 +1,1225 @@
+Remote Compositional Analyses of Space-weathered Lunar Maria
+Ji-In Jung
+1
+aa , Mathieu G. A. Lapôtre
+2
+, Ralph E. Milliken
+3
+, and Sarah E. Minson
+4
+1
+Department of Geophysics, Stanford University, Stanford, CA 94305, USA; jiinjung@stanford.edu
+2
+Department of Earth and Planetary Sciences, Stanford University, Stanford, CA 94305, USA
+3
+Department of Earth, Environmental and Planetary Sciences, Brown University, Providence, RI 02912, USA
+4
+U.S. Geological Survey Earthquake Science Center, Menlo Park, CA 94025, USA
+Received 2025 March 15; revised 2025 November 20; accepted 2025 December 4; published 2026 January 22
+Abstract
+Visible-to-shortwave infrared (VSWIR) reflectance spectroscopy has revolutionized our understanding of
+planetary surface compositions. However, space-weathering processes on airless bodies complicate quantitative
+compositional analyses. Here, we present a framework to isolate the signatures of space weathering in VSWIR
+spectra of lunar maria by leveraging radiative transfer modeling under the assumptions that (i) a space-weathered
+target can be expressed as a mixture of fresh and fully space-weathered components and (ii) remaining signatures
+can be modeled by including agglutinates as an end-member component. We first validate this approach against
+laboratory spectra of space-weathered Apollo mare soils of known mineral compositions using a probabilistic
+Markov Chain Monte Carlo implementation of the Hapke radiative transfer model. Second, we illustrate how this
+approach can be applied to orbital Moon Mineralogy Mapper data. The proposed space-weathering correction
+workflow for lunar maria could be expanded to other lunar lithologies and applied to existing and future data sets.
+Unified Astronomy Thesaurus concepts: Lunar maria (961); Infrared spectroscopy (2285); Remote sensing
+(2191); Space weather (2037); Spectroscopy (1558); Lunar mineralogy (962)
+1. Introduction
+Applications of visible-to-shortwave infrared (VSWIR)
+reflectance spectroscopy in multiband and hyperspectral data
+sets have provided abundant information on the compositions of
+planetary surfaces, including interpretations of primary and
+secondary mineralogy. Numerous studies have utilized VSWIR
+spectroscopy for basic qualitative identification of various
+minerals based on their distinctive electronic and vibrational
+absorptions, including for the Moon, Mars, Ceres, and near-
+Earth asteroids (C. M. Pieters 1986; J.-P. Bibring et al. 2005;
+R. E. Arvidson et al. 2014; B. L. Berg et al. 2016; D. C. Reuter
+et al. 2018; L. Riu et al. 2021). Less commonly, some studies
+have attempted to quantify the abundance of various mineral
+phases on planetary bodies using different radiative transfer
+models (RTMs; B. Hapke 1981; Y. Shkuratov et al. 1999;
+S. J. Lawrence & P. G. Lucey 2007; F. Poulet et al. 2008).
+Under classic RTM approaches, a single set of minerals is
+inferred from the best-fit modeled spectrum to the data
+(J. T. Cahill & P. G. Lucey 2007; B. W. Denevi et al. 2008;
+J. T. S. Cahill et al. 2010; S. Li & L. Li 2011), which might not
+be representative of actual mineralogy due to the non-unique
+nature of the inverse problem (M. G. A. Lapôtre et al. 2017a). In
+contrast, probabilistic implementations of such models recog-
+nize the non-uniqueness of spectral unmixing and instead output
+ranges of possible mineral assemblages (M. G. A. Lapôtre et al.
+2017a, 2017b; H. Kurokawa et al. 2020; I. Mishra et al. 2021;
+C. Pilorget & J. Fernando 2021; O. King et al. 2022). Other
+approaches to modeling VSWIR reflectance spectra include the
+modified Gaussian method (J. M. Sunshine et al. 1990;
+J. M. Sunshine & C. M. Pieters 1993; S. K. Noble et al.
+2006; H. Clénet et al. 2011; P. J. Isaacson et al. 2011) and
+shallow machine learning techniques (S. Li et al. 2012;
+M. Hareyama et al. 2019; G. R. Kodikara & L. J. McHenry
+2020). Retrieving quantitative estimates of mineralogy from
+reflectance spectra of planetary surfaces that have been
+significantly modified by space weathering—such as the
+Moon—has received even less attention.
+Building on early telescopic observations, reflectance data
+acquired from lunar orbit by the Clementine and Lunar
+Prospector missions facilitated the identification of spectrally
+and presumably mineralogically distinct regions at ultraviolet-
+to-visible wavelengths (B. L. Jolliff et al. 2000; C. M. Pieters
+et al. 2001; P. G. Lucey 2004). More recently, the Kaguya
+Multiband Imager (9 bands; M. Ohtake et al. 2008), Kaguya
+Spectral Profiler (296 spectral channels; T. Matsunaga et al.
+2008), and Chandryaan1 Moon Mineralogy Mapper (M3; 86
+spectral channels in global mode and 260 in targeted mode;
+J. N. Goswami & M. Annadurai 2008; C. M. Pieters et al.
+2009; R. O. Green et al. 2011) instruments have allowed
+scientists to map the distribution of water, constrain volcanic
+stratigraphy, and detect small outcrops of olivine-rich,
+Fe-plagioclase-rich, and spinel-bearing zones (C. M. Pieters
+et al. 2009; C. Pieters et al. 2014; M. Hareyama et al. 2019;
+M. Lemelin et al. 2019).
+However, quantifying mineral abundances on the Moon has
+remained challenging due to the strong spectral modifications
+imparted by space-weathering processes (L. A. Taylor et al.
+2000; D. Trang & P. G. Lucey 2019; Figure 1). These include
+micrometeorite bombardment and interactions with solar
+winds and result in the formation of (1) impact-vitrified glass
+in agglutinates (aggregates of soil particles; B. Hapke 2001;
+C. N. Yasanayake et al. 2024) and (2) nanophase (and
+microphase) metallic iron (npFe
+0
+) on the rims (or inside) of
+mineral grains (W. Cassidy & B. Hapke 1975; C. M. Pieters &
+S. K. Noble 2016). These phenomena tend to decrease the
+overall albedo, induce spectral reddening (a positive slope with
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January https://doi.org/10.3847/PSJ/ae2b57
+© 2026. The Author(s). Published by the American Astronomical Society.
+aaaaaaa
+Original content from this work may be used under the terms
+of the Creative Commons Attribution 4.0 licence. Any further
+distribution of this work must maintain attribution to the author(s) and the title
+of the work, journal citation and DOI.
+1
+increasing wavelength), and weaken absorption features that
+are diagnostic of mineralogy (Figure 1).
+Many studies have attempted to parameterize the degree of
+space weathering across the lunar surface or to use certain
+magnetic properties to estimate the amount of npFe
+0
+(which
+increases with the degree of space weathering; B. Hapke 2001;
+S. Li & L. Li 2011; P. G. Lucey & M. A. Riner 2011; D. Trang
+& P. G. Lucey 2019) through empirical parameters such as
+optical maturity (P. G. Lucey et al. 2000a, 2000b) or the soil
+maturity index (I
+sm
+) (R. V. Morris 1978). Studies have also
+explored methods to minimize or reduce spectral effects of
+space weathering, such as through spectral continuum removal
+(C. M. Pieters et al. 2019). However, current spectral methods
+are not capable of removing or accounting for the spectral
+signatures of space weathering in a way that allows for
+quantitative estimates of modal mineralogy of lunar regolith.
+One potential exception is the radiative transfer modeling of
+B. Hapke (2001). Grounded in scattering theory, this approach
+requires (a) the assignment of a preferred distribution of npFe
+in the grains (e.g., homogenous throughout the grain versus
+concentrated in rims) and (b) the treatment of the abundance
+and size of npFe particles separately for each mineral phase in
+the mixture, doubling the number of unknowns in the inverse
+problem. Furthermore, the simultaneous presence of both
+nanophase and microphase iron, which follow different
+scattering regimes in the VSWIR range, is not taken into
+account in the model of B. Hapke (2001), further challenging
+its applicability to lunar regolith. Here, we present a new,
+semiempirical framework to quantify modal mineralogy of
+space-weathered regolith in lunar maria.
+2. Approach
+2.1. Step 1: Semiempirical Band Depth Correction
+Using laboratory spectra of Apollo soil samples, we devised
+a workflow to remove the spectral effects of space weathering
+from VSWIR spectra of lunar materials (e.g., lunar regolith)
+and estimate reflectance spectra of the “fresh” (unweathered)
+material from which quantitative estimates of mineralogy can
+be derived. We refer to the first step as a “band depth
+correction” though it also affects spectral slopes. Qualitatively,
+this step consists of scaling the band depth of a major
+absorption in spectra affected by space weathering (specifi-
+cally, by npFe
+0
+) to restore a fresh, unaltered appearance to the
+spectrum, with corrected deeper absorption features.
+Following the Hapke RTM for intimate mixtures (B. Hapke
+1981), we assume that the single scattering albedo (SSA) of a
+target with some degree of space weathering, ω
+mix
+, can be
+modeled as a linear mixture of a “depth-corrected” SSA
+spectrum (ω
+dc
+) and that of a fully space-weathered target (ω
+sw
+).
+This linear combination is weighted by the proportions of the
+depth-corrected (θ
+dc
+) and space-weathered (θ
+sw
+) components
+(with θ
+dc
++ θ
+sw
+= 1), i.e.,
+( ) = + , 1 mix dc dc sw sw
+such that
+( )
+=
+ 1
+. 2
+dc
+mix sw sw
+ sw
+In turn, the degree of space weathering, θ
+sw
+is assumed to be
+proportional to the soil maturity index (θ
+sw
+= I
+sm
+/100). The
+soil maturity index serves as a semiquantitative measure to
+classify lunar soil maturity and is typically measured as the
+ratio of ferromagnetic resonance (FMR) surface exposure
+index (I
+s
+) to total iron content, i.e., I
+sm
+= I
+s
+/FeO. Ratios of
+0–29, 30–59, and greater than 60 indicate immaturity,
+submaturity, and maturity, respectively (R. V. Morris 1978).
+To establish a relationship between θ
+sw
+and band depth in
+lunar maria, we use data from the Lunar Soil Characterization
+Consortium (LSCC) database (C. M. Pieters et al. 2000;
+L. A. Taylor et al. 2001). The LSCC database consists of a
+comprehensive spectral characterization of lunar mare soils
+selected to represent a range of maturity states and grain sizes
+conducted by a collaborative group of lunar sample and remote
+sensing scientists. It includes detailed analyses of chemical and
+mineralogical abundances performed through sieving of
+pristine lunar soils, imaging analysis, electron microprobe
+chemical analysis, FMR analysis, and spectral reflectance
+measurements. Their reflectance spectra, spanning 0.3–2.6 μm,
+were acquired at a 5 nm sampling resolution using the RELAB
+bidirectional spectrometer. We find that I
+sm
+correlates with the
+ratio of the ∼1000 nm Fe
+2+
+absorption depth to that of a fully
+Figure 1. (a) Laboratory reflectance spectra of pulverized fresh basalt (15555)
+and lunar soils with various degrees of soil maturities (12001, 12030, 71061,
+71501, and 79221), as indicated by their soil maturity ratio (I
+sm
+= I
+s
+/FeO),
+where I
+s
+= (ΔH)
+2
+A, with ΔH, the ferromagnetic resonance (FMR) line width,
+and A, its amplitude (R. V. Morris 1978). (b) Thermally corrected M3
+reflectance spectra of freshly exposed rock inside the simple crater located
+near the Aristarchus crater (red) and surrounding space-weathered regolith
+(blue); M3 data processed according to S. Li & R. E. Milliken (2016). Inset
+map shows the location of those spectra (overlaid on 970 nm reflectance
+base map).
+2
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+space-weathered surface through
+( )
+=
+⋅
+I
+ 100
+0.6568 , 3
+sw
+sm
+3.731
+where Δ is defined as
+( ) ( )
+ ( ) ( )
+( )
+=
+=
+=
+ = =
+d d
+ d d
+970 nm 970 n
+m
+ 970 nm 970 n m
+, 4
+dc mix
+ dc sw
+with d(λ) representing the continuum-removed SSA band
+depth value at the wavelength λ, and subscripts “dc,” “mix,”
+and “sw” refer to “depth corrected,” “mixture,” and “space
+weathered,” respectively (Figure 2). Equation (3) highlights
+the nonlinearity of band depth with the degree of space
+weathering. A reference wavelength of λ = 970 nm was
+adopted because it is the approximate position of a prominent
+and common Fe
+2+
+absorption feature observed in reflectance
+spectra of the Moon, the strength of which is highly correlated
+with the degree of space weathering (Figure 2; Appendix A;
+Figure A1).
+Although the soil maturity index (I
+sm
+) of LSCC samples was
+directly measured and reported (R. V. Morris 1978), its value
+is not readily available for orbiter-based remote-sensing
+observations. Thus, using Equation (3) allows us to ensure
+applicability of the workflow to orbiter-based spectral
+observations. In the following, the adopted SSA spectrum
+for a fully weathered target, ω
+sw
+, varies depending on whether
+Apollo samples or orbiter-based spectra are considered. For
+Apollo soils, the SSA spectrum of a fully space-weathered
+end-member, ω
+sw
+, was taken as the average spectrum of
+samples 79221 (I
+sm
+= 81), 15041 (I
+sm
+= 94), and 10084
+(I
+sm
+= 78) (Figure 3). For remote-sensing data, it is taken as
+the average spectrum of the most space-weathered pixels near
+the target region of interest (ROI).
+2.2. Step 2: Spectral Modeling
+The first step in the workflow yields a “depth-corrected”
+spectrum, ω
+dc
+, which is primarily intended to account for the
+influence of npFe
+0
+on absorption strength. However, it does
+not fully account for how space-weathering influences spectral
+slope, and it does not yet account for other spectral properties
+associated with agglutinates, an important product of lunar
+space weathering. Unlike components such as pyroxene,
+olivine, or Fe-rich glass, agglutinates have almost no
+absorption features and can be spectrally dominated by
+npFe
+0
+(i.e., exhibit a red-sloped component in their spectrum).
+The next step consists of estimating the residual signatures of
+space weathering (including the red spectral slope) through
+spectral unmixing of the intermediate, “depth-corrected”
+spectrum, including agglutinates as a compositional end-
+member, and ultimately removing them by forward modeling a
+final corrected spectrum, ω
+f
+, by excluding the contribution of
+the agglutinate component.
+Due to the non-unique nature of spectral unmixing
+inversions, we employed a Bayesian implementation of the
+Hapke model, following M. G. A. Lapôtre et al. (2017a), to
+unmix “depth-corrected” spectra (ω
+dc
+) and retrieve modal
+estimates of dominant phases and corresponding particle sizes.
+The inverse problem is solved using the cascading adaptive
+transitional metropolis in parallel (CATMIP) algorithm
+(S. E. Minson et al. 2013, 2014), a parallel Markov Chain
+Monte Carlo (MCMC) algorithm (based on the Metropolis–
+Hastings algorithm) that efficiently samples high-dimensional
+spaces. This step provides quantitative estimates of modal
+mineralogy from spectral data.
+Prior distributions for mineral abundances were drawn from
+Dirichlet distributions, ensuring that the sum of all abundances
+is equal to 100%. The grain size of each end-member was
+parameterized as a separate variable drawn from uniform prior
+distributions, ranging from ∼0 to 990 μm in the initial setup
+(Appendix B). Nine phases commonly found in lunar mare
+basalts were selected as compositional end-members: olivine
+(fayalitic olivine, Fo5-10), pigeonite, augite, plagioclase,
+ilmenite, glass of pyroxene-like composition, glass of
+plagioclase-like composition, Apollo orange glass, and
+agglutinates (Appendix C; Figure C1; Table C1). Therefore,
+a total of 18 parameters were considered. The glass with
+pyroxene-like and plagioclase-like compositions refers to
+synthetic amorphous glasses composed of pyroxene, plagio-
+clase, and ilmenite in weight percentages of 66.7%/26.7%/
+6.7% and 37.0%/59.3%/3.7%, respectively (E. A. Cloutis
+et al. 1990). As this MCMC algorithm takes the optical
+constants of each mineral as input (M. G. A. Lapôtre et al.
+2017a), for each mineral end-member, we first converted its
+reflectance spectra to SSA (Appendix D); the SSA values were
+subsequently converted to optical constants (Appendix E).
+The MCMC algorithm was run with a Markov chain length
+of 10
+6
+and outputs posterior distributions for all 18 parameters
+(a modal abundance vector and a grain size vector, each with
+nine elements), permitting evaluation of the full suite of
+mineral assemblages that yield a reasonable match to the data.
+Acceptance and rejection of sampled compositional models are
+decided based on the goodness of the fit between true and
+modeled spectra. In addition to the full posterior distributions,
+two specific models are considered: the maximum a posteriori,
+or MAP (i.e., the model determined to have the overall highest
+likelihood), estimation, and the mode (i.e., using the most
+likely value for each of the 18 parameters, which does
+not necessarily correspond to the MAP). From the various
+possible model solutions, we use the resulting mineral
+abundances and corresponding particle sizes to forward model
+the spectrum of the fresh, non-space-weathered material,
+Figure 2. Relationship between the 970 nm band depth and soil maturity,
+I
+sm
+= I
+s
+/FeO, as observed in Apollo soil samples (R. V. Morris 1978). The red
+line indicates the fitted relationship used to link Δ to I
+sm
+. Spectral data for
+original mare basalts (P. J. Isaacson et al. 2011) and Lunar Soil
+Characterization Consortium (LSCC) samples (C. M. Pieters et al. 2000;
+L. A. Taylor et al. 2001) are available at https://sites.brown.edu/relab/lscc/
+and https://pds-speclib.rsl.wustl.edu/.
+3
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+omitting the contribution of agglutinates that was estimated
+from the inverse model.
+3. Results and Interpretations
+Application to Lunar Soils. Reflectance spectra of lunar soils
+derived from lunar mare basalt regions with a range of soil
+maturity (12001, I
+sm
+= 56; 12030, I
+sm
+= 14; 15071, I
+sm
+= 52;
+and 71061, I
+sm
+= 14) were used to assess the effectiveness of
+the method (Table 1). For all four LSCC mare basalt soil
+samples examined here, the first step yields intermediate,
+“depth-corrected” spectra with deeper absorptions, less spectral
+reddening, and overall higher albedos (Figure 3( a)–(d)). The
+rms values of accepted models for fitting the resulting ω
+dc
+spectra, including the mode and MAP, consistently exceed 0.98,
+indicating that the depth-corrected spectra could be well
+reproduced from linear mixtures of SSA spectra of the nine
+selected compositional end-members (Figure 3( e)–(h)). Subse-
+quent forward modeling without agglutinates yields corrected
+spectra that resemble those of typical lunar basalts, with
+pronounced 1 and 2 μm absorption bands and visibly less
+spectral reddening (Figure 3(i)–(l)).
+Though corrected LSCC spectra look qualitatively similar to
+spectra of fresh lunar basalt, we further validated their
+quantitative robustness by comparing inverted mineral abun-
+dances with independently measured compositions or through
+petrological analyses reported in the Apollo lunar compendium
+(K. A. Cone et al. 2020). The 95% probability densities of
+modeled abundances show substantial overlap with laboratory
+measurements, demonstrating close agreement between mod-
+eled and lab-measured mineral abundances (Figure 4). In some
+cases, MAP estimates differ slightly from laboratory measure-
+ments, emphasizing the need for probabilistic modeling rather
+than relying on a single best-fit model. For olivine, differences
+from LSCC are generally less than 7% relative to the mode and
+the mean. Variability in pyroxene is expected, as different
+pyroxene chemistries have been grouped into only two end-
+members (pigeonite and augite), a limitation also noted by
+J. T. S. Cahill et al. (2010). Although assigning a precise
+degree of accuracy to these values remains challenging, we
+aim to extend the analysis to a wider range of compositions
+and chemistries in future tests to improve applicability. For
+ilmenite, deviations are typically less than 10%, except for
+sample 15071. In contrast, plagioclase exhibits larger dis-
+crepancies, up to 20%–30% in some samples, reflecting the
+inherent difficulty of resolving weak diagnostic absorption
+features in plagioclase VSWIR spectra. In contrast with the
+approach of B. Hapke (2001), our semiempirical framework
+relies on lab-based measurements of true space-weathered
+lunar samples, empirically circumventing the need to make
+assumptions about the distribution of npFe (or microphase
+iron). Furthermore, it allows us to keep the number of free
+parameters to half of what would be required under the more
+Figure 3. Analysis of four Lunar Soil Characterization Consortium (LSCC) mare basalt soils with varying degrees of space weathering (a), (e), (i) 12001 (I
+sm
+= 56);
+(b), (f), (j) 12030 (I
+sm
+= 14); (c), (g), (k) 15071 (I
+sm
+= 52); and (d), (h), (l) 71061 (I
+sm
+= 14). Panels (a)–(d) display the original SSA (red), the SSA of the fully space-
+weathered end-member (blue), and the depth-corrected SSA (black). Panels (e)–(h) show model fits to the depth-corrected SSA spectrum (black) from Bayesian
+spectral unmixing modeling, with MAP (red) and mode (green). Panels (i)–(l) display space-weathering-corrected SSA spectra (red = MAP, mode = green, and
+shading = range of accepted models across 10
+6
+samples.
+Table 1
+List of LSCC Samples Used for Space-weathering Correction
+Sample ID RELAB Code I
+sm
+d
+dc
+d
+sw
+d
+mix
+Δ Calculated I
+sm
+12001 LR-CMP-010 56 0.358 0.120 0.145 0.893 43.04
+12030 LR-CMP-032 14 0.358 0.120 0.163 0.819 31.26
+15071 LR-CMP-020 52 0.358 0.120 0.161 0.826 32.13
+71061 LR-CMP-057 14 0.358 0.120 0.144 0.897 43.85
+Note. I
+sm
+: reported soil maturity index (R. V. Morris 1978); d
+dc
+: continuum-removed SSA band depth value at the wavelength 970 nm for pulverized mare basalt
+samples 15058, 15555, 70017, and 70035; d
+sw
+: continuum-removed SSA band depth value at the wavelength 970 nm for the most space-weathered samples 15041,
+79221, and 10084; d
+mix
+: continuum-removed SSA band depth value at the wavelength 970 nm for the target sample; Δ: ratio of the 970 nm band depth to that of
+fully space-weathered samples using Equation (4); calculated I
+sm
+: soil maturity index calculated using reported I
+sm
+with Equation (3).
+4
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+mechanistic model of B. Hapke (2001), making the inversion
+of modal mineralogy computationally tractable.
+Application to M3 data. Relatively shallow, young craters
+represent ideal targets for our approach because they are more
+likely to expose relatively fresh materials of similar bulk
+composition to that of surrounding space-weathered intercrater
+surfaces. A set of shallow, young craters near Aristarchus was
+thus selected to illustrate applications of the space-weathering
+correction method to thermally corrected M3 reflectance spectra
+for a region that had been previously processed according to the
+methods of S. Li & R. E. Milliken (2016). Mapped pyroclastic
+deposits were avoided to ensure that ROIs were dominated by
+materials similar to the nearby mare-like composition (Figure 5).
+First, the thermally corrected M3 reflectance data were
+converted into SSA (Appendix D). Second, an ROI displaying
+immature-to-submature characteristics (I
+sm
+< ∼ 60) was
+selected (red circles in Figure 5(b), (c)). Third, a fully space-
+weathered end-member spectrum was estimated by assuming
+that the most space-weathered pixels near the ROI (blue circles
+in Figure 5(b), (c)) can be used to approximate the fully space-
+weathered end-member for the ROI. Given the nonlinear
+relationship between band depths (or Δ) and I
+sm
+(Figure 2),
+Figure 4. Estimated probability densities of mineral abundances for all crystalline phases. Red and green circles indicate MAP and mode estimates, respectively.
+Stars (Lunar Soil Characterization Consortium, LSCC) and gray bars (multiple studies reported in the represented normalized modal abundances from the Lunar
+Sample Compendium, LSC) indicate lab-measured compositional measurements, normalized to exclude glasses, agglutinates, and other unspecified minor phases.
+LSCC pyroxene abundances were reported as “total pyroxene” in LSCC data; accordingly, we show the combined distribution of pigeonite and augite. Plots showing
+each pyroxene phase separately are provided in Figure F1 of Appendix F.
+Figure 5. Application of space-weathering correction processes to M3 data around fresh craters near the Aristarchus crater. Illustration of the space-weathering
+correction process: (a) orthographic projection of the Lunar Reconnaissance Orbiter Camera Wide-Angle Camera (LROC WAC) imagery, centered at 25°N, 315°E,
+showing the Aristarchus crater (pink circle) and regions of interest (ROIs) for spectral weathering correction (yellow arrows). (b), (c) The location of freshly exposed
+rock (red) and the surrounding space-weathered regolith (blue). The map shows the thermally corrected M3 970 nm reflectance base map.
+5
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+this approximation is justified as long as the selected pixels
+have I
+sm
+> ∼ 60 and a composition similar to that of the ROI.
+Finally, the full space-weathering correction workflow was
+applied to the ROI spectrum using the approximated fully
+space-weathered end-member (Figure 6). The MCMC algo-
+rithm was run with a Markov chain length of 10
+6
+using the
+same compositional end-members as for the LSCC mare basalt
+soil samples.
+Similar to the laboratory samples, rms values for the MAP
+and mode estimates exceed 0.97, indicating that the “depth
+correction” yielded intermediate spectra that could be well
+modeled with the selected nine compositional end-members.
+The estimated “fresh” lunar soil spectra exhibit deeper band
+depths, less spectral reddening, and an overall increased
+albedo, similar to what is observed in fresh SSA spectra
+of lunar mare basalt soils (Figure 6 (a)–(f)). Both groups of
+Figure 6. Application of space-weathering correction processes to M3 data at the locations shown in Figure 5(b) for panels (a), (c), (e), (g), and (i), and in Figure 5(c)
+for panels (b), (d), (f), (h), (j). Illustration of the space-weathering correction process: (a), (b) the original SSA from the ROI (red), the SSA of the fully space-
+weathered end-member (blue), and the depth-corrected SSA (black). (c), (d) The model fits the depth-corrected SSA spectrum (black) from Bayesian spectral
+unmixing modeling, with MAP (red) and mode (green). (e), (f) Space-weathering corrected SSA spectra (red = MAP, green = mode, and shading = range of
+accepted models across 10
+6
+samples). (g), (h) Posterior probability densities of mineral abundances for all crystalline phases, after exclusion of agglutinates. (i), (j)
+Estimated FeO + MgO versus SiO
+2
+for all accepted samples (heat map), with MAP (red circle) and mode (green circle) indicated. Transparent dots, stars, and
+contour plots represent individual laboratory geochemical measurements, averages, and distribution contours from Apollo mare basalt samples, as derived from data
+in the Apollo lunar sample compendium and cataloged in the ApolloBasalt database (K. A. Cone et al. 2020).
+6
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+inverted mineral abundances indicate the likely presence of
+ilmenite, suggesting that the ROI consists of ilmenite mare
+basalt-type materials. Based on our results, these materials
+could potentially be classified as Apollo ilmenite basalts in the
+Lunar Sample and Photo Catalog,
+5
+which include Apollo 11
+low-K and high-K basalts; Apollo 12 ilmenite basalts; and
+Apollo 17 low-K, high-K, and very high Ti basalts
+(G. J. Taylor et al. 1991; Figure 6 (g), (h)). To facilitate
+quantitative comparisons with other mare basalt samples
+gathered from different Apollo landing sites (K. A. Cone
+et al. 2020), inverted mineral compositions were converted to
+oxide abundances (heat map in Figure 6 (i), (j)). In (SiO
+2
+,
+FeO + MgO) space, inverted mineralogies of these craters
+significantly overlap with ranges observed at Apollo landing
+sites, with mode models closely matching mare basalt samples
+collected during the Apollo 12 and 15 missions.
+4. Discussion and Conclusions
+We developed a framework to correct for the influence of
+space weathering on VSWIR spectra of the lunar surface using
+an empirical band depth correction and probabilistic unmixing
+modeling. This approach was validated against laboratory
+measurements of Apollo regolith samples and subsequently
+applied to thermally corrected M3 reflectance data of the lunar
+surface. The results demonstrate the potential of this workflow
+to facilitate a computationally tractable, quantitative break-
+down of mineralogy for remote compositional analyses on
+the Moon.
+In its current form, our semiempirical framework relies on
+the assumption that the same band depth correction can be
+applied broadly to mare basalts. In other words, it assumes that
+different groups of mare basalts (e.g., illmenite-, olivine-, and
+pyroxene-rich basalts) follow the same relationship between
+their band depth at 970 nm and I
+sm
+(Equation (3)). As more
+samples become available, the approach could be refined in
+future iterations by incorporating different versions of
+Equation (3) that are tailored to specific basalt types.
+Due to the strongly nonlinear relationship between band
+depths and soil maturity, our method is most effective for areas
+with immature (I
+sm
+= 0–30) or submature soils (I
+sm
+= 30–60)
+rather than mature soils (I
+sm
+= 60–100). Using Equation (3),
+calculated Δ values for mature soils span a narrow range—
+Δ = 0.98–1.00. In contrast, calculated Δ values in immature
+and submature soils range from 0.00 to 0.98. In other words,
+large changes in I
+sm
+in mature soils lead to very small changes
+in band depth, such that band depth is a poor proxy for the
+degree of space weathering in such samples. This approach,
+moreover, relies on the availability of a space-weathered target
+that possesses a mineral composition similar to that of the
+target region. As a result, shallow young craters that expose
+relatively fresh materials represent particularly promising
+targets for this method. This technique could be adapted to
+other lunar terrain types, such as lunar highlands (notably
+through the use of different compositional end-members), and
+possibly serve as a template for space-weathering corrections
+and remote compositional analyses on other airless bodies.
+Acknowledgments
+We thank the editor, Dr. Faith Vilas, for handling our
+submission, as well as two anonymous reviewers for providing
+constructive suggestions that improved our manuscript. We
+also thank Dr. Lori Pigue, who conducted an internal review
+for the USGS. The codes for space-weathering corrections for
+this study and formulae related to appendices are available on
+Zenodo, a permanent CERN-backed online data repository at
+doi:10.5281/zenodo.17258920 (J. I. Jung et al. 2025).
+LSCC samples (C. M. Pieters et al. 2000; L. A. Taylor et al.
+2001) are available at https://sites.brown.edu/relab/lscc/ and
+https://pds-speclib.rsl.wustl.edu/. The USGS spectroscopy
+library and associated software are hosted at https://www.
+usgs.gov/labs/spectroscopy-lab/usgs-spectral-library. Any use
+of trade, firm, or product names is for descriptive purposes only
+and does not imply endorsement by the U.S. Government.
+Appendix A
+SSA of Mare Basalt and Soil Samples
+Figure A1 presents the sample spectra used in the main text
+to derive Equation (3). For the band-depth correction, a
+reference wavelength of λ = 0.97 μm was adopted.
+5
+https://curator.jsc.nasa.gov/lunar/samplecatalog
+7
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+Appendix B
+MCMC Spectral Unmixing and Prior Distributions
+Most spectral compositional analyses to date report a single
+set of mineral abundances and grain sizes, corresponding
+to the overall best-fit modeled spectrum (S. Li & L. Li 2011;
+P. J. Isaacson et al. 2011). However, it is important to
+recognize that the best-fit model does not necessarily reflect
+the true composition, due to factors such as noise in the data or
+slight variations in the chemistries of mineral end-members.
+Furthermore, trade-offs between mineral abundances and grain
+sizes create non-unique solutions to the spectral unmixing
+problem, such that multiple solutions can explain the data
+equally well (M. G. A. Lapôtre et al. 2017a). To address this
+issue and provide a fuller picture of sets of possible
+mineral assemblages and their likelihood, a probabilistic
+approach was devised by M. G. A. Lapôtre et al. (2017a),
+utilizing a Bayesian framework applied to the Hapke RTM.
+This algorithm has been employed to determine the composi-
+tion of Martian dune sand (M. G. A. Lapôtre et al. 2017b;
+E. B. Rampe et al. 2018) as well as the surface composition of
+Ceres (H. Kurokawa et al. 2020).
+Applying Bayes’s theorem to the probability of a given
+mineral assemblage (with mineral abundance, m, and grain
+size, D) given the SSA data, d, yields
+( ) ( ) ( ) ( ) p m D d p d m D p m D, , , , B1
+Figure A1. (a) Single scattering albedo (SSA) spectra and (b) continuum-removed SSA spectra of mare basalt and soil samples (available at https://sites.brown.
+edu/relab/lscc/ and https://pds-speclib.rsl.wustl.edu/). Vertical dashed lines indicate the wavelengths selected for band depth correction analysis. (c) Relationship
+between spectral contrast at various wavelengths and soil maturity, expressed as Ism = Is/FeO (R. V. Morris 1978). The 0.97 μm band, which is used for band depth
+correction, is highlighted with an open star marker.
+8
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+where p(d|m, D) represents the likelihood of a given mineral
+assemblage given the data and is taken as a multivariate
+Gaussian distribution of the form
+(
+)
+ ( )
+( )
+[ ( )] [ ( )]
+=
+p d m D
+ C
+e,
+1
+ 2
+, B2
+N
+d G m D C d G m D
+1
+ 2
+1
+2
+, ,
+d
+T
+where C
+χ
+is a covariance matrix that represents the sum of
+uncertainties due to measurement error and model prediction
+error and has the same dimension as d (i.e., 2N
+d
+× 2N
+d
+, where
+N
+d
+is the number of wavelength–SSA pairs in the data).
+Mineral abundances are drawn from a Dirichlet distribution,
+( ) ( )
+ ( )
+( )
+= □ □ =
+ =
+p m m m a a
+ B a
+mDir , , ; , ,
+1
+, B3
+N N
+ i
+N
+i
+a
+1 1
+ 1
+1
+i
+where N is the number of component minerals and B(a) is the
+multinomial beta function,
+( )
+( )
+ ( )
+( )=
+=
+ =
+B a
+a
+ a
+, B4
+i
+N
+i
+ i
+N
+ i
+1
+ 1
+with Γ the gamma function,
+( ) ( )
+=
+a x e dx, B5
+a x
+ 0
+1
+i
+where a is a parameter that changes the shape of the
+probability distribution. The mean of prior distributions
+for mineral abundances, p(D), was set to 0.07 (i.e., 7 wt%)
+for olivine, 0.16 for pigeonite, 0.16 for augite, 0.39 for
+plagioclase, 0.10 for ilmenite, 0.115 for pyroxene-rich glass,
+0.0016 for plagioclase-rich glass, 0.0016 for Apollo orange
+glass, and 0.0016 for agglutinate, and α was set to 30.
+The grain size prior, p(D), was taken as uniform,
+( ) ( )
+[ ]
+=
+p D
+ D D
+1
+1
+, B6
+i
+ i i
+D D D
+ ,max ,min
+,
+i i i,min ,m
+ax
+where
+D i,min and
+D i,max are the lower and upper bounds for
+grain sizes of ith mineral. These values were set to 0 and
+990 μm, respectively.
+To solve the inverse problem, a set of sample models (up to
+the length of the Markov chain L) is generated by the CATMIP
+algorithm. The probability of each candidate model is assessed
+for acceptance or rejection based on the goodness of fit
+between the synthetic and model SSA spectra. Our sampling
+approach is described in detail in M. G. A. Lapôtre et al.
+(2017a), although for this study, we made some minor
+modifications. CATMIP draws samples of the prior probability
+density function (PDF) and then simulates a series of
+intermediate PDFs that transition from the prior to the target
+posterior PDF. The samples of each intermediate PDF, in turn,
+are drawn using the Metropolis algorithm. The Metropolis
+algorithm is a Markov chain (that is, a random walk) that
+requires the use of a proposal PDF to produce candidate steps
+for the random walk. To optimize sampling efficiency, for
+each intermediate PDF, the proposal PDF for abundance
+values is a Dirichlet distribution fit to the mineral abundance
+samples of the previous intermediate PDF. Similarly, the
+proposal PDF for grain sizes is a multivariate normal PDF with
+covariance calculated from the grain size samples of the
+previous intermediate PDF.
+Appendix C
+Single Scattering Albedo of a Mixture
+The SSA, ω
+mix
+, of an intimate mixture of compositional
+end-members is calculated as a linear combination of the SSA
+of individual compositional end-members, i.e.,
+( )
+=
+ =
+f , C1
+ i
+N
+i
+imix
+ 1
+where N is the number of mineral end-members and f
+i
+denotes
+the fractional relative cross-sectional area of the ith component
+given by
+( )
+=
+ =
+f , C2
+i
+i
+ i
+N
+ i 1
+where
+( )
+=
+m
+ D
+, C3
+i
+i
+ i i
+where m
+i
+, ρ
+i
+, and D
+i
+are the mass abundance, density, and grain
+size, respectively, of the individual end-member i. Here,
+reflectance spectra from the USGS library and RELAB (Brown
+University) of olivine, pigeonite, augite, plagioclase, ilmenite,
+pyroxene-rich glass, plagioclase-rich glass, and agglutinates
+were used as possible compositional end-members for lunar
+mare basalt soils (Table C1). The SSA spectra derived using
+Appendix D are shown in Figure C1.
+Table C1
+Characteristics of Mineral End-members Used
+End-member ρ D n Sample ID RELAB Specimen Code D
+lab
+D
+used
+(kg m
+−3
+) (μm) (μm)
+Olivine 3320 0–990 1.83 15555,965 LR-CMP-169 >0, <125 80
+Pigeonite 3400 0–990 1.77 70017,535 LR-CMP-176 >0, <125 80
+Augite 3380 0–990 1.73 70035,188 LR-CMP-179 >0, <125 80
+Plagioclase 2690 0–990 1.56 70017,535 LR-CMP-177 >0, <125 80
+Ilmenite 4270 0–990 2.13 70017,535 LR-CMP-178 >0, <125 80
+Px-rich glass 3300 0–990 1.64 synthetic SC-EAC-053 >45, <90 50
+Pl-rich glass 3000 0–990 1.64 synthetic SC-EAC-050 >45, <90 50
+Orange glass 3000 0–990 1.64 74220,806 LR-CMP-051 ⋯ 150
+Agglutinates 3000 0–990 1.49 79221 LS-BWD-152 >125, <250 150
+Note. ρ = density; D = grain size range used for Bayesian Hapke model implementation; D
+lab
+= reported grain size range; D
+used
+= grain size used for calculation of
+imaginary index of refraction; n = assumed real index of refraction.
+9
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+Appendix D
+Derivation of Single Scattering Albedo Using the Hapke
+Radiative Transfer Model
+The SSA, ω, is derived from measured reflectance, r
+measured
+,
+using the bisection method to find the root of the function
+( ) ( ) = f r r , D1 Hapke meas ured
+where r
+Hapke
+is the radiance coefficient calculated using the
+Hapke RTM (B. Hapke 1981).
+According to the Hapke model,
+( )
+[( ( )) ( )
+ ( ) ( ) ] ( )
+∝ ∝
+ ∝ ∝
+=
++
++
+ +
+r B g P g
+ H H
+4
+1
+ , , 1 , D2
+Hapke
+0
+ 0
+where μ and μ
+0
+are the cosines of the incidence emission angles,
+respectively; B(g) is the backscattering function; P(g) is the
+phase function; g is the phase angle; and H represents the
+Chandrasekhar integral function (B. Hapke 1981), approximated
+Figure C1. Single scattering albedo (SSA) spectra of the nine compositional end-members used in this study.
+10
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+as
+( ) ( )
+=
++
++
+H x x r
+r x x
+ x
+1
+1 2
+ 2
+ln
+1
+, D3
+o
+0
+1
+where
+=
+ +r
+ 0
+1
+ 1 is the bihemispheric reflectance for isotropic
+scatters, with
+= 1 .
+Assuming B = 0 (no backscattering at the moderate phase
+angles considered) and P = 1 (isotropic scatterer), Hapke’s
+equation for radiance coefficient reduces to
+( )
+( ) ( ) ( )
+ ∝ ∝
+∝
+∝=
+ +
+r H H
+ 4
+, , . D4
+Hapke
+ 0
+0
+Appendix E
+Calculation of Compositional End-member Optical
+Constants
+The complex refractive index of a material as a function of
+wavelength can be expressed as
+( ) ( ) ( ) = +m n ik , E1
+where n (refractive index) and k (extinction coefficient) are the
+real and imaginary parts of the complex refractory index, m,
+respectively, and are together referred to as the material’s
+optical constants. The imaginary part, k(λ), for each composi-
+tional end-member was derived using the bisection method to
+solve for
+( ) ( ) ( )= f k r k r , E2 Hapke meas ured
+where r
+Hapke
+is the radiance coefficient calculated using the
+Hapke RTM as in Appendix D and substituting for SSA:
+( ) ( )
+= +
+S S
+S
+ S
+1
+1
+ 1
+, E3
+e e
+i
+ i
+where S
+e
+and S
+i
+are the surface reflectance coefficients for
+externally incident light and internally scattered light,
+respectively, and θ is the internal transmission coefficient. S
+e
+and S
+i
+are given by
+( )
+ ( )
+( )=
++
+ + +
++S
+n k
+ n k
+1
+ 1
+0.05 E4
+e
+2 2
+2 2
+and
+( )
+( )=
+ +
+S
+ n n
+1.014
+4
+ 1
+. E5
+i
+2
+In turn, θ can be expressed as
+( ( ) )
+ ( )
+( )
+=
++ +
+ + +
+r s D
+ r s D
+exp
+ 1
+, E6
+i
+ i
+where r
+i
+is the internal diffusive bihemispheric reflectance
+inside a particle, given as
+( )
+=
+ +
++
+ +
+r
+1
+ 1
+, E7
+i
+S
+ S
+where α is the internal absorption coefficient,
+( )
+=
+k4
+, E8
+with 〈D〉 as the mean-free path of a photon,
+( ) ( )
+= +
+D n
+ n
+n D
+2
+ 3
+1
+1 . E9
+2
+ 2
+2
+3
+2
+Appendix F
+Estimated Probability Density Distributions of Modeled
+Mineral Abundances
+In the main text, inverted pyroxene abundances are reported
+in combined form (Figure 4). Here, we report the original
+probability density distributions of modeled mineral abun-
+dances, including the two endmember pyroxene phases
+(pigeonite and augite) as well as olivine, plagioclase, and
+ilmenite, for four lunar basalt samples (Figure F1).
+11
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+ORCID iDs
+Ji-In Jung
+ aa https:/ /orcid.org/0000-0001-8728-7320
+References
+Arvidson, R. E., Squyres, S. W., Bell, J. F., et al. 2014, Sci, 343, 1248097
+Berg, B. L., Cloutis, E. A., Beck, P., et al. 2016, Icar, 265, 218
+Bibring, J.-P., Langevin, Y., Gendrin, A., et al. 2005, Sci, 307, 1576
+Cahill, J. T., & Lucey, P. G. 2007, JGRE, 112, E10007
+Cahill, J. T. S., Lucey, P. G., Stockstill-Cahill, K. R., & Hawke, B. R. 2010,
+JGRE, 115, E12013
+Cassidy, W., & Hapke, B. 1975, Icar, 25, 371
+Cloutis, E. A., Gaffey, M. J., Smith, D. G., & Lambert, R. J. 1990, Icar,
+86, 383
+Clénet, H., Pinet, P., Daydou, Y., et al. 2011, Icar, 213, 404
+Cone, K. A., Palin, R. M., & Singha, K. 2020, Icar, 346, 113787
+Denevi, B. W., Lucey, P. G., & Sherman, S. B. 2008, JGRE, 113, E02003
+Goswami, J. N., & Annadurai, M. 2008, AcAau, 63, 1215
+Green, R. O., Pieters, C., Mouroulis, P., et al. 2011, JGRE, 116, E00G19
+Hapke, B. 1981, JGRB, 86, 3039
+Hapke, B. 2001, JGRE, 106, 10039
+Hareyama, M., Ishihara, Y., Demura, H., et al. 2019, Icar, 321, 407
+Isaacson, P. J., Sarbadhikari, A. B., Pieters, C. M., et al. 2011, M&PS,
+46, 228
+Jolliff, B. L., Gillis, J. J., Haskin, L. A., Korotev, R. L., & Wieczorek, M. A.
+2000, JGRE, 105, 4197
+Jung, J. I., Lapotre, M., & Minson, S. 2025, Data and Software for Remote
+Compositional Analyses of Space-Weathered Lunar Maria, v1, Zenodo,
+doi:10.5281/zenodo.17258920
+King, O., Fletcher, L. N., & Ligier, N. 2022, PSJ, 3, 72
+Kodikara, G. R., & McHenry, L. J. 2020, Icar, 345, 113719
+Kurokawa, H., Ehlmann, B. L., De Sanctis, M. C., et al. 2020, JGRE, 125,
+e2020JE006606
+Lapôtre, M. G. A., Ehlmann, B. L., & Minson, S. E. 2017a, JGRE,
+122, 983
+Lapôtre, M. G. A., Ehlmann, B. L., Minson, S. E., et al. 2017b, JGRE,
+122, 2489
+Lawrence, S. J., & Lucey, P. G. 2007, JGRE, 112, E07005
+Lemelin, M., Lucey, P. G., Miljković, K., et al. 2019, P&SS, 165, 230
+Li, S., & Li, L. 2011, JGRE, 116, E09001
+Li, S., Li, L., Milliken, R., & Song, K. 2012, Icar, 221, 208
+Li, S., & Milliken, R. E. 2016, JGRE, 121, 2081
+Lucey, P. G. 2004, GeoRL, 31, L08701
+Lucey, P. G., Blewett, D. T., & Jolliff, B. L. 2000a, JGRE, 105, 20297
+Lucey, P. G., Blewett, D. T., Taylor, G. J., & Hawke, B. R. 2000b, JGRE, 105,
+20377
+Lucey, P. G., & Riner, M. A. 2011, Icar, 212, 451
+Minson, S. E., Simons, M., & Beck, J. L. 2013, GeoJI, 194, 1701
+Matsunaga, T., Ohtake, M., Haruyama, J., et al. 2008, GeoRL, 35, L23201
+Minson, S. E., Simons, M., Beck, J. L., et al. 2014, GeoJI, 198, 922
+Mishra, I., Lewis, N., Lunine, J., et al. 2021, Icar, 357, 114215
+Morris, R. V. 1978, LPSC, 2, 2287
+Noble, S. K., Pieters, C. M., Hiroi, T., & Taylor, L. A. 2006, JGRE, 111,
+E11009
+Ohtake, M., Haruyama, J., Matsunaga, T., et al. 2008, EP&S, 60, 257
+Pieters, C., Hanna, K., Cheek, L., et al. 2014, AmMin, 99, 1893
+Pieters, C. M. 1986, RvGeo, 24, 557
+Pieters, C. M., Boardman, J., Buratti, B., et al. 2009, CSci, 96, 500
+Pieters, C. M., Head, J. W., III, Gaddis, L., Jolliff, B., & Duke, M. 2001,
+JGRE, 106, 28001
+Pieters, C. M., Klima, R. L., & Green, R. O. 2019, Compositional Analysis of
+the Moon in the Visible and Near-infrared Regions, in Cambridge Planetary
+Science, ed. J. L. Bishop, J. F. Bell, III, & J. E. Moersch (Cambridge Univ.
+Press), 368
+Figure F1. Estimated probability density distributions of modeled mineral abundances for olivine, plagioclase, pigeonite, augite, and ilmenite in four lunar basalt
+samples. These are the same distributions shown in Figure 4, but here, pigeonite and augite are displayed separately rather than combined. Red circles indicate the
+maximum a posteriori (MAP) estimates, green circles indicate modes of the distributions, black stars represent normalized modal abundances from the Lunar Soil
+Characterization Consortium (LSCC), and gray bars represent normalized modal abundances from LSCC data and from multiple studies reported in the Lunar
+Sample Compendium (LSC), renormalized to exclude glass, agglutinates, and other unspecified minor phases. LSCC pyroxene abundances are reported as “total
+pyroxene” and are thus shown only once, between the pigeonite and augite rows.
+12
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.
+Pieters, C. M., & Noble, S. K. 2016, JGRE, 121, 1865
+Pieters, C. M., Taylor, L. A., McKay, D., et al. 2000, LPSC, 31, 1865
+Pilorget, C., & Fernando, J. 2021, Icar, 365, 114498
+Poulet, F., Mangold, N., Loizeau, D., et al. 2008, A&A, 487, L41
+Rampe, E. B., Lapotre, M. G. A., Bristow, T. F., et al. 2018, GeoRL, 45, 9488
+Reuter, D. C., Simon, A. A., Hair, J., et al. 2018, SSRv, 214, 54
+Riu, L., Pilorget, C., Milliken, R., et al. 2021, Icar, 357, 114253
+Shkuratov, Y., Starukhina, L., Hoffmann, H., & Arnold, G. 1999, Icar,
+137, 235
+Sunshine, J. M., & Pieters, C. M. 1993, JGRE, 98, 9075
+Sunshine, J. M., Pieters, C. M., & Pratt, S. F. 1990, JGRB, 95, 6955
+Taylor, G. J., Warren, P., Ryder, G., et al. 1991, Lunar Rocks, in Lunar
+Sourcebook: A User’s Guide to the Moon, ed. G. H. Heiken,
+D. T. Vaniman, & B. M. French (Cambridge Univ. Press), 183
+Taylor, L. A., Pieters, C., Keller, L. P., et al. 2000, Space Weathering of Lunar
+Mare Soils: New Understanding of the Effects on Reflectance
+Spectroscopy, in Space and Robotics 2000, 703
+Taylor, L. A., Pieters, C. M., Keller, L. P., Morris, R. V., & McKay, D. S.
+2001, JGRE, 106, 27985
+Trang, D., & Lucey, P. G. 2019, Icar, 321, 307
+Yasanayake, C. N., Denevi, B. W., Hiroi, T., et al. 2024, JGRE, 129,
+e2023JE008115
+13
+The Planet ary Science Journa l, 7:18 (13pp), 2026 January Jung et al.

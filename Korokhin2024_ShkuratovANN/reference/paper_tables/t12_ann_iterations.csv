@@ -1,0 +1,4 @@
+iteration,N1,N2,initial_rate,adaptive_k,pattern_size,sigma_rel,optimal_epoch,t_epoch_s,t_optim_min,t_map_s
+1,42,12,1.0,0.01,20000,2.39,66,0.24,0.25,0.2
+2,42,12,0.002,,152000,1.26,5336,0.88,78.26,0.2
+3,42,12,0.01,,152000,1.12,4256,0.88,62.42,0.2

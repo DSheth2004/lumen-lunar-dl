@@ -1,0 +1,5 @@
+Model,MAE (wt.%),RMSE (wt.%),R²
+Lasso,1.512,1.793,0.349
+SVR (Linear),1.917,2.095,0.11
+SVR (RBF),2.079,2.3,-0.073
+Random Forest,1.555,2.133,0.078

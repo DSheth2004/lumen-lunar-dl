@@ -1,0 +1,51 @@
+sample_id,mission,latitude,longitude,feo_wt_pct,source
+A11_10084,Apollo 11,0.6742,23.4731,15.8,Apollo 11 LM site
+A12_12001,Apollo 12,-3.0128,-23.4219,15.1,Apollo 12 LM site
+A12_12003,Apollo 12,-3.0128,-23.4219,15.3,Apollo 12 LM site
+A12_12023,Apollo 12,-3.0128,-23.4219,15.7,Apollo 12 LM site
+A12_12033,Apollo 12,-3.0128,-23.4219,16.3,Apollo 12 LM site
+A12_12037,Apollo 12,-3.0128,-23.4219,15.5,Apollo 12 LM site
+A12_12042,Apollo 12,-3.0128,-23.4219,16.1,Apollo 12 LM site
+A12_12044,Apollo 12,-3.0128,-23.4219,16.0,Apollo 12 LM site
+A12_12070,Apollo 12,-3.0128,-23.4219,15.9,Apollo 12 LM site
+A14_14163,Apollo 14,-3.6459,-17.4719,10.4,Apollo 14 LM site
+A14_14259,Apollo 14,-3.6459,-17.4719,10.1,Apollo 14 LM site
+A15_15001,Apollo 15,26.1324,3.6333,14.7,Apollo 15 LM site
+A15_15021,Apollo 15,26.1324,3.6333,14.2,Apollo 15 LM site
+A15_15041,Apollo 15,26.1324,3.6333,14.8,Apollo 15 LM site
+A15_15071,Apollo 15,26.1324,3.6333,12.1,Apollo 15 LM site
+A15_15101,Apollo 15,26.1324,3.6333,12.6,Apollo 15 LM site
+A15_15201,Apollo 15,26.1324,3.6333,15.0,Apollo 15 LM site
+A15_15211,Apollo 15,26.1324,3.6333,15.4,Apollo 15 LM site
+A15_15221,Apollo 15,26.1324,3.6333,15.1,Apollo 15 LM site
+A15_15231,Apollo 15,26.1324,3.6333,14.5,Apollo 15 LM site
+A15_15271,Apollo 15,26.1324,3.6333,12.8,Apollo 15 LM site
+A15_LRV3,Apollo 15,26.1,3.66,16.8,Apollo 15 LRV stop 3
+A15_LRV7,Apollo 15,26.08,3.62,15.5,Apollo 15 LRV stop 7
+A16_61141,Apollo 16,-8.9734,15.5011,5.1,Apollo 16 LM site
+A16_61221,Apollo 16,-8.9734,15.5011,5.4,Apollo 16 LM site
+A16_62241,Apollo 16,-8.9734,15.5011,4.2,Apollo 16 LM site
+A16_64501,Apollo 16,-8.9734,15.5011,3.9,Apollo 16 LM site
+A16_67461,Apollo 16,-8.9734,15.5011,4.1,Apollo 16 LM site
+A16_67481,Apollo 16,-8.9734,15.5011,5.0,Apollo 16 LM site
+A16_67601,Apollo 16,-8.9734,15.5011,3.6,Apollo 16 LM site
+A16_68501,Apollo 16,-8.9734,15.5011,4.3,Apollo 16 LM site
+A17_70011,Apollo 17,20.1911,30.7723,17.4,Apollo 17 LM site
+A17_70161,Apollo 17,20.1911,30.7723,16.9,Apollo 17 LM site
+A17_70181,Apollo 17,20.1911,30.7723,16.7,Apollo 17 LM site
+A17_71041,Apollo 17,20.1911,30.7723,10.7,Apollo 17 LRV station 1
+A17_71061,Apollo 17,20.1911,30.7723,10.4,Apollo 17 LRV station 1
+A17_71501,Apollo 17,20.1911,30.7723,11.1,Apollo 17 LRV station 1A
+A17_72161,Apollo 17,20.16,30.77,10.3,Apollo 17 station 2
+A17_72441,Apollo 17,20.16,30.77,10.9,Apollo 17 station 2
+A17_74241,Apollo 17,20.19,30.76,12.1,Apollo 17 station 4
+A17_75061,Apollo 17,20.19,30.75,13.0,Apollo 17 station 5
+A17_76241,Apollo 17,20.19,30.75,8.5,Apollo 17 station 6
+A17_76501,Apollo 17,20.19,30.75,8.2,Apollo 17 station 6
+A17_LRV12,Apollo 17,20.1833,30.7667,17.4,Apollo 17 LRV stop 12
+L16_soil,Luna 16,-0.5137,56.3638,16.6,Luna 16 Mare Fecunditatis
+L20_soil,Luna 20,3.5709,56.56,7.4,Luna 20 highlands
+L24_soil,Luna 24,12.7145,62.2032,19.8,Luna 24 Mare Crisium
+CE3_soil,Chang'E-3,44.1214,-19.5116,12.1,Chang'E-3 Sinus Iridum
+CE5_soil,Chang'E-5,43.0581,-51.9161,22.5,Chang'E-5 Oceanus Procellarum
+CE6_YJFM00103,Chang'E-6,-41.638,-153.985,17.3,Chang'E-6 far-side Apollo basin

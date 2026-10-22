@@ -1,0 +1,7 @@
+check,value,tol,status
+d_dc vs paper 0.358,0.0002056077715240079,0.0005,PASS
+d_sw vs paper 0.120,0.000424912447755596,0.0005,PASS
+max |err| d_mix (4 soils),0.00045847649698568804,0.0005,PASS
+max |err| Delta (4 soils),0.0011736382665126222,0.002,PASS
+max |err| I_sm (4 soils),0.28072982281300796,0.3,PASS
+negative control,299.59794649970763,90.0,PASS

@@ -1,0 +1,6 @@
+check,value,threshold,status
+reaches the truth log-likelihood,-191.6930262070039,-193.82482706723584,PASS
+R2(MAP) reaches the noise ceiling,0.9612189853475425,0.959192320991551,PASS
+ensemble not degenerate,0.916,0.5,PASS
+"truth in 95% CI, Fig-4 categories",4.0,4.0,PASS
+released proposal unique fraction (informational),0.0095,,INFO

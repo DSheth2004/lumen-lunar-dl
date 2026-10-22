@@ -1,0 +1,8 @@
+roi,kind,url,bytes,line_start,line_stop
+roi_b,rfl_hdr,https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0004/DATA/20081118_20090214/200902/L2/M3G20090208T160125_V01_RFL.HDR,37989.0,,
+roi_b,l2_label,https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0004/DATA/20081118_20090214/200902/L2/M3G20090208T160125_V01_L2.LBL,7321.0,,
+roi_b,loc_scan,https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0003/DATA/20081118_20090214/200902/L1B/M3G20090208T160125_V03_LOC.IMG,,,
+roi_b,rfl_block,https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0004/DATA/20081118_20090214/200902/L2/M3G20090208T160125_V01_RFL.IMG,5064640.0,9068.0,9117.0
+roi_c,l2_label,https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0004/DATA/20081118_20090214/200902/L2/M3G20090208T233940_V01_L2.LBL,7321.0,,
+roi_c,loc_scan,https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0003/DATA/20081118_20090214/200902/L1B/M3G20090208T233940_V03_LOC.IMG,,,
+roi_c,rfl_block,https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0004/DATA/20081118_20090214/200902/L2/M3G20090208T233940_V01_RFL.IMG,5064640.0,15230.0,15279.0

@@ -1,0 +1,144 @@
+check,sample,fraction,value,expected,ok,kind,taylor_Al2O3,taylor_CaO,taylor_FeO,taylor_MgO,shk2005_Al2O3,shk2005_CaO,shk2005_FeO,shk2005_MgO,agree,table2_pyroxene,table3_total
+Table 2 column sum = 100,14141,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14141,20-45,19.810000000000002,19.81,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14141,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14141,10-20,10.88,10.88,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14141,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14141,<10,10.290000000000001,10.29,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14141,<45,98.75999999999999,98.82,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14141,20-45,98.66,98.78,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14141,10-20,98.67,98.68,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14141,<10,98.54,98.61,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14163,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14163,20-45,16.18,16.18,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14163,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14163,10-20,13.81,13.81,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14163,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14163,<10,3.94,3.94,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14163,<45,98.69,98.69,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14163,20-45,98.85,99.02,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14163,10-20,98.65,98.72,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14163,<10,98.76,98.85,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14260,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14260,20-45,13.68,13.68,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14260,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14260,10-20,12.01,12.01,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14260,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14260,<10,7.72,7.72,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14260,<45,98.76,98.81,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14260,20-45,99.08,99.13,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14260,10-20,98.88,98.97,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14260,<10,98.57,98.76,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14259,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14259,20-45,18.15,18.15,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14259,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14259,10-20,9.06,9.06,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,14259,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,14259,<10,5.9399999999999995,5.94,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14259,<45,98.84,98.8,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14259,20-45,98.86,99.02,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14259,10-20,98.82,98.87,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",14259,<10,98.81,98.84,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,61221,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,61221,20-45,7.37,7.37,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,61221,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,61221,10-20,5.34,5.34,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,61221,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,61221,<10,1.5,1.5,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61221,<45,99.05,99.13,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61221,20-45,99.0,99.07,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61221,10-20,98.89,98.93,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61221,<10,98.95,99.0,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,67461,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,67461,20-45,7.28,7.28,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,67461,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,67461,10-20,4.11,4.11,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,67461,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,67461,<10,2.83,2.83,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67461,<45,99.25,99.26,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67461,20-45,99.0,99.0,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67461,10-20,98.91,98.9,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67461,<10,99.26,99.31,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,67481,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,67481,20-45,6.6000000000000005,6.6,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,67481,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,67481,10-20,5.68,5.68,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,67481,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,67481,<10,3.8899999999999997,3.89,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67481,<45,99.36,99.39,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67481,20-45,99.43,99.5,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67481,10-20,98.94,99.08,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",67481,<10,99.22,99.22,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,61141,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,61141,20-45,4.35,4.35,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,61141,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,61141,10-20,5.33,5.33,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,61141,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,61141,<10,0.7,0.7,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61141,<45,99.26,99.34,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61141,20-45,98.95,99.0,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61141,10-20,98.87,98.91,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",61141,<10,99.05,99.11,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,64801,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,64801,20-45,4.52,4.52,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,64801,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,64801,10-20,2.81,2.81,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,64801,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,64801,<10,2.66,2.66,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",64801,<45,99.53,99.5,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",64801,20-45,99.14,99.2,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",64801,10-20,98.89,98.99,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",64801,<10,99.17,99.21,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,62231,20-45,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,62231,20-45,5.12,5.12,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,62231,10-20,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,62231,10-20,5.4,5.4,True,arithmetic,,,,,,,,,,,
+Table 2 column sum = 100,62231,<10,100.0,100.0,True,arithmetic,,,,,,,,,,,
+Table 3 sub-sets = printed total,62231,<10,0.88,0.88,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",62231,<45,99.28,99.32,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",62231,20-45,98.84,98.87,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",62231,10-20,99.19,99.22,True,arithmetic,,,,,,,,,,,
+"Table 4 printed total - listed oxides in [-0.05, 0.20]",62231,<10,99.17,99.22,True,arithmetic,,,,,,,,,,,
+,14141,20-45,,,,vs Shkuratov 2005a Table 1,15.0,10.1,11.6,11.0,15.0,10.1,11.6,11.0,True,,
+,14141,10-20,,,,vs Shkuratov 2005a Table 1,17.2,10.7,9.46,9.08,17.2,10.7,9.46,9.08,True,,
+,14163,20-45,,,,vs Shkuratov 2005a Table 1,15.4,10.2,11.5,11.0,15.4,10.2,11.5,11.0,True,,
+,14163,10-20,,,,vs Shkuratov 2005a Table 1,17.0,10.8,10.1,9.57,17.0,10.8,10.1,9.57,True,,
+,14259,20-45,,,,vs Shkuratov 2005a Table 1,15.8,10.5,11.0,10.7,15.8,10.5,11.0,10.7,True,,
+,14259,10-20,,,,vs Shkuratov 2005a Table 1,17.4,11.0,9.71,9.44,17.4,11.0,9.71,9.44,True,,
+,14260,20-45,,,,vs Shkuratov 2005a Table 1,16.3,10.7,10.7,10.4,16.3,10.7,10.7,10.4,True,,
+,14260,10-20,,,,vs Shkuratov 2005a Table 1,17.3,11.0,9.84,9.53,17.3,11.0,9.84,9.53,True,,
+,61141,20-45,,,,vs Shkuratov 2005a Table 1,26.1,15.2,5.15,6.56,26.1,15.2,5.15,6.56,True,,
+,62231,20-45,,,,vs Shkuratov 2005a Table 1,25.7,15.3,5.31,6.59,25.7,15.3,5.31,6.59,True,,
+,64801,20-45,,,,vs Shkuratov 2005a Table 1,26.5,15.6,4.82,6.09,26.5,15.6,4.82,6.09,True,,
+,67461,20-45,,,,vs Shkuratov 2005a Table 1,27.3,16.1,4.93,5.11,27.3,16.1,4.93,5.11,True,,
+,67481,20-45,,,,vs Shkuratov 2005a Table 1,26.7,15.6,5.19,5.98,26.7,15.6,5.19,5.98,True,,
+,14141,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,19.8,19.81
+,14141,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,10.9,10.88
+,14141,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,10.3,10.29
+,14163,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,16.2,16.18
+,14163,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,13.8,13.81
+,14163,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,3.8,3.94
+,14260,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,13.7,13.68
+,14260,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,12.1,12.01
+,14260,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,7.7,7.72
+,14259,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,18.2,18.15
+,14259,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,9.1,9.06
+,14259,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,5.9,5.94
+,61221,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,7.4,7.37
+,61221,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,5.3,5.34
+,61221,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,1.5,1.5
+,67461,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,7.3,7.28
+,67461,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,4.1,4.11
+,67461,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,2.8,2.83
+,67481,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,6.6,6.6
+,67481,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,5.6,5.68
+,67481,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,False,3.6,3.89
+,61141,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,4.4,4.35
+,61141,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,False,3.3,5.33
+,61141,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,False,1.7,0.7
+,64801,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,4.5,4.52
+,64801,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,2.8,2.81
+,64801,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,2.7,2.66
+,62231,20-45,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,5.1,5.12
+,62231,10-20,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,False,4.4,5.4
+,62231,<10,,,,Table 2 pyroxene vs Table 3 total (source's own),,,,,,,,,True,0.9,0.88

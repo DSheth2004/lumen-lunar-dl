@@ -1,0 +1,11 @@
+check,value,tol,mode,status,detail
+"D3  H(ssa, mu0) vs released code",0.0,1e-13,abs,PASS,
+D4  ssa->r vs released code,2.220446049250313e-16,1e-13,abs,PASS,"released form ((1+B)P + H*H - 1) with B=0,P=1 equals H*H"
+D1  ssa->r->ssa round trip,2.4447111002245947e-13,1e-09,abs,PASS,
+D4  r(ssa) strictly increasing,-3.349934739778261e-05,0.0,signed,PASS,"no interior turning point, so the bisection root is unique"
+"D3  H(0, mu) == 1",4.440892098500626e-16,1e-12,abs,PASS,
+D4  r(ssa->0) == 0,1.3397459621556146e-16,1e-14,abs,PASS,
+E3-E9  nk->ssa vs released code (9 EM),0.0,1e-13,abs,PASS,
+E2  k->r->k round trip (relative),9.217195010112011e-08,1e-06,abs,PASS,
+C2  sum(f_i) == 1,1.1102230246251565e-16,1e-15,abs,PASS,
+C1  one-hot mixture returns that end-member,0.0,1e-15,abs,PASS,

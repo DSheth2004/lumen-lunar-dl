@@ -1,0 +1,90 @@
+
+==============================================================================
+[step08] controls: recovery, range-dependence, inheritance, Nelder-Mead (tag=full)
+==============================================================================
+  C1 synthetic recovery (1 % noise), mean over seeds:
+                    r2        skill_ratio       
+                  mean    std        mean    std
+iteration param                                 
+1         CPX    0.826  0.018       0.417  0.021
+          Gr     0.317  0.063       0.826  0.038
+          ILM    0.913  0.047       0.288  0.071
+          OLV    0.170  0.096       0.910  0.052
+          OPX    0.057  0.021       0.971  0.011
+          PLG    0.489  0.045       0.714  0.031
+          S      0.604  0.070       0.627  0.055
+          nFe    0.849  0.021       0.387  0.026
+2         CPX    0.346  0.180       0.801  0.121
+          Gr    -0.498  0.355       1.217  0.149
+          ILM    0.457  0.116       0.733  0.077
+          OLV   -0.228  0.137       1.106  0.064
+          OPX   -0.041  0.039       1.020  0.019
+          PLG   -0.037  0.213       1.013  0.113
+          S      0.358  0.105       0.799  0.065
+          nFe    0.615  0.095       0.616  0.079
+3         CPX    0.347  0.161       0.802  0.109
+          Gr    -0.527  0.354       1.228  0.151
+          ILM    0.613  0.138       0.614  0.116
+          OLV   -0.367  0.276       1.164  0.119
+          OPX   -0.059  0.070       1.029  0.034
+          PLG   -0.216  0.281       1.096  0.136
+          S      0.345  0.063       0.808  0.040
+          nFe    0.590  0.057       0.639  0.046
+
+  C2 map medians: real iteration 1 vs no-information net vs shifted ranges
+ control param  map_median  real_iter1_median  sigma_rel_mean  range_midpoint  shifted_midpoint  follows_range
+ shifted   CPX      19.729             24.749           1.988            25.0              25.0            NaN
+ shifted    Gr      42.292             34.039           1.988            30.0              40.0          0.825
+ shifted   ILM       9.976             11.842           1.988            10.0              10.0            NaN
+ shifted   OLV       4.680              1.917           1.988             1.5               5.0          0.789
+ shifted   OPX       4.532              1.229           1.988             1.5               5.0          0.944
+ shifted   PLG      21.299             24.483           1.988            17.5              17.5            NaN
+ shifted     S      30.603             36.242           1.988            60.0              60.0            NaN
+ shifted   nFe       0.123              0.104           1.988             0.1               0.1            NaN
+shuffled   CPX      25.799             24.749          33.059            25.0              25.0            NaN
+shuffled    Gr      30.076             34.039          33.059            30.0              40.0            NaN
+shuffled   ILM      10.089             11.842          33.059            10.0              10.0            NaN
+shuffled   OLV       1.548              1.917          33.059             1.5               5.0            NaN
+shuffled   OPX       1.500              1.229          33.059             1.5               5.0            NaN
+shuffled   PLG      17.990             24.483          33.059            17.5              17.5            NaN
+shuffled     S      59.358             36.242          33.059            60.0              60.0            NaN
+shuffled   nFe       0.099              0.104          33.059             0.1               0.1            NaN
+
+  C2c iteration 3 vs iteration 1 (mean over seeds)
+       median_iter1  median_iter3  iqr_iter1  iqr_iter3  pixel_corr_iter1_iter3
+param                                                                          
+CPX          24.643        23.294      8.526      8.448                   0.982
+Gr           33.963        33.624      0.953      1.183                   0.724
+ILM          11.694        13.087      2.496      2.765                   0.920
+OLV           1.851         1.515      0.618      0.880                   0.674
+OPX           1.288         1.394      0.235      0.295                   0.646
+PLG          25.204        24.355      3.139      3.018                   0.887
+S            35.171        29.947     25.188     32.803                   0.976
+nFe           0.101         0.093      0.043      0.033                   0.979
+
+  C3 ANN vs Nelder-Mead on 1000 pixels
+param   branch  nm_median  ann_median  corr_ann_nm  mean_abs_diff
+    S     mare     43.954      38.714       -0.051         13.914
+    S highland     29.392       6.605        0.922         23.235
+  nFe     mare      0.135       0.103        0.680          0.034
+  nFe highland      0.064       0.068        0.911          0.006
+   Gr     mare     42.796      33.750        0.770          9.101
+   Gr highland     26.427      32.439        0.713          8.862
+  CPX     mare     19.967      21.979       -0.682          6.337
+  CPX highland      7.147      32.377       -0.461         25.440
+  OPX     mare      0.000       1.322       -0.033          1.175
+  OPX highland      2.808       1.630        0.002          1.637
+  OLV     mare      1.691       1.719        0.677          0.870
+  OLV highland      0.000       0.733        0.049          0.786
+  PLG     mare     24.846      23.682        0.714          7.703
+  PLG highland     56.684      26.307        0.763         31.715
+  ILM     mare     11.824      13.862        0.918          2.075
+  ILM highland      9.688      10.752        0.949          1.206
+                                                0
+nm_seconds_per_pixel_single_core           12.941
+nm_extrapolated_scene_hours_single_core   546.379
+nm_sigma_rel_mean                           0.866
+ann_training_minutes_3_iterations           4.635
+ann_mapping_seconds                         0.644
+nm_wall_seconds                          3290.820
+paper_nm_scene_hours                       35.000

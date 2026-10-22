@@ -1,0 +1,19 @@
+
+==============================================================================
+[step07] ANN mapping, three iterations (Tables 12-15)
+==============================================================================
+  numpy forward pass vs torch on identical weights: max |diff| = 2.22e-16
+  seed 0 iteration 2: optimum epoch 10 of 1510, scene-mean sigma_Rel 1.91%, 1.707 s/epoch
+  seed 1 iteration 2: optimum epoch 520 of 2020, scene-mean sigma_Rel 2.58%, 1.623 s/epoch
+  seed 0 iteration 3: optimum epoch 30 of 1530, scene-mean sigma_Rel 1.68%, 1.418 s/epoch
+  seed 1 iteration 3: optimum epoch 80 of 1580, scene-mean sigma_Rel 2.12%, 1.375 s/epoch
+  seed 2 iteration 2: optimum epoch 9990 of 10000, scene-mean sigma_Rel 2.06%, 1.248 s/epoch
+  seed 2 iteration 3: optimum epoch 440 of 1940, scene-mean sigma_Rel 1.85%, 0.734 s/epoch
+          optimal_epoch           sigma_rel_mean  ... sigma_rel_highland t_epoch_s       
+                   mean       std           mean  ...                std      mean    std
+iteration                                         ...                                    
+1               137.333    44.117          3.266  ...              1.073     0.236  0.003
+2              3506.667  5620.519          2.186  ...              0.975     1.526  0.244
+3               183.333   223.681          1.886  ...              0.688     1.176  0.383
+
+[3 rows x 10 columns]

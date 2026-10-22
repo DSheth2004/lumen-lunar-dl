@@ -1,0 +1,38 @@
+
+==============================================================================
+[step02] Paper 1 (Jung 2026) on Copernicus, M3 and IIRS
+==============================================================================
+
+  M3_full: 70 bands 0.581-2.497 um; lab d_dc 0.3560 (d_sw lab 0.1196); scene d_sw 0.0000; 98421/98421 pixels with a depth
+    central          n   3802  d_mix 0.0023  Delta 0.994  I_sm  64.1  R2 0.9799 (5.2 min)
+    floor            n  27070  d_mix 0.0023  Delta 0.994  I_sm  64.1  R2 0.9854 (3.2 min)
+    wall_rim         n  23738  d_mix 0.0129  Delta 0.964  I_sm  57.3  R2 0.9947 (3.7 min)
+    proximal_ejecta  n  43811  d_mix 0.0111  Delta 0.969  I_sm  58.3  R2 0.9799 (4.1 min)
+    scene_fresh      n   6891  d_mix 0.0543  Delta 0.847  I_sm  35.4  R2 0.9819 (3.4 min)
+    M3_full done in 22.1 min
+
+  M3_common: 51 bands 0.850-2.497 um; lab d_dc 0.2250 (d_sw lab 0.0892); scene d_sw 0.0000; 98421/98421 pixels with a depth
+    central          n   3802  d_mix 0.0023  Delta 0.990  I_sm  63.2  R2 0.9923 (2.6 min)
+    floor            n  27070  d_mix 0.0021  Delta 0.991  I_sm  63.4  R2 0.9804 (2.5 min)
+    wall_rim         n  23738  d_mix 0.0127  Delta 0.943  I_sm  52.8  R2 0.9723 (2.5 min)
+    proximal_ejecta  n  43811  d_mix 0.0111  Delta 0.951  I_sm  54.4  R2 0.9907 (2.8 min)
+    scene_fresh      n   6890  d_mix 0.0495  Delta 0.780  I_sm  26.0  R2 0.9888 (2.9 min)
+    M3_common done in 15.0 min
+
+  IIRS_common: 85 bands 0.864-2.499 um; lab d_dc 0.2250 (d_sw lab 0.0892); scene d_sw 0.0000; 98421/98421 pixels with a depth
+    central          n   3802  d_mix 0.0013  Delta 0.994  I_sm  64.3  R2 0.9806 (10.3 min)
+    floor            n  27070  d_mix 0.0008  Delta 0.996  I_sm  64.8  R2 0.9801 (11.4 min)
+    wall_rim         n  23738  d_mix 0.0009  Delta 0.996  I_sm  64.7  R2 0.9756 (10.4 min)
+    proximal_ejecta  n  43811  d_mix 0.0006  Delta 0.997  I_sm  65.0  R2 0.9770 (8.5 min)
+    scene_fresh      n   6890  d_mix 0.0174  Delta 0.923  I_sm  48.6  R2 0.9735 (4.3 min)
+    IIRS_common done in 49.0 min
+
+  IIRS_scaled: 85 bands 0.864-2.499 um; lab d_dc 0.2250 (d_sw lab 0.0892); scene d_sw 0.0000; 98421/98421 pixels with a depth
+    central          n   3802  d_mix 0.0015  Delta 0.993  I_sm  64.1  R2 0.9854 (3.9 min)
+    floor            n  27070  d_mix 0.0009  Delta 0.996  I_sm  64.7  R2 0.9801 (3.1 min)
+    wall_rim         n  23738  d_mix 0.0012  Delta 0.995  I_sm  64.4  R2 0.9647 (3.9 min)
+    proximal_ejecta  n  43811  d_mix 0.0008  Delta 0.997  I_sm  64.9  R2 0.9804 (4.1 min)
+    scene_fresh      n   6890  d_mix 0.0186  Delta 0.917  I_sm  47.6  R2 0.9379 (2.7 min)
+    IIRS_scaled done in 19.8 min
+
+  STEP 02 DONE

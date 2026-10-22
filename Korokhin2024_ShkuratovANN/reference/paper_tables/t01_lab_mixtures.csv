@@ -1,0 +1,4 @@
+mixture,components,source_pct,grain_range_um,S_for_A1_um,restored_pct,restored_S_um,sigma_rel_pct
+1,OLV+PYX,50:50,0-75,38,56:44,32.9,1.6
+2,OLV+PYX+ANO,33:33:33,45-75,45,39:34:27,43.3,1.1
+3,OLV+PYX+MET,40:30:30,45-90,45,40:23:37,39.4,1.0

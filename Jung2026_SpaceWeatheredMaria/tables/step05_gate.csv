@@ -1,0 +1,8 @@
+check,value,threshold,status
+converged: max |R2(MAP) - paper|,0.007344407625191174,0.02,PASS
+converged: ensembles not degenerate,0.7485,0.5,PASS
+converged: min median accepted R2,0.9797158382813735,0.975,PASS
+released: ensembles do collapse (finding D7),0.0105,0.05,PASS
+released: max |R2(MAP) - paper| (informational),0.030044152043488093,,INFO
+released: max |R2(mode) - paper| (informational),0.15075158837021396,,INFO
+converged: max |R2(mode) - paper| (informational),0.09878507805958892,,INFO

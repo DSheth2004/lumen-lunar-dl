@@ -1,0 +1,5 @@
+property,M3,IIRS,identical
+crs,"PROJCS[""unknown"",GEOGCS[""unknown"",DATUM[""unknown"",SPHEROID[""unknown"",1737400,0]],PRIMEM[""Reference meridian"",0],UNIT[""degree"",0.0174532925199433,AUTHORITY[""EPSG"",""9122""]]],PROJECTION[""Equirectangular""],PARAMETER[""standard_parallel_1"",0],PARAMETER[""central_meridian"",0],PARAMETER[""false_easting"",0],PARAMETER[""false_northing"",0],UNIT[""metre"",1,AUTHORITY[""EPSG"",""9001""]],AXIS[""Easting"",EAST],AXIS[""Northing"",NORTH]]","PROJCS[""unknown"",GEOGCS[""unknown"",DATUM[""unknown"",SPHEROID[""unknown"",1737400,0]],PRIMEM[""Reference meridian"",0],UNIT[""degree"",0.0174532925199433,AUTHORITY[""EPSG"",""9122""]]],PROJECTION[""Equirectangular""],PARAMETER[""standard_parallel_1"",0],PARAMETER[""central_meridian"",0],PARAMETER[""false_easting"",0],PARAMETER[""false_northing"",0],UNIT[""metre"",1,AUTHORITY[""EPSG"",""9001""]],AXIS[""Easting"",EAST],AXIS[""Northing"",NORTH]]",True
+transform,"(140.0, 0.0, -628600.0, 0.0, -140.0, 379120.0, 0.0, 0.0, 1.0)","(140.0, 0.0, -628600.0, 0.0, -140.0, 379120.0, 0.0, 0.0, 1.0)",True
+width,311,311,True
+height,1192,1192,True

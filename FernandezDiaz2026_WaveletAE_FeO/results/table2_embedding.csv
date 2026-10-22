@@ -1,0 +1,4 @@
+Representation,Recon RMSE (I/F)
+PCA,0.0014
+ICA,0.0014
+AE,0.0137

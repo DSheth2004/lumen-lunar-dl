@@ -1,0 +1,23 @@
+check,value,tol,status
+A1 joint pixel count (independent) - stored,0.0,0.0,PASS
+"A2 IIRS scale factor, independent - stored",0.0,1e-09,PASS
+"A3 970-nm depth M3_full, max |diff|",7.267099588759152e-09,1e-05,PASS
+"A4 1550-nm ilmenite M3_full, max |diff| wt%",1.4963250833943675e-06,0.0001,PASS
+"A3 970-nm depth M3_common, max |diff|",7.267099588759152e-09,1e-05,PASS
+"A4 1550-nm ilmenite M3_common, max |diff| wt%",1.5400709401092172e-06,0.0001,PASS
+"A3 970-nm depth IIRS_common, max |diff|",3.5716463120394337e-09,1e-05,PASS
+"A4 1550-nm ilmenite IIRS_common, max |diff| wt%",7.348428638920268e-07,0.0001,PASS
+"A3 970-nm depth IIRS_scaled, max |diff|",2.4865841607990546e-09,1e-05,PASS
+"A4 1550-nm ilmenite IIRS_scaled, max |diff| wt%",7.348428638920268e-07,0.0001,PASS
+A5 M3_common bands outside common range (count),0.0,0.0,PASS
+A5 M3_common band order strictly increasing (positional),0.0,0.0,PASS
+A5 negative control: shuffled M3_common must fail the order check,0.0,0.0,PASS
+A5 IIRS_common bands outside common range (count),0.0,0.0,PASS
+A5 IIRS_common band order strictly increasing (positional),0.0,0.0,PASS
+A5 negative control: shuffled IIRS_common must fail the order check,0.0,0.0,PASS
+A6 maps with values outside the joint mask (of 44),0.0,0.0,PASS
+A7 M3_full sigma_Rel of seed-median params (%) vs per-seed 1.43-1.62,1.744,0.0,PASS
+A7 M3_common sigma_Rel of seed-median params (%) vs per-seed 1.33-1.73,1.579,0.0,PASS
+A7 IIRS_common sigma_Rel of seed-median params (%) vs per-seed 3.26-3.41,3.579,0.0,PASS
+A7 IIRS_scaled sigma_Rel of seed-median params (%) vs per-seed 2.93-3.33,3.808,0.0,PASS
+A8 inputs unchanged,0.0,0.0,PASS

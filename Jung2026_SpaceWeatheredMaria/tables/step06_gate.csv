@@ -1,0 +1,8 @@
+check,value,tol,status,threshold
+Delta from the paper's own d values,0.0014545454545454861,0.002,PASS,
+theta_sw from the paper's own d values,0.0011858108385365551,0.002,PASS,
+I_sm from the paper's own d values,0.11858108385365185,0.2,PASS,
+ROI d_mix vs paper (informational),0.008335921562252796,,INFO,
+ROI d_sw vs paper (informational),0.03094508819125301,,INFO,
+ROI I_sm vs paper (informational),6.482755804037035,,INFO,
+ROI R2 MAP vs paper (informational),0.016603095751205665,,INFO,

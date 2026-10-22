@@ -1,0 +1,6 @@
+gate,value,tolerance,pass
+G1 tau_Gr = Table 5 to printed rounding,0.0003700343375309667,0.0005,True
+G2 A -> tau -> A round trip,1.539879335155092e-13,1e-10,True
+G3 lossless medium has albedo 1,0.0,1e-12,True
+G4 basis spectrum survives k-conversion + mixture,9.325873406851315e-15,1e-10,True
+G5 albedo decreases with S and with nFe,0.0,0.0,True

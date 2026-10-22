@@ -1,0 +1,3 @@
+# Byte-exact storage: every project checks its data/ against a SHA-256 manifest,
+# so no end-of-line conversion anywhere.
+* -text

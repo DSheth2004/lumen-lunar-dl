@@ -1,0 +1,41 @@
+
+==============================================================================
+[step10] LSCC mare soils: retrieved vs measured mineralogy and maturity
+==============================================================================
+  10084 <10    S   30.5  nFe 0.093  props fit   12    0   15   57   15 | true   20    7    3   55   16  (sigma_Rel 0.72%)
+  10084 10-20  S   39.3  nFe 0.129  props fit   28    0   24   24   24 | true   24   11    3   48   15  (sigma_Rel 0.87%)
+  10084 20-45  S   56.9  nFe 0.137  props fit   39    0   33    0   28 | true   29   11    3   41   16  (sigma_Rel 1.27%)
+  12001 <10    S   37.6  nFe 0.073  props fit    6    6    4   76    8 | true   16   25    7   47    5  (sigma_Rel 0.75%)
+  12001 10-20  S   52.5  nFe 0.107  props fit   15   14   19   38   15 | true   22   25   11   37    5  (sigma_Rel 0.97%)
+  12001 20-45  S   76.6  nFe 0.131  props fit   21   18   26   17   18 | true   24   25    9   35    7  (sigma_Rel 1.07%)
+  12030 <10    S   27.6  nFe 0.037  props fit    4   11    4   72    8 | true   16   24    6   46    8  (sigma_Rel 0.56%)
+  12030 10-20  S   35.8  nFe 0.055  props fit   15   32   25   12   16 | true   20   31    9   33    8  (sigma_Rel 0.73%)
+  12030 20-45  S   56.0  nFe 0.075  props fit   18   38   37    0    7 | true   26   34    8   27    5  (sigma_Rel 0.75%)
+  15041 <10    S   37.6  nFe 0.076  props fit    1   10    5   77    6 | true    8   13    2   73    3  (sigma_Rel 0.73%)
+  15041 10-20  S   61.0  nFe 0.114  props fit   13   14   15   42   15 | true   18   29    7   45    2  (sigma_Rel 0.95%)
+  15041 20-45  S   83.0  nFe 0.135  props fit   13   18   25   23   20 | true   19   34    8   36    3  (sigma_Rel 1.06%)
+  15071 <10    S   41.3  nFe 0.073  props fit    5    9    3   76    7 | true   11   22    6   59    4  (sigma_Rel 0.66%)
+  15071 10-20  S   55.7  nFe 0.102  props fit   10   19   19   38   14 | true   17   24    7   48    4  (sigma_Rel 0.88%)
+  15071 20-45  S   70.6  nFe 0.117  props fit    5   27   26   28   14 | true   19   29    8   39    4  (sigma_Rel 0.87%)
+  70181 <10    S   32.8  nFe 0.083  props fit    5    3    6   75   10 | true    8    8   11   62   11  (sigma_Rel 0.75%)
+  70181 20-45  S   42.4  nFe 0.145  props fit   38    8   25    3   26 | true   21   14    8   37   20  (sigma_Rel 0.86%)
+  71061 <10    S   26.7  nFe 0.052  props fit    0    0    0   88   12 | true   12   10   10   48   20  (sigma_Rel 1.42%)
+  71061 10-20  S   56.7  nFe 0.089  props fit   20    1    9   43   28 | true   17   13   11   36   23  (sigma_Rel 0.90%)
+  71061 20-45  S   69.3  nFe 0.051  props fit   35    3   21    6   35 | true   26   16    8   29   21  (sigma_Rel 0.67%)
+  71501 <10    S   46.1  nFe 0.082  props fit   14    0    0   74   12 | true   12   10    8   51   19  (sigma_Rel 0.56%)
+  71501 10-20  S   46.9  nFe 0.113  props fit   31    0   13   32   24 | true   16   13    7   43   21  (sigma_Rel 0.81%)
+  71501 20-45  S   53.3  nFe 0.116  props fit   55    0   15    0   30 | true   25   14    7   31   23  (sigma_Rel 0.94%)
+  79221 <10    S   24.8  nFe 0.089  props fit    0    6   17   65   12 | true    5    7    7   63   18  (sigma_Rel 0.80%)
+  79221 10-20  S   32.4  nFe 0.138  props fit    7   13   35   23   21 | true   14   13   10   46   17  (sigma_Rel 0.92%)
+  79221 20-45  S   45.0  nFe 0.144  props fit   22   16   36    0   26 | true   19   12   11   40   17  (sigma_Rel 0.87%)
+
+  mineral proportions, n = 9 soils (per-soil mean over fractions):
+mineral  n_soils  mae_fit  mae_mean_of_others  bias_fit  spearman_fit_vs_true  true_mean  fit_mean  fit_beats_baseline
+    CPX        9     6.44                3.18     -0.84                  0.38      17.73     16.89               False
+    OPX        9     8.08                8.28     -7.82                  0.80      17.91     10.09                True
+    OLV        9     9.93                1.84      9.93                 -0.05       7.57     17.49               False
+    PLG        9     9.24                5.97     -6.48                  0.33      44.62     38.14               False
+    ILM        9     5.21                7.53      5.21                  0.75      12.18     17.39                True
+
+  grain size: S rises with the sieve fraction in 8 of 8 soils; Spearman(S, fraction) = 0.75
+  maturity: Spearman(c_nFe, Is/FeO) per fraction: 10-20 0.67, 20-45 0.85, <10 0.57

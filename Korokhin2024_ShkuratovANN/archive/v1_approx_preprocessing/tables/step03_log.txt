@@ -1,0 +1,24 @@
+
+==============================================================================
+[step03] basis set, end-member identities, Table 7 (agglutinate)
+==============================================================================
+  CPX c1lr215  70017,535 deep-brown pyroxene D <45 um   | Silicate (Ino), Pyroxene Clinopyroxene Augite, Mineral separate from A
+  OPX c1lr220  70035,188 light-brown pyroxene D <45 um  | Silicate (Ino), Pyroxene Clinopyroxene Pigeonite, Mineral separate fro
+  OLV c1lr212  15555,965 olivine D <45 um               | Silicate (Neso), Olivine , Mineral separate from Apollo 15 basalt (LRM
+  PLG c1lr217  70017,535 plagioclase D <45 um           | Silicate (Tecto), Feldspar Plagioclase, Mineral separate from Apollo 1
+  ILM c1lr218  70017,535 ilmenite D <45 um              | Oxide, Ilmenite, Mineral separate from Apollo 17 basalt (LRMCC)
+
+  Table 7 (LS-CMP-045)   ours     paper
+    S            50.9096   57.1000
+    nFe           0.0527    0.0520
+    Gr           17.4568   17.2900
+    CPX           8.2127    7.9100
+    OPX           0.0000    0.0000
+    OLV           3.8746    3.5400
+    PLG           5.1705    6.0900
+    ILM           9.2029    3.1900
+    sum_c        43.9175   38.0200
+    sigma         0.0009    0.0009
+    sigma_rel     1.5792    1.5500
+  <A> over 0.30-2.60 um: 0.05674 (implied by the paper's sigma/sigma_Rel: 0.05677)
+  89 s, 175031 function evaluations

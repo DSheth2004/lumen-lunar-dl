@@ -1,0 +1,23 @@
+relab_id,relab_code,specimen,size_min_um,size_max_um,incidence_deg,emission_deg,specimen_type,material_type,n_bands,lam_min_um,lam_max_um
+c0ls152,LS-BWD-152,79221 agglutinates 125-250 um (magnetically-separated and hand-picked),125,250,30,0,Returned Lunar Sample,Unconsolidated Mixture,224,0.32,2.55
+c1lr10,LR-CMP-010,"12001,853",20,44,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr12,LR-CMP-012,"15041,210",20,44,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr15,LR-CMP-015,"10084,1946",20,40,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr152,LR-CMP-152,"15058,276 bulk B <125 um",0,125,30,0,Returned Lunar Sample,Rock,465,0.28,2.6
+c1lr154,LR-CMP-154,"15555,965 bulk <125 um",0,125,30,0,Returned Lunar Sample,Rock,465,0.28,2.6
+c1lr156,LR-CMP-156,"70017,535 bulk <125 um",0,125,30,0,Returned Lunar Sample,Rock,465,0.28,2.6
+c1lr158,LR-CMP-158,"70035,188 bulk <125 um",0,125,30,0,Returned Lunar Sample,Rock,465,0.28,2.6
+c1lr169,LR-CMP-169,"15555,965 olivine B",0,125,30,0,Returned Lunar Sample,Mineral,461,0.3,2.6
+c1lr17,LR-CMP-017,"79221,103",20,40,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr176,LR-CMP-176,"70017,535 light-brown pyroxene B",0,125,30,0,Returned Lunar Sample,Mineral,465,0.28,2.6
+c1lr177,LR-CMP-177,"70017,535 plagioclase B",0,125,30,0,Returned Lunar Sample,Mineral,465,0.28,2.6
+c1lr178,LR-CMP-178,"70017,535 ilmenite",0,125,30,0,Returned Lunar Sample,Mineral,465,0.28,2.6
+c1lr179,LR-CMP-179,"70035,188 deep-brown pyroxene B",0,125,30,0,Returned Lunar Sample,Mineral,465,0.28,2.6
+c1lr20,LR-CMP-020,"15071,156",20,40,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr23,LR-CMP-023,"70181,136",20,44,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr28,LR-CMP-028,"71501,226",20,44,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr32,LR-CMP-032,"12030,144",20,44,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1lr51,LR-CMP-051,"74220,806",,,30,0,Returned Lunar Sample,Amorphous,461,0.3,2.6
+c1lr57,LR-CMP-057,"71061,158",20,45,30,0,Returned Lunar Sample,Unconsolidated Mixture,461,0.3,2.6
+c1sc50,SC-EAC-050,Glass of L19 (-049),45,90,30,0,Synthetic Sample,Amorphous,461,0.3,2.6
+c1sc53,SC-EAC-053,Glass of L22,45,90,30,0,Synthetic Sample,Amorphous,461,0.3,2.6

@@ -1,0 +1,91 @@
+# ==============================================================================
+# Centralized Pipeline Configuration — Fernández-Díaz et al. (Mathematics 2026)
+# ==============================================================================
+
+data:
+  pds_l2_base_url: "https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0004/DATA/"
+  pds_loc_base_url: "https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0003/DATA/"
+  md5_l2_url: "https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0004_md5.txt"
+  md5_loc_url: "https://pds-imaging.jpl.nasa.gov/data/m3/CH1M3_0003_md5.txt"
+  sis_url: "https://planetarydata.jpl.nasa.gov/img/data/m3/CH1M3_0004/DOCUMENT/ARCHSIS.PDF"
+  lp_grs_url: "https://pds-geosciences.wustl.edu/lunar/lp-l-grs-5-elem-abundance-v1/lp_9001/data/"
+  
+  raw_dir: "data/raw"
+  intermediate_dir: "data/intermediate"
+  processed_dir: "data/processed"
+  ground_truth_file: "data/processed/ground_truth/ground_truth_50.csv"
+  manifest_file: "manifests/m3_global_mode_manifest.csv"
+
+preprocessing:
+  raw_bands: 85
+  excluded_bands: [0, 1]     # First two shortest-wavelength channels
+  used_bands: 83             # 475–3000 nm
+  snr_threshold: 30.0        # Signal-to-noise ratio cutoff
+  max_reflectance: 1.5
+
+wavelet:
+  family: "db4"
+  level: 2
+  mode: "periodization"      # Yields A2(21), D2(21), D1(42)
+  retained_dim: 42           # |A2| + |D2| = 21 + 21
+  benchmark_5m_count: 5000000
+
+autoencoder:
+  input_dim: 42
+  hidden_dims: [64, 32]
+  latent_dim: 12
+  activation: "LeakyReLU"
+  leaky_relu_slope: 0.01
+  dropout_rate: 0.1
+  batch_norm: true
+  latent_activation: "linear"
+  weight_init: "xavier_uniform"
+  
+  optimizer: "Adam"
+  lr: 0.0005
+  adam_betas: [0.9, 0.999]
+  weight_decay: 0.00001      # lambda = 1e-5
+  batch_size: 128
+  early_stopping_patience: 20
+  max_epochs: 500
+  validation_fraction: 0.1
+  benchmark_1m_count: 1000000
+  dimension_sweep: [4, 5, 6, 7, 8, 10]
+
+regression:
+  n_samples_total: 50
+  n_train_val: 45
+  n_test: 5
+  cv_folds: 10
+  seed: 42
+
+robustness:
+  k_levels: [0.0, 0.5, 1.0, 2.0]
+  rmse_ae_reference: 0.0092
+
+inference:
+  batch_size: 65536
+  shards_dir: "results/orbit_shards"
+  grid_resolution_deg: 0.005  # ~150 m at equator
+  projection: "equirectangular"
+  output_geotiff: "maps/global_feo_map.tif"
+
+paths:
+  checkpoints: "checkpoints"
+  results: "results"
+  figures: "figures"
+  maps: "maps"
+  logs: "logs"
+
+iirs:
+  input_dir: "Studen1_INPUTdata_IIRS"
+  raw_tif: "Studen1_INPUTdata_IIRS/IIRS_Copernicus_EQC_140m_86bands.tif"
+  smoothed_tif: "Studen1_INPUTdata_IIRS/IIRS_Copernicus_140m_86bands_segmentwise_five_band_blended_smoothed.tif"
+  continuum_tif: "Studen1_INPUTdata_IIRS/IIRS_Copernicus_140m_86bands_segmentwise_continuum_removed.tif"
+  mask_tif: "Studen1_INPUTdata_IIRS/IIRS_final_artifact_guarded_valid_mask.tif"
+  wavelengths_csv: "Studen1_INPUTdata_IIRS/IIRS_Copernicus_86band_wavelengths_nm.csv"
+  band1_dir: "Studen1_INPUTdata_IIRS/Band 1 data"
+  band2_dir: "Studen1_INPUTdata_IIRS/Band 2 data"
+  output_feo_tif: "maps/iirs_copernicus_feo.tif"
+  output_m3_copernicus_tif: "maps/m3_copernicus_feo.tif"
+  output_diff_tif: "maps/copernicus_feo_difference_iirs_minus_m3.tif"

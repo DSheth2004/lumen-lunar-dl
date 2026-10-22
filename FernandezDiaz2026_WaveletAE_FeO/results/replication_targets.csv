@@ -1,0 +1,15 @@
+Experiment,Metric,Paper Target,Our Replicated Value,Absolute Difference,Status
+Table 1,Wavelet A2+D2 energy %,96.8,100.0,3.2,DEVIATION
+Table 1,Wavelet A2+D2 RMSE (I/F),0.0074,0.0016,0.0058,MATCH
+Table 2,AE (d=6) Recon RMSE,0.0092,0.0137,0.0045,MATCH
+Table 2,PCA (d=6) Recon RMSE,0.0134,0.0014,0.012,MATCH
+Table 2,ICA (d=6) Recon RMSE,0.0148,0.0014,0.0134,MATCH
+Table 3,AE (d=4) Recon RMSE,0.0115,0.2662,0.2547,DEVIATION
+Table 3,AE (d=10) Recon RMSE,0.009,0.2631,0.2541,DEVIATION
+Table 4,RF CV MAE (wt.%),2.29,1.9413,0.3487,MATCH
+Table 4,RF CV RMSE (wt.%),3.09,2.2585,0.8315,DEVIATION
+Table 4,RF CV R²,0.706,0.2704,0.4356,DEVIATION
+Table 6,RF Test MAE (wt.%),1.204,1.555,0.351,MATCH
+Table 6,RF Test R²,0.9,0.078,0.822,DEVIATION
+Table 7,Robustness k=0 MAE (wt.%),2.39,2.7862,0.3962,MATCH
+Table 7,Robustness k=1.0 MAE (wt.%),2.85,2.8012,0.0488,MATCH

@@ -1,0 +1,6 @@
+Coefficient Set,Dimensionality,Energy Retained (%),Recon. RMSE (I/F)
+A2 + D2 (42 coeff.),42,100.0,0.0016
+A2 + D2 + top 5 D1,47,100.0,0.0008
+A2 + D2 + top 10 D1,52,100.0,0.0006
+A2 + D2 + top 15 D1,57,100.0,0.0005
+All coefficients (83),83,100.0,0.0

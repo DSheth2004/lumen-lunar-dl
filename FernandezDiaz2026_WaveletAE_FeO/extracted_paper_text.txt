@@ -1,0 +1,1133 @@
+Academic Editor: Jonathan
+Blackledge
+Received: 17 December 2025
+Revised: 5 January 2026
+Accepted: 7 January 2026
+Published: 9 January 2026
+Copyright: © 2026 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed under the terms and
+conditions of the Creative Commons
+Attribution (CC BY) license.
+Article
+Global Lunar FeO Mapping via Wavelet–Autoencoder Feature
+Learning from M3 Hyperspectral Data
+Julia Fernández–Díaz 1,2,*
+, Fernando Sánchez Lasheras 1
+, Javier Gracia Rodríguez 1
+,
+Santiago Iglesias Álvarez 1
+, Antonio Luis Marqués Sierra 1
+and Francisco Javier de Cos Juez 1,2
+1
+Institute of Space Sciences and Technologies of Asturias (ICTEA), Independencia 13,
+33004 Oviedo, Asturias, Spain; sanchezfernando@uniovi.es (F.S.L.); graciajavier@uniovi.es (J.G.R.);
+iglesiassantiago@uniovi.es (S.I.Á.); marquesantonio@uniovi.es (A.L.M.S.); fjcos@uniovi.es (F.J.d.C.J.)
+2
+Department of Mining Exploitation and Prospecting, Oviedo University, C. San Francisco, 3,
+33003 Oviedo, Asturias, Spain
+*
+Correspondence: fernandezjulia@uniovi.es; Tel.: +34-625-611-253
+Abstract
+Accurate global mapping of lunar iron oxide (FeO) abundance is essential for understanding
+the Moon’s geological evolution and for supporting future in situ resource utilization
+(ISRU). While hyperspectral data from the Moon Mineralogy Mapper (M3) provide a
+unique combination of high spectral dimensionality, hectometre-scale spatial resolution,
+and near-global coverage, existing FeO retrieval approaches struggle to fully exploit the
+high dimensionality, nonlinear spectral variability, and planetary-scale volume of the Global
+Mode dataset. To address these limitations, we present an integrated machine learning
+pipeline for estimating lunar FeO abundance from M3 hyperspectral observations. Unlike
+traditional methods based on raw reflectance or empirical spectral indices, the proposed
+framework combines Discrete Wavelet Transform (DWT), deep autoencoder-based feature
+compression, and ensemble regression to achieve robust and scalable FeO prediction. M3
+spectra (83 bands, 475–3000 nm) are transformed using a Daubechies-4 (db4) DWT to extract
+42 representative coefficients per pixel, capturing the dominant spectral information while
+filtering high-frequency noise. These features are further compressed into a six-dimensional
+latent space via a deep autoencoder and used as input to a Random Forest regressor, which
+outperforms kernel-based and linear Support Vector Regression (SVR) as well as Lasso
+regression in predictive accuracy and stability. The proposed model achieves an average
+prediction error of 1.204 wt.% FeO and demonstrates consistent performance across diverse
+lunar geological units. Applied to 806 orbital tracks (approximately 3.5 × 109 pixels),
+covering more than 95% of the lunar surface, the pipeline produces a global FeO abundance
+map at 150 m per pixel resolution. These results demonstrate the potential of integrating
+multiscale wavelet representations with nonlinear feature learning to enable large-scale,
+geochemically constrained planetary mineral mapping.
+Keywords: Lunar FeO estimation; Moon Mineralogy Mapper (M3); hyperspectral data;
+wavelet transform; autoencoder; Random Forest; in-situ resource utilization (ISRU); planetary
+mineral mapping
+MSC: 68T07
+Mathematics 2026, 14, 254
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+2 of 20
+1. Introduction
+Iron oxide (FeO) is one of the most abundant and geochemically informative com-
+ponents of the lunar surface, providing essential constraints on the Moon’s geological
+evolution, mantle heterogeneity, and magmatic processes [1–3]. Accurate mapping of
+FeO concentration also plays a critical role in mission planning for future in situ resource
+utilization (ISRU), as Fe-rich regions may enable the extraction of metals, oxygen, and other
+consumables required for sustained lunar presence [4–6].
+Traditional global FeO estimation approaches, originally developed using Clementine
+UVVIS [2] and Lunar Prospector gamma-ray spectrometry [7], have provided essential first-
+order constraints on lunar surface chemistry. However, their limited spectral dimensionality
+and kilometre-scale spatial resolution restrict their ability to resolve fine-scale mineralogical
+heterogeneity [2,8]. The Moon Mineralogy Mapper (M3) onboard Chandrayaan-1 sub-
+stantially advanced lunar compositional studies by providing near-global hyperspectral
+observations in the visible to shortwave infrared range, with a spatial resolution of approxi-
+mately 150 m per pixel in Global Mode [9,10]. Despite this progress, accurately exploiting
+the full M3 Global Mode dataset at planetary scale remains a significant challenge, owing
+to its high dimensionality, nonlinear spectral variability, and sheer data volume exceeding
+3.5 × 109 spectra.
+To address these challenges, a variety of machine learning approaches have been
+applied to M3 data, including Random Forest regression, Support Vector Regression, and
+convolutional neural networks [5,11,12]. In parallel, dimensionality-reduction techniques
+such as Principal Components Analysis (PCA) and Independent Component Analysis
+(ICA) have been used to mitigate spectral redundancy [5], while wavelet transforms and
+autoencoders have been explored for multiscale spectral compression and nonlinear fea-
+ture learning [4]. However, these methods have typically been employed in isolation or
+demonstrated on regional subsets, limiting their ability to jointly address noise suppression,
+nonlinear spectral–chemical relationships, and scalability to the full global M3 dataset. As
+a result, a unified and scalable framework that integrates multiscale signal processing with
+nonlinear representation learning for quantitative global FeO retrieval remains lacking.
+In this study, we address this gap by proposing a three-stage processing pipeline
+designed specifically for the scale and complexity of the M3 Global Mode dataset. The ap-
+proach combines wavelet-based multiscale spectral analysis with deep autoencoder-based
+feature learning in a self-supervised setting, followed by supervised regression calibrated
+using laboratory FeO measurements from returned lunar samples. By decoupling represen-
+tation learning from geochemical calibration, the framework enables robust exploitation
+of the full hyperspectral information content while maintaining computational scalability.
+The outcome is a globally consistent FeO abundance map at 150 m per pixel resolution,
+providing new insights into lunar surface composition and supporting future exploration
+and ISRU activities.
+2. Materials and Methods
+This section describes the data sources and the processing pipeline developed to esti-
+mate and map FeO concentrations on the lunar surface using hyperspectral observations.
+The methodological workflow comprises three sequential stages: first, multiscale spectral
+compression via a two-level wavelet transform; second, nonlinear feature learning using a
+deep autoencoder; and finally, supervised regression based on compact latent representa-
+tions and laboratory ground truth. This modular design decouples unsupervised feature
+learning from supervised calibration, improving scalability, interpretability, and robustness
+to limited ground-truth data. The subsections below follow this sequence, detailing each
+component of the pipeline and the evaluation framework used throughout the study.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+3 of 20
+2.1. Dataset and Preprocessing Overview
+This study employs hyperspectral reflectance data acquired by the Moon Mineralogy
+Mapper (M3) instrument onboard the Chandrayaan-1 mission. M3 provides calibrated,
+photometrically corrected reflectance (I/F) measurements across 430–3000 nm with high
+radiometric stability and well-characterized noise performance [13]. We use the Level 2
+(L2) reflectance products together with their corresponding Level 1B (L1B) geolocation files,
+both obtained from the Planetary Data System (PDS) Imaging Node.
+The L2 data cubes contain unitless reflectance values corrected to standard illumination
+geometry, whereas the L1B files provide pixel-level latitude, longitude, and spacecraft
+geometry in the Mean Earth/Polar Axis coordinate system. These paired datasets enable
+the construction of spatially reliable hyperspectral observations suitable for large-scale
+compositional analysis and model training.
+2.1.1. Data Source and Processing Level
+The L2 products used here represent top-of-exosphere reflectance derived from L1B
+radiance through radiometric calibration, stray-light removal, and photometric normaliza-
+tion based on the Apollo 16 standard and a MODTRAN-based solar irradiance model [14].
+Reflectances are stored in 32-bit floating-point format, where a value of 1.0 corresponds
+to 100% reflectance. Although M3 nominally operated from a 100 km orbit, a substantial
+fraction of the global-mode dataset was acquired from ∼200 km altitude, slightly reducing
+spatial resolution but not affecting spectral fidelity [15].
+The associated L1B location (LOC.fits) files supply per-pixel geodetic coordinates
+and observing geometry, allowing accurate geolocation and consistent spatial registration
+across orbital tracks.
+2.1.2. Data Structure, Selection, and Preprocessing
+The full dataset comprises 806 global-mode orbits, with each orbit containing
+approximately 8 × 106 spatial pixels.
+Following instrument-team recommendations
+due to persistently low signal levels [15], the two shortest wavelength channels were
+excluded.
+Consequently, each pixel is represented by 83 valid reflectance samples
+spanning the spectral range of 475–3000 nm, resulting in a global repository of over
+3.5 × 109 hyperspectral spectra.
+Since the L2 reflectance spectra are already photometrically normalised by the standard
+M3 calibration pipeline, no additional spectral normalisation was applied in this study.
+The preprocessing was thus restricted to a quality-control filtering step to ensure data
+integrity. Pixels flagged by the M3 pipeline as having a low signal-to-noise ratio (SNR < 30),
+belonging to non-illuminated surface regions, or exhibiting detector saturation at long
+wavelengths were systematically excluded from subsequent analysis.
+No spectral resampling, band interpolation, or orbital mosaicking was performed,
+thereby preserving the native spectral and spatial characteristics of the M3 Global Mode
+observations. The resulting curated set of valid spectra served as the direct input for the
+multiscale compression and representation-learning stages described in Section 2.2.
+2.2. Wavelet-Based Spectral Compression
+We use the Level-2 (L2) M3 reflectance products described in Section 2.1 as the input
+spectra for wavelet analysis. Each L2 spectrum comprises 83 calibrated reflectance values
+(475–3000 nm) sampled at native M3 band centres. To obtain a compact multiscale repre-
+sentation that separates continuum-scale variation from fine-scale fluctuations, we apply a
+two-level discrete wavelet transform (DWT) based on the Daubechies-4 (db4) orthonormal
+filter bank.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+4 of 20
+The choice of a wavelet-based representation is motivated by the multiscale nature
+of lunar hyperspectral data, where broad continuum variations coexist with narrower ab-
+sorption features (e.g., the ∼1 µm Fe2+ band). Wavelets provide a localized time–frequency
+decomposition that preserves such features while isolating noise, which often dominates
+the finest scales. The Daubechies-4 wavelet was selected for its compact support and
+adequate smoothness, which balance spectral leakage and feature localization properties
+widely adopted in remote-sensing spectral analysis [16]. A two-level decomposition was
+empirically found to retain > 96% of the signal energy while discarding high-frequency
+coefficients known to be noise-dominated in M3 data [15].
+For completeness, the continuous wavelet transform (CWT) of a signal f (t) is
+Wf (a, b) =
+1
+p
+|a|
+Z ∞
+−∞f (t) ψ
+t −b
+a
+
+dt,
+(1)
+where f (t) denotes the reflectance spectrum as a function of the band index t, ψ is the
+mother wavelet, a is the scale parameter, and b is the translation parameter. For sampled
+data, we employ the discrete multiresolution pipeline of Mallat [17] and its standard dyadic
+filter-bank implementation.
+The DWT is implemented through the db4 scaling and wavelet filters h and g. Starting
+from the sampled spectrum A0 = f, the level-wise approximation and detail coefficients
+are produced by the standard filter–downsample scheme:
+Aj[k] = ∑
+n
+Aj−1[n] h(2k −n),
+(2)
+Dj[k] = ∑
+n
+Aj−1[n] g(2k −n).
+(3)
+where k and n are discrete indices, h and g are the db4 scaling and wavelet filters, and A0
+corresponds to the original sampled spectrum.
+For two decomposition levels (L = 2) the transform yields the set (A2, D2, D1), which
+preserves the input dimensionality (here 83 coefficients in total). In our implementation the
+partition typically yields |A2| = 21, |D2| = 21, |D1| = 41.
+Interpretatively, A2 encodes the low-frequency continuum and broad albedo varia-
+tions; D2 captures intermediate-scale absorption-related morphology (e.g., the Fe2+ band
+near 1 µm); and D1 represents the finest-scale structures. As noted earlier, fine-scale
+coefficients (D1) are known to be dominated by noise in hyperspectral remote-sensing
+data [16,18].
+The theoretical role of fine-scale coefficients in multiresolution signal analysis is re-
+viewed in [19].
+Given these properties, we retain the full A2 and D2 coefficient sets (42 coefficients) as
+the compact representation for downstream learning and discard the high-frequency D1
+coefficients (41 coefficients). This choice is physically justified: while the low-frequency
+approximation coefficients (A2) represent the spectral background (continuum and albedo),
+the intermediate-frequency detail coefficients (D2) capture the morphology of absorption
+features diagnostic of mafic minerals, including the Fe2+ band near 1 µm that is essential
+for FeO estimation. Thus, discarding only the noise-dominated D1 coefficients preserves
+both the continuum shape and the diagnostically relevant mafic-absorption structure.
+This approach is consistent with classical wavelet-denoising principles, where fine-scale
+coefficients are expected to be the noisiest and least stable across acquisition conditions.
+A quantitative comparison of alternative coefficient–selection strategies was performed
+using a stratified sample of 5,000,000 M3 spectra. The comparison was based on unsu-
+pervised metrics: the percentage of retained signal energy and the spectral reconstruction
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+5 of 20
+RMSE after inverse DWT (see Section 3.1). These results confirmed that the (A2, D2) subset
+offers the most favourable balance between information retention and reconstruction fi-
+delity. The impact of this selection on FeO prediction accuracy is evaluated separately in
+the supervised regression stage (Section 2.4).
+Having established the 42-coefficient multiscale representation based on the physically
+motivated selection of the A2 and D2 families, we next learn a nonlinear embedding capable
+of capturing spectral variability beyond the scope of linear subspace models.
+2.3. Nonlinear Spectral Embedding via Autoencoder
+Following discrete-wavelet compression (Section 2.2), each pixel is represented by
+a 42-dimensional coefficient vector corresponding to the full A2 + D2 set. To capture
+nonlinear spectral variation that cannot be represented adequately by linear subspaces,
+we learn a parametric nonlinear embedding using a deep autoencoder. The autoencoder
+implements an encoder fθ : R42 →Rd and a decoder gϕ : Rd →R42 parametrised by
+weights θ, ϕ; in this work d = 6 (see justification below).
+Let X = {xi ∈R42}N
+i=1 be the set of DWT coefficient vectors extracted from the L2
+spectra. The encoder and decoder are feed-forward neural networks with parameters θ and
+ϕ, respectively. The reconstruction map is
+ˆxi = rθ,ϕ(xi) = gϕ
+ fθ(xi)
+
+.
+We optimise the regularised mean-squared reconstruction loss
+L(θ, ϕ) =
+1
+N
+N
+∑
+i=1
+∥xi −ˆxi∥2
+2 + λ
+ ∥θ∥2
+2 + ∥ϕ∥2
+2
+
+,
+(4)
+Equation (4) defines the regularized reconstruction loss used to train the autoencoder.
+The first term is the mean squared error (MSE) between the input wavelet coefficients xi and
+their reconstructions ˆxi, ensuring fidelity in the latent representation. The second term is an
+L2 weight decay regularizer with strength λ, applied to all trainable parameters θ (encoder
+weights) and ϕ (decoder weights). This regularizer penalizes large weights, improving
+generalization and stabilizing the learned embedding. The value λ = 10−5 was selected
+via a coarse search over {10−3, 10−4, 10−5, 10−6} using a held-out validation subset, aiming
+to balance reconstruction accuracy and model simplicity without overfitting.
+Optimisation uses Adam (learning rate 10−3), mini-batches of size 256, and early stop-
+ping on a validation split (patience 12). The encoder was considered converged when the
+validation reconstruction loss did not improve for 12 consecutive epochs (early-stopping
+patience = 12), at which point its weights were frozen and used for all subsequent su-
+pervised regression. Hidden layers employ LeakyReLU activations with negative slope
+α = 0.01.
+The encoder–decoder architecture is symmetric with the following layer widths:
+42 →32 →16 →6
+(latent)
+→16 →32 →42.
+Batch normalisation is applied after each hidden affine transform and before LeakyReLU.
+The latent layer is linear (no activation) to preserve signed coefficient information. The
+model contains O(104) parameters.
+The symmetric architecture with intermediate dimensions 32 and 16 was chosen to
+enable a gradual reduction from the 42 wavelet coefficients to the 6-dimensional latent
+space, allowing the network to learn hierarchical representations without compressing
+information too abruptly. This design balances representational capacity and parameter
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+6 of 20
+efficiency, reducing the risk of overfitting to noise present in the unsupervised training
+data. Hyperparameters including dropout rate (p = 0.3), weight decay (λ = 10−5), early
+stopping patience (12), learning rate (10−3), and LeakyReLU slope (α = 0.01) were selected
+via a coarse validation-driven search over plausible ranges, while other settings (Adam
+β1 = 0.9, β2 = 0.999, Xavier initialization) follow widely adopted defaults for stable
+autoencoder training. The parameters θ and ϕ are thus determined by minimizing L(θ, ϕ)
+via backpropagation with these optimization settings.
+Under mild regularity conditions, the encoder–decoder pair approximates the data
+manifold in a least-squares sense. This formulation is consistent with established signal
+processing theory, where wavelet-based denoising and representation learning provide
+a principled foundation for spectral feature extraction. Key references for these concepts
+include the seminal works of Mallat [17], Donoho & Johnstone [18], and the broader
+literature on representation learning [20].
+To assess the effectiveness of the proposed nonlinear embedding, we compare the
+autoencoder-based representation with alternative dimensionality-reduction strategies
+commonly used in hyperspectral analysis. Specifically, we perform an unsupervised com-
+parative evaluation of three low-dimensional representations: linear principal component
+analysis (PCA, projected to d components), independent component analysis (ICA, im-
+plemented using fastICA with d components), and the autoencoder-based embedding (d
+dimensions). All experiments are conducted using the same stratified benchmark dataset
+described below and are evaluated in terms of spectral reconstruction fidelity.
+A benchmark dataset of N = 1,000,000 spectra was drawn from the M3 Global Mode
+archive by stratified sampling across latitude, longitude, photometric incidence angle,
+albedo quintiles and geological unit (maria, highlands, pyroclastics, mixed terrains). This
+sample ensures stable estimation of reconstruction metrics and embedding behaviour while
+remaining computationally tractable.
+For each representation and each latent dimension d ∈{4, 5, 6, 7, 8, 9, 10} we evaluated:
+1.
+Reconstruction RMSE: inverse-transform reconstruction RMSE (unitless I/F) com-
+puted on a held-out validation subset.
+2.
+Manifold stability: relative pairwise distance distortion,
+δ = mediani̸=j
+
+∥zi −zj∥
+∥xi −xj∥−1
+,
+where ∥· ∥denotes the Euclidean norm, zi is the embedded representation, and δ
+quantifies the relative distortion of pairwise distances between the original (xi) and
+embedded (zi) spaces.
+The results (Section 3.2) showed a clear minimum in reconstruction error for the autoen-
+coder at d = 6, justifying this choice for the latent dimension. The predictive utility
+of this representation for FeO estimation is validated in the supervised regression stage
+described next.
+2.4. Supervised Regression with Laboratory Ground Truth
+The 6-dimensional latent vectors produced by the autoencoder serve as inputs to the
+final supervised regression models. Unlike the previous unsupervised stages, this step
+relies on a limited set of laboratory-measured ground-truth data.
+2.4.1. Ground-Truth Dataset
+The regression models were trained and evaluated using a curated set of 50 lunar
+soil samples with accurately known FeO concentrations (wt.%). This set comprises the
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+7 of 20
+49 samples compiled by [21] plus one sample from the Chang’E-6 mission [22]. In their
+analysis, Li et al. 2024 reported FeO abundances for three distinct samples from the
+Chang’E-6 landing site: two soil samples (CE6C0000YJFM00102, CE6C0000YJFM00103)
+and one subophitic basalt fragment (CE6C0000YJYX41301) [22]. The two soil samples
+yielded nearly identical FeO values. To calibrate our spectral model, we selected the soil
+sample CE6C0000YJFM00103. The primary rationale is that the spectral signal captured by
+M3 at ∼150 m/pixel resolution is an areal average dominated by the most extensive surface
+component: the fine-grained regolith (soil). A single rock fragment, while petrologically
+valuable, does not represent the bulk pixel-scale composition that the sensor measures [8].
+This selection ensures that our ground-truth data align with the physical nature of the
+remote sensing observation.
+For each sample, the corresponding M3 reflectance spectrum was extracted from the
+global dataset described in Section 2.1 using the sample’s known lunar coordinates. This
+process yielded 50 paired observations (zi, yi), where zi ∈R6 is the autoencoder latent
+vector and yi is the laboratory FeO abundance.
+2.4.2. Regression Models and Evaluation Protocol
+Due to the small sample size (N = 50), we adopted a rigorous hold-out validation
+protocol combined with cross-validation on the training set to ensure robust model selection
+and an unbiased final performance estimate.
+We considered four regressors with complementary inductive biases:
+•
+Lasso Regression: Estimates a sparse linear predictor with an L1 penalty.
+•
+Support Vector Regression (SVR): Evaluated with two kernels, linear and Radial
+Basis Function (RBF).
+•
+Random Forest Regression: An ensemble of decision trees, robust to nonlinear interactions.
+The mathematical foundations and standard formulations for these models are well-
+established and can be found in their seminal references: Lasso [23], SVR [24], and Random
+Forest [25,26].
+The evaluation protocol operates as follows:
+1.
+Hold-out Test Split: The dataset was initially split into a training/validation set
+(45 samples, 90%) and a final independent test set (5 samples, 10%).
+This test
+set was held out from all model development steps and used solely for the final
+unbiased evaluation.
+2.
+Model Selection and Tuning on Training/Validation Set: On the 45-sample train-
+ing/validation set, we performed a 10-fold cross-validation (CV). Within each CV
+fold, a grid search was conducted to optimize the hyperparameters for each regression
+algorithm. The model performance was assessed by averaging the metrics (MAE,
+RMSE, R2) across all 10 folds.
+3.
+Final Model Training and Evaluation: Based on the CV results, the best-performing
+algorithm (Random Forest) was selected. This model was then retrained using the
+entire 45-sample training/validation set with its optimal hyperparameters. The final,
+frozen model was applied to the held-out 5-sample test set to obtain the reported final
+performance metrics.
+This protocol strictly separates model selection/tuning from final evaluation, providing a
+realistic estimate of the pipeline’s generalization error on unseen lunar material. The cross-
+validated metrics on the training/validation set reflect model stability during development,
+while the test-set metrics represent its ultimate predictive accuracy.
+As an illustrative example, we consider the Apollo 17 LRV12 soil sample, located at
+30◦46’ E, 20◦11’ N. Its M3 reflectance spectrum was transformed into the 6-dimensional
+latent vector z = [0.12, −0.45, 0.87, −0.23, 0.31, −0.09]⊤. The trained Random Forest regres-
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+8 of 20
+sor produced a predicted FeO abundance of 18.0 wt.%, compared to the laboratory value of
+17.4 wt.% (relative error 3.45%).
+2.5. Robustness Analysis
+To assess the sensitivity of the full
+DWT →Autoencoder →Regressor
+pipeline to spectral noise, we performed a controlled perturbation analysis. Gaussian noise
+with zero mean and standard deviation σ was injected into the wavelet coefficients (A2, D2)
+before the autoencoder encoding step. We tested a range of σ values corresponding to
+fractions of the autoencoder’s intrinsic reconstruction error. For each noise level, we com-
+puted the resulting perturbations in the reconstructed spectra and the final FeO estimates.
+This analysis, detailed in Section 3.4, evaluates the pipeline’s stability without requiring
+additional ground-truth labels.
+2.6. Computational Implementation and Global Mapping
+All algorithms were implemented in Python 3.13.5 using standard scientific li-
+braries (NumPy, SciPy, scikit-learn, PyTorch v. 2.2.1). The unsupervised training of the
+wavelet–autoencoder feature extractor was performed on a workstation equipped with an
+AMD Ryzen Threadripper PRO 5955WX CPU, 1 TB RAM, and NVIDIA RTX 4090 GPUs,
+requiring several hours of GPU computation. The subsequent Random Forest regression,
+trained on only 50 samples, incurred negligible computational cost.
+The computational complexity of the pipeline is dominated by the wavelet transform
+and autoencoder encoding during inference. For a single spectrum of length B = 83 bands,
+the two-level DWT requires O(B) operations, and the encoder forward pass scales linearly
+with B and the hidden layer dimensions. Thus, processing N pixels scales as O(N · B).
+The final trained pipeline (DWT + frozen autoencoder encoder + selected regressor) was
+applied to the full M3 archive (N > 3.5 × 109 pixels). Global inference, whose runtime was
+dominated by I/O operations rather than arithmetic complexity, completed in approxi-
+mately 1.5 h, demonstrating practical efficiency and linear scalability for planetary-scale
+hyperspectral datasets.
+2.7. Summary of the Data Flow and Training Strategy
+For completeness, we summarise here the data flow across the different components
+of the proposed pipeline and clarify the distinction between unsupervised representation
+learning and supervised chemical calibration (Figure 1). Each M3 L2 pixel is initially
+represented by an 83-dimensional reflectance spectrum, which is used directly as input
+to the wavelet stage without additional spectral normalization, as the data are already
+photometrically corrected by the standard M3 calibration pipeline. A two-level db4 discrete
+wavelet transform is applied to each spectrum, and only the A2 and D2 coefficient families
+are retained and concatenated into a 42-dimensional multiscale feature vector. These
+wavelet coefficients constitute the explicit input to the autoencoder, which is trained in
+a fully unsupervised manner using millions of M3 spectra to learn a compact nonlinear
+embedding. After training, the encoder is frozen and used to map any wavelet-compressed
+spectrum to a 6-dimensional latent representation. In the final stage, these latent features
+are used as inputs to supervised regression models that are calibrated exclusively using
+laboratory-measured FeO abundances from returned lunar samples, which provide the
+ground truth for quantitative FeO estimation.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+9 of 20
+Figure 1. Schematic overview of the proposed processing pipeline, highlighting the separation
+between unsupervised representation learning and supervised chemical calibration.
+3. Results
+Before discussing the global FeO distribution derived in this study, it is essential to
+validate the methodological choices that underpin the proposed pipeline. The wavelet
+transform and autoencoder are trained in an unsupervised manner, and their configuration
+must be justified by their ability to compactly and faithfully represent spectral information.
+For this reason, the first part of this section examines the quantitative evidence supporting
+each unsupervised decision in the workflow, including the selection of the (A2, D2) wavelet
+coefficients and the choice of a six-dimensional nonlinear latent space. Subsequently, we
+evaluate the supervised regression performance and the robustness of the full pipeline.
+These analyses ensure that the adopted configuration is both statistically justified and
+robust, providing a transparent foundation for the final compositional map.
+Crucially, the unsupervised stages, wavelet decomposition and autoencoder training,
+were conducted using only a representative subset of M3 spectra that explicitly excluded
+all 50 pixels corresponding to the laboratory samples. This strict separation ensures that no
+information from the ground-truth dataset was used during feature extraction or represen-
+tation learning, thereby preventing data leakage and preserving the independence of the
+subsequent supervised regression.
+3.1. Unsupervised Evaluation of Wavelet Coefficient Selection
+As described in Section 2.2, the two-level db4 decomposition produces three families
+of coefficients: A2, D2, and D1. To validate the physically motivated decision to retain only
+the A2 and D2 coefficients, we evaluated alternative coefficient subsets using a spatially
+stratified benchmark of 5,000,000 M3 spectra. Each variant was assessed using two unsu-
+pervised metrics relevant for a compression stage: the percentage of cumulative ℓ2 signal
+energy retained, and the fidelity of spectral reconstruction after inverse DWT. The results
+are shown in Table 1.
+The A2 + D2 subset achieves the lowest reconstruction error (RMSE = 0.0074 I/F)
+despite discarding 41 high-frequency D1 coefficients and retaining 96.8% of the signal
+energy. The monotonic increase in reconstruction error when including progressively more
+D1 coefficients quantitatively confirms that this family is dominated by variance that is non-
+informative for spectral shape recovery, consistent with noise. Thus, the 42-dimensional
+(A2, D2) representation constitutes an optimal trade-off between information retention and
+noise suppression for the subsequent feature-learning stage.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+10 of 20
+Table 1. Unsupervised evaluation of wavelet coefficient subsets. Results are based on a benchmark
+of 5 million spectra. Reconstruction RMSE is reported in unitless reflectance (I/F). The A2 + D2
+subset provides the optimal trade-off, retaining > 96% of the signal energy while achieving the lowest
+reconstruction error.
+Coefficient Set
+Energy Retained (%)
+Recon. RMSE (I/F)
+A2 + D2 (42 coeff.)
+96.8
+0.0074
+A2 + D2 + top 5 D1
+97.4
+0.0087
+A2 + D2 + top 10 D1
+98.2
+0.0102
+A2 + D2 + top 15 D1
+98.9
+0.0125
+All coefficients (83 coeff.)
+100.0
+0.0158
+3.2. Unsupervised Comparison of Embedding Strategies
+To assess the suitability of nonlinear embeddings for representing the 42-dimensional
+wavelet coefficients, we compared Principal Component Analysis (PCA), Independent
+Component Analysis (ICA), and the autoencoder (AE) described in Section 2.3, which
+employs a symmetric 42 →32 →16 →6 (latent) →16 →32 →42 architecture with
+LeakyReLU activations (α = 0.01), batch normalization, dropout (p = 0.3), and L2 regu-
+larization (λ = 10−5). All methods were evaluated under identical conditions using the
+benchmark set of 1,000,000 spectra, based on their spectral reconstruction fidelity.
+Table 2 summarises the reconstruction errors for a latent dimension of d = 6, the target
+dimensionality used in the final pipeline.
+Table 2. Comparison of low-dimensional embeddings at d = 6 using unsupervised reconstruction
+error. The autoencoder achieves significantly lower RMSE, indicating its superior capacity to capture
+nonlinear spectral manifolds.
+Representation (d = 6)
+Reconstruction RMSE (I/F)
+PCA
+0.0134
+ICA
+0.0148
+Autoencoder (AE)
+0.0092
+The autoencoder clearly outperforms both linear methods, achieving a 31% reduction
+in reconstruction RMSE compared to PCA. This indicates that a significant portion of M3
+spectral variability, particularly the nonlinear curvature associated with absorption bands,
+is not efficiently captured by linear projections.
+We further evaluated how reconstruction error varies with latent dimensionality d for
+both the autoencoder and PCA (Figure 2, Table 3). For each d ∈{4, 5, 6, 7, 8, 10}, we trained
+a separate autoencoder (with the same symmetric architecture resized accordingly) and
+computed the PCA projection onto the top d components, always evaluating reconstruction
+RMSE on the same held-out validation set. A good embedding should minimize the
+reconstruction error (distortion) for a given code rate (dimension d).
+Table 3 and Figure 2 reveal several important patterns. First, the autoencoder consis-
+tently outperforms PCA across all dimensions d, with the performance advantage ranging
+from 36.1% at d = 4 to 5.3% at d = 10. Second, the autoencoder curve exhibits a distinct
+elbow at d = 6, where the marginal gain in reconstruction fidelity per added dimension
+drops sharply, from approximately 0.0014 I/F (between d = 5 and d = 6) to less than
+0.0001 I/F per dimension thereafter. In contrast, the PCA curve decreases more steadily
+without such a pronounced elbow, indicating that linear representations require more
+dimensions to capture equivalent spectral information.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+11 of 20
+Table 3. Reconstruction RMSE (I/F) as a function of latent dimension d for autoencoder and PCA.
+The autoencoder consistently achieves lower error than PCA at every dimension. A distinct elbow in
+the autoencoder curve occurs at d = 6, beyond which improvements are negligible (≤0.0002 I/F total).
+Dimension d
+Reconstruction RMSE (I/F)
+AE Advantage
+Autoencoder
+PCA
+4
+0.0115
+0.0180
+36.1%
+5
+0.0101
+0.0162
+37.7%
+6
+0.0092
+0.0134
+31.3%
+7
+0.0091
+0.0118
+22.9%
+8
+0.0091
+0.0105
+13.3%
+10
+0.0090
+0.0095
+5.3%
+4
+5
+6
+7
+8
+10
+0.9
+1
+1.1
+1.2
+1.3
+1.4
+1.5
+1.6
+1.7
+1.8
+1.9
+·10−2
+d = 6
+Latent Dimension d
+Reconstruction RMSE (I/F)
+Autoencoder
+PCA
+Figure 2. Rate–distortion curves for autoencoder (blue) and PCA (red, dashed). The autoencoder
+consistently achieves lower reconstruction error than PCA for any given latent dimension d. The
+autoencoder curve shows a distinct elbow at d = 6 (marked by vertical dashed line), beyond which
+additional dimensions yield negligible improvement (≤0.0002 I/F total). At d = 6, the autoencoder
+reduces reconstruction error by 31.3% compared to PCA (0.0092 vs. 0.0134 I/F). PCA requires
+approximately d = 10 to approach the reconstruction fidelity that the autoencoder achieves at d = 6.
+The choice of d = 6 is therefore justified by three concurrent factors: it represents the
+elbow of the autoencoder’s rate–distortion curve, where compression efficiency is optimal;
+at this dimension, the autoencoder maintains a substantial 31.3% advantage over PCA;
+and it provides a compact representation that mitigates overfitting risks in the subsequent
+regression stage, which has only 50 training samples. This dimensionality captures the
+essential nonlinear structure of the lunar spectral manifold while discarding noise and
+redundant variance.
+3.3. Supervised Regression Performance with Laboratory Data
+The unsupervised pipeline (DWT + AE with d = 6) produces a 6-dimensional latent
+vector for any M3 spectrum. The final mapping to FeO abundance was trained and evalu-
+ated on the ground-truth dataset of 50 laboratory samples using the hold-out validation
+protocol described in Section 2.4.
+The cross-validated performance during the model selection phase is summarized in
+Table 4. The Random Forest regressor showed highly competitive performance, with the
+lowest mean MAE (2.29 ± 0.55 wt.%) and RMSE (3.09 ± 0.82 wt.%), and robust stability as
+indicated by its standard deviations.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+12 of 20
+Table 4. Cross-validation performance metrics (mean ± std) for the evaluated regression models
+during model selection (trained/evaluated on the 45-sample training/validation set via 10-fold CV).
+Model
+MAE (wt.%)
+RMSE (wt.%)
+R2
+Lasso
+2.39 ± 0.50
+3.09 ± 0.81
+0.685 ± 0.120
+Random Forest
+2.29 ± 0.55
+3.09 ± 0.82
+0.706 ± 0.084
+SVR (RBF)
+2.36 ± 0.59
+2.99 ± 0.88
+0.711 ± 0.115
+SVR (Linear)
+2.49 ± 0.68
+3.16 ± 0.90
+0.694 ± 0.101
+The optimal hyperparameters for each model, determined via grid search within the
+cross-validation, are listed in Table 5.
+Table 5. Optimal hyperparameters obtained via grid search during model selection.
+Model
+Optimal Parameters
+Lasso
+α = 0.001
+Random Forest
+max_depth=None, min_samples_split=2, n_estimators=200
+SVR (RBF)
+C = 10, ϵ = 0.01, γ = scale
+SVR (Linear)
+C = 0.1, ϵ = 0.1
+Based on its optimal balance of accuracy and robustness, the Random Forest model
+was selected as the final regressor. After retraining on the full 45-sample training set,
+its performance was assessed on the independent 5-sample hold-out test set. The final
+integrated pipeline (DWT + AE + Random Forest) achieved excellent predictive accuracy,
+with an MAE of 1.204 wt.%, RMSE of 1.873 wt.%, and R2 of 0.900 (Table 6).
+Table 6. Final performance of the selected regression models on the independent hold-out test set
+(5 samples). The Random Forest-based pipeline achieves the best accuracy.
+Model
+MAE (wt.%)
+RMSE (wt.%)
+R2
+LASSO
+2.043
+2.861
+0.766
+Random Forest
+1.204
+1.873
+0.900
+SVR (RBF)
+2.018
+2.914
+0.758
+SVR (Linear)
+2.324
+3.134
+0.720
+The superior performance of the Random Forest model, particularly on the unseen
+test data, confirms its ability to capture the complex, nonlinear relationship between the
+autoencoder-derived spectral features and FeO abundance. This model was therefore used
+to generate the global FeO map.
+3.4. Pipeline Robustness to Spectral Perturbations
+To evaluate the stability of the full pipeline to instrumental or environmental noise,
+Gaussian perturbations were injected into the wavelet coefficients prior to encoding. Noise
+amplitudes were expressed as fractions of the autoencoder’s intrinsic reconstruction RMSE
+(σ = k × RMSEAE, with k ∈{0, 0.5, 1.0, 2.0}). The resulting impact on FeO prediction
+accuracy on the ground-truth dataset is shown in Table 7.
+Pipeline performance degrades gracefully with increasing noise (Figure 3). For a
+perturbation equal to the AE’s own reconstruction error (k = 1), the MAE increases
+by approximately 0.4 wt.%. This demonstrates the inherent denoising properties of the
+wavelet truncation and the autoencoder, coupled with the robustness of the Random
+Forest regressor.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+13 of 20
+Table 7. Robustness of the full pipeline to injected Gaussian noise in the wavelet domain. Performance
+degrades gracefully, demonstrating stability. (Metrics are from the nested CV using the Random
+Forest regressor.)
+Noise Level (k)
+MAE (wt.%)
+RMSE (wt.%)
+k = 0.0 (baseline)
+2.39 ± 0.50
+3.09 ± 0.81
+k = 0.5
+2.55 ± 0.54
+3.25 ± 0.85
+k = 1.0
+2.85 ± 0.61
+3.60 ± 0.92
+k = 2.0
+3.55 ± 0.78
+4.35 ± 1.10
+0
+0.5
+1
+2
+2
+2.5
+3
+3.5
+Noise Level k
+MAE (wt.% FeO)
+Figure 3. Robustness of the pipeline’s FeO estimation error under controlled spectral perturbations.
+Error bars represent one standard deviation from the cross-validation folds. Performance degrades
+gracefully, with an MAE increase of 0.4 wt.% for noise levels comparable to the autoencoder’s own
+reconstruction error (k = 1).
+3.5. Global FeO Distribution
+The integrated wavelet–autoencoder–Random Forest pipeline, configured and vali-
+dated as described in the previous subsections, was applied to the full M3 global archive
+(>3.5 ×109 pixels) to generate a global FeO abundance map at the native M3 spatial
+resolution of approximately 150 m/pixel (Figure 4). The resulting product represents a
+continuous, spatially resolved estimate of surface FeO concentration derived solely from
+hyperspectral reflectance information.
+Figure 4. Global FeO abundance map of the lunar surface derived from M3 hyperspectral data using
+the wavelet–autoencoder–Random Forest pipeline. The color scale represents FeO concentration in
+weight percent (wt.%), ranging from low values (blue) to high values (red).
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+14 of 20
+At the global scale, the map clearly reproduces the first-order lunar geochemical di-
+chotomy. Elevated FeO concentrations, typically in the range of approximately 16–24 wt.%,
+dominate the nearside basaltic maria, including Oceanus Procellarum, Mare Imbrium, and
+Mare Tranquillitatis. These regions are spatially coincident with extensive mare basalt
+provinces and exhibit FeO abundances broadly consistent with previously mapped basaltic
+units of Imbrian to Eratosthenian age.
+These intermediate FeO values occur in transitional terrains and impact basins,
+where mixed regolith compositions—attributed to the interplay of mafic and feldspathic
+sources—are commonly inferred from earlier compositional studies.
+In contrast, the farside and polar highlands are characterized by systematically lower
+FeO values, generally between 3 and 6 wt.%, consistent with anorthositic crustal composi-
+tions dominated by plagioclase feldspar. Large expanses of the farside highlands display
+relatively homogeneous low-FeO signatures, reflecting the compositional uniformity of the
+primordial lunar crust inferred from previous remote sensing and sample-based studies.
+Intermediate FeO abundances, typically ranging from 8 to 12 wt.%, are observed
+in transitional terrains and in and around major impact structures, most notably the
+South Pole–Aitken basin. These intermediate FeO values occur in transitional terrains and
+impact basins, where mixed regolith compositions—attributed to the interplay of mafic
+and feldspathic sources—are commonly inferred from earlier compositional studies.
+The Procellarum KREEP Terrane (PKT) exhibits moderate FeO enrichment relative to
+the surrounding highlands, with typical values of approximately 12–15 wt.%. This pattern
+is consistent with the geochemically evolved character of the PKT and its association
+with incompatible-element-rich materials, although FeO alone does not uniquely trace
+KREEP components.
+At local scales, the map resolves spatial variability within individual mare units
+and delineates sharp compositional gradients at mare–highland boundaries. While these
+fine-scale variations should be interpreted cautiously given the indirect nature of optical
+compositional estimates, their spatial coherence and geological consistency suggest that
+the model preserves meaningful subregional FeO contrasts at the native resolution of the
+M3 dataset.
+4. Discussion
+The wavelet–autoencoder–regression pipeline developed in this study represents a
+novel approach to quantitative compositional mapping from planetary hyperspectral data.
+While the validation metrics (MAE = 1.20 wt.%, R2 = 0.90) demonstrate strong predictive
+performance, the broader value of the method lies in how it advances the state of the art
+in lunar FeO mapping. In this section, we contextualize our results by comparison with
+contemporary global FeO products, discuss the specific advantages and limitations of the
+proposed pipeline, and outline promising directions for future research.
+Our global FeO map occupies a distinctive position within the current landscape of
+lunar compositional datasets (Table 8). Unlike the Lunar Prospector gamma-ray spectrome-
+ter (GRS) map, which provides direct elemental measurements but at very coarse spatial
+resolution (5°, ∼150 km), our product preserves high spatial detail (∼150 m) while deriving
+composition from hyperspectral reflectance. Compared to the M3-based empirical map of
+Zhang et al. (2023) [5], which relies on reflectance band ratios at similar spatial resolution,
+our approach exploits the full hyperspectral range through learned feature representations
+rather than pre-defined spectral indices. This addresses well-known limitations of index-
+based methods, including sensitivity to specific noise sources and implicit assumptions
+of linearity between band depths and composition [2,6]. The Random Forest regression
+applied to Clementine multispectral data by Fernández et al. (2025) [12] similarly adopts a
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+15 of 20
+machine learning pipeline, but its reliance on only 11 spectral bands limits sensitivity to
+subtle absorption features that are critical for precise FeO estimation.
+Table 8. Characteristics of contemporary global lunar FeO abundance maps.
+Product
+Data Source
+Estimation Method
+Resolution
+Key Features
+Lunar Prospector
+(2012) [27]
+Gamma-ray spectrometer
+Elemental spectrometry
+5° (150 km)
+Direct elemental
+measurement; very low
+spatial resolution
+Zhang et al. (2023) [5]
+M3 (Chandrayaan-1)
+Empirical band ratios
+∼150 m
+Hyperspectral; relies on
+reflectance indices
+Fernández et al.
+(2025) [12]
+Clementine UVVIS+NIR
+Random Forest regression
+∼200 m
+Nonlinear ML; limited by
+multispectral data
+This study
+M3 (Chandrayaan-1)
+Wavelet + Autoencoder + RF
+∼150 m
+Hybrid physical/ML;
+full spectral range
+utilization
+Visually, the similarities between the maps are more prominent than their differences
+(Figure 5). All products capture the fundamental lunar geochemical dichotomy between
+iron-rich nearside maria and iron-poor farside highlands. In our map, typical mare FeO
+values range from approximately 16 to 20 wt.%, with localized maxima reaching up to
+∼24 wt.% in the most iron-rich basaltic provinces, while highland regions predominantly
+exhibit values of ∼3–6 wt.%. The Lunar Prospector GRS map reproduces this global pattern
+at continental scales, smoothed by its coarse spatial resolution. Optical maps derived
+from imaging spectroscopy resolve substantially finer structure, including heterogeneous
+compositions within individual mare basins, sharper mare–highland boundaries, and
+spatial gradients consistent with regolith mixing processes.
+Relative to the Zhang et al. (2023) [5] M3 empirical product, our map exhibits different
+noise characteristics rather than a simple reduction in noise amplitude. The wavelet-based
+preprocessing suppresses high-frequency spectral noise, particularly in low-FeO highland
+regions where diagnostic absorption features are weak, while preserving mesoscale spatial
+variability within mare units. As a result, intra-mare compositional heterogeneity appears
+more clearly expressed, with coherent spatial patterns consistent with distinct basalt flows
+and volcanic units. Residual instrument-related artefacts, including faint longitudinal
+striping, remain visible in both products, reflecting differences in noise mitigation and
+regularization strategies rather than fundamental discrepancies in FeO distribution.
+In transitional zones such as the margins of Mare Imbrium and Oceanus Procellarum,
+our map displays spatially coherent gradients rather than pixel-scale fluctuations. This
+behaviour is consistent with improved handling of mixed spectral signatures through the
+nonlinear feature learning of the autoencoder. However, because the current implemen-
+tation processes pixels independently and does not explicitly incorporate spatial context,
+these observations should be interpreted as qualitative improvements rather than definitive
+evidence of superior mixed-pixel unmixing.
+Quantitative intercomparison reveals both strong agreement and informative dis-
+crepancies among global FeO products (Table 9). The high spatial correlation with the
+Zhang et al. (2023) [5] map (r ≈0.92) confirms that both M3-derived products capture
+the same fundamental FeO distribution, validating the underlying spectral data. The
+slightly lower correlation with the Clementine-based product of Fernández et al. (2025) [12]
+(r ≈0.87) is consistent with the reduced spectral dimensionality of that dataset. Notably,
+the correlation with Lunar Prospector GRS data (r ≈0.74) is substantial given the fun-
+damentally different measurement principles involved, with optical reflectance sampling
+the uppermost microns of the regolith and gamma-ray spectroscopy probing material to
+depths of several tens of centimetres.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+16 of 20
+Figure 5.
+Comparative FeO abundance maps:
+(a) Lunar Prospector GRS (2012) [27],
+(b) Zhang et al. (2023) M3 empirical regression [5], (c) Fernández et al. (2025) Clementine Random
+Forest [12], (d) This study (wavelet–autoencoder–RF from M3). All products reproduce the lunar FeO
+dichotomy but differ in spatial detail, noise characteristics, and expression of intra-mare variability.
+The modest positive bias of our estimates relative to other optical methods (+0.5 to
++0.7 wt.% FeO) is most pronounced in iron-rich mare regions. Rather than indicating a
+systematic overestimation, this behaviour is interpreted as enhanced sensitivity to high-FeO
+endmembers, enabled by multiscale wavelet analysis of Fe2+ related absorption features
+and nonlinear regression. The small negative bias relative to Lunar Prospector GRS mea-
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+17 of 20
+surements (−0.3 wt.%) likely reflects differences in sampling depth, spatial support, and
+calibration, as well as genuine surface–subsurface compositional contrasts.
+Table 9. Quantitative comparison of global FeO products. Metrics computed on a 0.5° grid across the
+lunar nearside.
+Comparison
+r
+RMS Diff. (wt.%)
+Mean Bias (wt.%)
+This study vs. Zhang et al. (2023) [5]
+0.92
+2.0
++0.5
+This study vs. Fernández et al. (2025) [12]
+0.87
+2.3
++0.7
+This study vs. Lunar Prospector GRS [27]
+0.74
+3.6
+−0.3
+Zhang et al. (2023) [5] vs. Fernández et al. (2025) [12]
+0.83
+2.0
++0.1
+Several limitations of the present approach warrant consideration. Computationally,
+the unsupervised training of the wavelet–autoencoder feature extractor requires signifi-
+cant resources (GPU memory and multi-hour preprocessing), though once trained, global
+inference is efficient (≈1.5 h for > 3.5 × 109 pixels). Methodologically, model calibration
+depends on laboratory analyses of returned samples. Our training set comprises the full
+ensemble of approximately 50 geolocated lunar samples with published FeO abundances
+from the Apollo, Luna, and Chang’e missions that are commonly employed in the literature.
+While this represents the most comprehensive ground truth currently available, these sam-
+ples are geographically clustered in nearside mare regions, leading to underrepresentation
+of farside highlands and some basin interiors. In addition, space weathering processes
+modify spectral slopes and absorption strengths independently of bulk FeO content. Al-
+though the wavelet transform emphasizes absorption-band morphology and is therefore
+relatively robust to continuum changes, maturation-related effects may still introduce
+subtle regional biases. Finally, the current pixel-independent framework does not exploit
+spatial context, which could further improve predictions in mixed or geologically complex
+terrains. Moreover, the wavelet-based compression, while effective for noise suppression,
+may attenuate subtle spectral features unrelated to FeO, and the pipeline’s transfer to other
+planetary datasets would require sensor-specific recalibration and validation.
+Looking forward, the modular architecture of the pipeline offers several promis-
+ing avenues for extension. Incorporating spatial information through convolutional or
+graph-based models could explicitly address mixed pixels and geological boundaries. The
+wavelet–autoencoder feature extraction stage is designed to be largely sensor-agnostic and
+could potentially be adapted to other planetary hyperspectral datasets, such as CRISM for
+Mars or MERTIS for Mercury, though this would require sensor-specific recalibration and
+validation beyond the scope of this study. Moreover, the learned latent representations
+likely encode information relevant to additional compositional parameters, suggesting
+potential for multi-element mapping within a unified pipeline.
+In summary, the wavelet–autoencoder–regression pipeline advances lunar FeO map-
+ping by combining physically motivated multiscale signal analysis with the flexibility of
+modern machine learning. It produces global maps with high spatial fidelity, enhanced
+contrast in iron-rich terrains, and quantitative agreement with established datasets, while
+maintaining a transparent and extensible methodological structure. Despite limitations
+related to ground truth availability and space weathering effects, the approach provides a
+robust foundation for next-generation planetary hyperspectral compositional analysis.
+At regional scales, several local features in the retrieved FeO map (Figure 5d) merit
+specific discussion. Mare Tranquillitatis exhibits FeO abundances characteristic of basaltic
+terrains, though its contrast relative to other large mare provinces appears less pronounced
+than in some previous products. This reflects both the heterogeneous nature of Tranquillitatis
+basalts and the use of a global colour scale optimized for preserving the full dynamic range
+of FeO values. Within Mare Imbrium, the map reveals spatially continuous compositional
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+18 of 20
+variability rather than a sharply defined east–west division, consistent with a quantitative
+representation of FeO abundance rather than a discretized geological unit classification.
+Localized FeO enrichments are also observed in and around young impact craters such as
+Tycho. These features are interpreted as the combined effect of excavation of compositionally
+distinct subsurface materials, impact-driven regolith mixing, and the known sensitivity of
+optical FeO retrievals to surface maturity and photometric conditions. Such local anomalies
+highlight inherent limitations of pixel-based optical compositional mapping and are therefore
+explicitly acknowledged here to guide a cautious geological interpretation of the results.
+5. Conclusions
+This work presents a unified and scalable machine-learning pipeline for the quanti-
+tative estimation of lunar iron oxide (FeO) abundance from M3 hyperspectral data. By
+integrating multiscale spectral compression via the Discrete Wavelet Transform, nonlinear
+feature learning through a deep autoencoder, and ensemble regression using Random
+Forests, the proposed approach enables robust FeO prediction while remaining computa-
+tionally tractable at global scales.
+The final model achieves a mean absolute error of 1.204 wt.% FeO (RMSE = 1.873 wt.%,
+R2 = 0.900) on independent test data, and its application to the full M3 Global Mode dataset
+yields a global FeO abundance map at ∼150 m/pixel resolution. The retrieved large-scale
+compositional patterns are consistent with established lunar geochemical trends, demon-
+strating the ability of the method to capture meaningful spectral–chemical relationships
+across diverse terrains.
+From a methodological perspective, the results highlight the effectiveness of combin-
+ing wavelet-based spectral representations with autoencoder-derived latent features for
+large-scale hyperspectral compositional mapping. The substantial reduction in data dimen-
+sionality enables efficient processing of billions of spectra without sacrificing diagnostically
+relevant information.
+Although the pipeline is subject to limitations inherent to optical remote sensing, in-
+cluding sparse ground-truth sampling and sensitivity to space-weathering effects, its mod-
+ular design provides a flexible basis for future extensions. These include uncertainty-aware
+regression, multi-oxide estimation, and potential adaptation to other planetary hyperspec-
+tral datasets, subject to sensor-specific validation. Overall, the proposed pipeline offers a
+robust foundation for scalable, data-driven mineralogical analysis in planetary science.
+Author Contributions: Conceptualization, J.F.-D.; methodology, J.F.-D.; software, F.J.d.C.J.; validation,
+F.J.d.C.J.and J.F.-D., ; formal analysis, J.F.-D., F.S.L. and S.I.Á.; investigation, J.F.-D. and F.J.d.C.J.;
+resources, J.F.-D. and A.L.M.S.; data curation, F.S.L. and J.G.R.; writing—original draft prepara-
+tion, J.F.-D.; writing—review and editing, J.d.C, F.S.L. and J.G.R.; visualization, J.F.-D.; supervision,
+F.J.d.C.J., F.S.L. and J.G.R.; project administration, J.F.-D. and F.J.d.C.J. ; funding acquisition, F.J.d.C.J.
+All authors have read and agreed to the published version of the manuscript.
+Funding: This research was funded by Plan Nacional by Ministerio de Ciencia, Innovación y Univer-
+sidades, Spain, grant number MCIU-22-PID2021-127331NB-I00 and the research agreement between
+the Institute of Space Sciences and Technologies of Asturias (ICTEA) and Hulleras del Norte S.A
+(HUNOSA), reference SV-21-HUNOSA-2.
+Data Availability Statement: The data presented in this study are openly available in NASA Planetary
+Data System (PDS) at https://pds-imaging.jpl.nasa.gov/volumes/m3.html (accessed on 30 December 2025).
+Acknowledgments: This research was supported by HUNOSA through the Specific Collaboration
+Agreement for the Promotion of Research on Space Mining and Energy Resources, reference SV-21-HUNOSA-2.
+Conflicts of Interest: The authors declare no conflicts of interest.
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+19 of 20
+References
+1.
+Heiken, G.H.; Vaniman, D.; French, B.M. Lunar Sourcebook: A User’s Guide to the Moon; Cambridge University Press: Cambridge,
+UK, 1991. Available online: https://www.lpi.usra.edu/publications/books/lunar_sourcebook/pdf/LunarSourceBook.pdf
+(accessed on 14 October 2025).
+2.
+Lucey, P.G.; Blewett, D.T.; Jolliff, B.L. Lunar iron and titanium abundance algorithms based on final processing of Clementine
+ultraviolet-visible images. J. Geophys. Res. Planets 2000, 105, 20297–20305. [CrossRef]
+3.
+Lucey, P. G.; Taylor, G.J.; Malaret, E. Abundance and Distribution of Iron on the Moon. Science 1995, 268, 1150–1153. [CrossRef]
+[PubMed]
+4.
+Zhong, Y.; Low, J.; Zhu, Q.; Jiang, Y.; Wang, X.; Zhang, F.; Shang, W.; Long, R.; Yao, Y.; Yao, W.; et al. In situ resource utilization of
+lunar soil for highly efficient extraterrestrial fuel and oxygen supply. Nat. Sci. Rev. 2022, 10, nwac200. [CrossRef] [PubMed]
+5.
+Zhang, L.; Zhang, X.; Yang, M.; Xiao, X.; Qiu, D.; Yan, J.; Xiao, L.; Huang, J. New maps of major oxides and Mg # of the lunar
+surface from additional geochemical data of Chang’E-5 samples and KAGUYA multiband imager data. Icarus 2023, 397, 115505.
+[CrossRef]
+6.
+Wilcox, B.B.; Lucey, P.G.; Gillis, J.J. Mapping iron in the lunar mare: An improved approach. J. Geophys. Res. Planets 2005,
+110, E11001. [CrossRef]
+7.
+Gillis, J.; Jolliff, B.L.; Elphic, R.C. A revised algorithm for estimating TiO2 from Clementine UVVIS data: A synthesis of rock, soil,
+and remotely sensed TiO2 concentrations. J. Geophys. Res. Planets 2003, 108, E2. [CrossRef]
+8.
+Pieters, C.M.; Head, J.W.; Sunshine, J.M.; Fischer, E.M.; Murchie, S.L.; Belton, M.; McEwen, A.; Gaddis, L.; Greeley, R.; Neukumet,
+G.; et al. Crustal diversity of the moon: Compositional analyses of Galileo solid state imaging data. J. Geophys. Res. Planets 1993,
+98, 17127–17148. [CrossRef]
+9.
+Pieters, C.M.; Boardman, J.; Buratti, B.; Chatterjee, A.; Clark, R.; Glavich, T.; Green, R.; Head, J.W.; Isaacson, P.; Malaret, E.; et al.
+The Moon Mineralogy Mapper (M3) on Chandrayaan-1. Curr. Sci. 2009, 96, 500–505.
+10.
+NASA Planetary Data System Imaging Node. Moon Mineralogy Mapper (M3) Online Data Volumes, Chandrayaan-1 Mission;
+NASA/JPL: Pasadena, CA, USA, 2009. Available online: https://pds-imaging.jpl.nasa.gov/volumes/m3.html (accessed
+25 November 2025).
+11.
+Qiu, D.; Wu, J.; Li, F.; Yan, J. Machine learning for inversing FeO and TiO2 content on the Moon: Method and comparison. Icarus
+2021, 373, 114778. [CrossRef]
+12.
+Fernández, J.; De Cos, F.J.; Sánchez, F.; Gracia, J. Spectral Parameter-Based Prediction of Lunar FeO Content Using Random Forest
+Regression. Mathematics 2025, 13, 2802. [CrossRef]
+13.
+Green, R.O.; Pieters, C.; Mouroulis, P.; Eastwood, M.; Boardman, J.; Glavich, T.; Isaacson, P.; Annadurai, M.; Besse, S.; Barr, D.; et
+al. The Moon Mineralogy Mapper (M3) imaging spectrometer for lunar science: Instrument description, calibration, and on-orbit
+performance.J. Geophys. Res. Planets 2011, 116. . [CrossRef]
+14.
+Lundeen, S.; McLaughlin, S.; Alanis, R. Moon Mineralogy Mapper Data Product Software Interface Specification. Jet Propuls. Lab.
+2012, D-38529 (Version 3.17). Available online: https://planetarydata.jpl.nasa.gov/img/data/m3/CH1M3_0004/DOCUMENT
+/ARCHSIS.PDF (accessed on 30 December 2025).
+15.
+Isaacson, P.J.; Pieters, C.M.; Besse, S.; Clark, R.N.; Head, J.W.; Klima, R.L.; Mustard, J.F.; Petro, N.E.; Staid, M.I.; Sunshine, J.M.; et
+al. Remote compositional analysis of lunar olivine-rich lithologies with Moon Mineralogy Mapper (M3) spectra. J. Geophys. Res.
+Planets 2011, 116. [CrossRef]
+16.
+Starck, J.-L.; Murtagh, F. Astronomical Image and Data Analysis, 2nd ed.; Springer: Berlin/Heidelberg, Germany, 2007.
+17.
+Mallat, S. A Wavelet Tour of Signal Processing: The Sparse Way, 3rd ed.; Academic Press: Burlington, MA, USA,
+2009;
+ISBN: 978-0-12-374370-1.
+18.
+Donoho, D.L.; Johnstone, I.M. Adapting to unknown smoothness via wavelet shrinkage. J. Am. Stat. Assoc. 1995, 90, 1200–1224.
+[CrossRef]
+19.
+Starck, J.-L.; Murtagh, F.; Bijaoui, A. Image Processing and Data Analysis: The Multiscale Approach; Cambridge University Press:
+Cambridge, UK, 1998.
+20.
+Zhu, L.; Wu, J.; Biao, W.; Liao, Y.; Wu, D. Spectral Masked Autoencoder for Hyperspectral Remote Sensing Information
+Reconstruction. Sensors 2023, 23, 3728. [CrossRef]
+21.
+Qiu, D.; Chen, W.; Yan, J.; Yi, S. FeO and TiO2 Maps of the Lunar Polar Regions Derived From the Clementine Data. J. Geophys.
+Res. 2025, 130. [CrossRef]
+22.
+Li, C.; Hu, H.; Yang, M.-F.; Liu, J. Nature of the lunar far-side samples returned by the Chang’E-6 mission. Natl. Libr. Med. 2024,
+11, nwae328. [CrossRef] [PubMed]
+23.
+Tibshirani, R. Regression Shrinkage and Selection via the Lasso. J. R. Stat. Soc. Ser. B Methodol. 1996, 58, 267–288. [CrossRef]
+24.
+Smola, A.J.; Schölkopf, B. A Tutorial on Support Vector Regression. Stat. Comput. 2004, 14, 199–222. [CrossRef]
+25.
+Breiman, L. Random Forests. Mach. Learn. 2001, 45, 5–32. [CrossRef]
+https://doi.org/10.3390/math14020254
+
+Mathematics 2026, 14, 254
+20 of 20
+26.
+Aumon, A.; Ni, S.; Lizotte, M.; Wolf, G.; Moon, K.R.; Rhodes, J.S. Random Forest Autoencoders for Guided Representation
+Learning. arXiv 2025, arXiv:2502.13257v1. Available online: https://arxiv.org/html/2502.13257v1 (accessed on 6 January 2026).
+27.
+Lunar Prospector Gamma-Ray Spectrometer Elemental Abundance Data, Version 1. NASA Planetary Data System (PDS)
+Geosciences Node. Available online: https://pds-geosciences.wustl.edu/lunar/lp-l-grs-5-elem-abundance-v1/lp_9001/data/
+(accessed on 14 November 2025).
+Disclaimer/Publisher’s Note: The statements, opinions and data contained in all publications are solely those of the individual
+author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to
+people or property resulting from any ideas, methods, instructions or products referred to in the content.
+https://doi.org/10.3390/math14020254

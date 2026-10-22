@@ -1,0 +1,28 @@
+  seed 1 iteration 1: optimum epoch 181 of 500, scene-mean sigma_Rel 3.07%, 0.249 s/epoch
+  seed 0 iteration 1: optimum epoch 218 of 500, scene-mean sigma_Rel 3.29%, 0.239 s/epoch
+  seed 4 iteration 1: optimum epoch 157 of 500, scene-mean sigma_Rel 3.93%, 0.243 s/epoch
+  seed 3 iteration 1: optimum epoch 260 of 500, scene-mean sigma_Rel 2.12%, 0.243 s/epoch
+  seed 2 iteration 1: optimum epoch 88 of 500, scene-mean sigma_Rel 2.94%, 0.238 s/epoch
+  seed 0 iteration 2: optimum epoch 30 of 1530, scene-mean sigma_Rel 1.51%, 1.957 s/epoch
+  seed 1 iteration 2: optimum epoch 40 of 1540, scene-mean sigma_Rel 1.59%, 1.938 s/epoch
+  seed 4 iteration 2: optimum epoch 40 of 1540, scene-mean sigma_Rel 1.50%, 1.947 s/epoch
+  seed 3 iteration 2: optimum epoch 60 of 1560, scene-mean sigma_Rel 1.73%, 1.946 s/epoch
+  seed 1 iteration 3: optimum epoch 30 of 1530, scene-mean sigma_Rel 1.27%, 1.654 s/epoch
+  seed 0 iteration 3: optimum epoch 50 of 1550, scene-mean sigma_Rel 1.23%, 1.643 s/epoch
+  seed 4 iteration 3: optimum epoch 100 of 1600, scene-mean sigma_Rel 1.19%, 1.633 s/epoch
+  seed 3 iteration 3: optimum epoch 90 of 1590, scene-mean sigma_Rel 1.17%, 1.627 s/epoch
+  seed 2 iteration 2: optimum epoch 1880 of 3380, scene-mean sigma_Rel 2.27%, 1.712 s/epoch
+  seed 2 iteration 3: optimum epoch 190 of 1690, scene-mean sigma_Rel 1.47%, 0.997 s/epoch
+
+==============================================================================
+[step07] ANN mapping, three iterations (Tables 12-15)
+==============================================================================
+  numpy forward pass vs torch on identical weights: max |diff| = 2.22e-16
+          optimal_epoch          sigma_rel_mean  ... sigma_rel_highland t_epoch_s       
+                   mean      std           mean  ...                std      mean    std
+iteration                                        ...                                    
+1                 180.8   64.874          3.070  ...              0.853     0.243  0.004
+2                 410.0  821.827          1.722  ...              0.944     1.900  0.105
+3                  92.0   61.806          1.265  ...              0.319     1.511  0.287
+
+[3 rows x 10 columns]

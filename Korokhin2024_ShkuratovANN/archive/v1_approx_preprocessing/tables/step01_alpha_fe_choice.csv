@@ -1,0 +1,2 @@
+primary,worst_rel_dev_054_254,median_ratio_054_194,median_ratio_194_254,rule
+digitized,0.20996312654866567,0.9692961349075745,0.8886016794390785,"computed if within +-15% of Fig. A1 over 0.54-2.54 um, else digitized"

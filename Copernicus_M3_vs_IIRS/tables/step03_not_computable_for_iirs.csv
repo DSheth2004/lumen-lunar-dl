@@ -1,0 +1,5 @@
+product,needs,IIRS
+MLR CPX/PLG/Is/OPX/OLV/d (Eqs. 3-5),"A(415), A(750)",not computable (IIRS starts at 847 nm)
+OMAT_Fe (Eq. 6),R(750),not computable (IIRS starts at 847 nm)
+"TiO2, Lucey (Eq. 7)","R(415), R(750)",not computable (IIRS starts at 847 nm)
+"TiO2, Korokhin 2008 ANN (Fig. 30)","A(415), A(750)",not computable (IIRS starts at 847 nm)

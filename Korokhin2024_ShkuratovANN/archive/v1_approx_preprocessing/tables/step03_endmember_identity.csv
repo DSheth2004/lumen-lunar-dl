@@ -1,0 +1,6 @@
+paper_label,spectrum,relab_id,specimen,relab_description,pyroxene_class_per_relab,label_consistent
+CPX,c1lr215,LR-CMP-215,"70017,535 deep-brown pyroxene D <45 um","Silicate (Ino), Pyroxene Clinopyroxene Augite, Mineral separate from Apollo 17 basalt (LRMCC)",clinopyroxene,True
+OPX,c1lr220,LR-CMP-220,"70035,188 light-brown pyroxene D <45 um","Silicate (Ino), Pyroxene Clinopyroxene Pigeonite, Mineral separate from Apollo 17 basalt (LRMCC)",clinopyroxene,False
+OLV,c1lr212,LR-CMP-212,"15555,965 olivine D <45 um","Silicate (Neso), Olivine , Mineral separate from Apollo 15 basalt (LRMCC)",,True
+PLG,c1lr217,LR-CMP-217,"70017,535 plagioclase D <45 um","Silicate (Tecto), Feldspar Plagioclase, Mineral separate from Apollo 17 basalt (LRMCC)",,True
+ILM,c1lr218,LR-CMP-218,"70017,535 ilmenite D <45 um","Oxide, Ilmenite, Mineral separate from Apollo 17 basalt (LRMCC)",,True

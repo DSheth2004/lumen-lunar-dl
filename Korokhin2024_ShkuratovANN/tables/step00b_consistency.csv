@@ -1,0 +1,73 @@
+check,where,printed,recomputed,diff,tolerance,consistent,note
+sum_c,t05_gray_albedo_site1 A_Gr=0.05,188.54,188.54,0.0,0.03,True,
+sum_c,t05_gray_albedo_site1 A_Gr=0.1,135.35,135.35,0.0,0.03,True,
+sum_c,t05_gray_albedo_site1 A_Gr=0.2,108.98,108.98,-0.0,0.03,True,
+sum_c,t05_gray_albedo_site1 A_Gr=0.3,100.28,100.28,0.0,0.03,True,
+sum_c,t05_gray_albedo_site1 A_Gr=0.4,96.1,96.11,0.01,0.03,True,
+sum_c,t05_gray_albedo_site1 A_Gr=0.5,93.91,93.91,0.0,0.03,True,
+sum_c,t06_gray_albedo_site4 A_Gr=0.05,162.69,162.69,0.0,0.03,True,
+sum_c,t06_gray_albedo_site4 A_Gr=0.1,123.46,123.46,0.0,0.03,True,
+sum_c,t06_gray_albedo_site4 A_Gr=0.2,104.7,104.69,-0.01,0.03,True,
+sum_c,t06_gray_albedo_site4 A_Gr=0.3,98.71,98.71,0.0,0.03,True,
+sum_c,t06_gray_albedo_site4 A_Gr=0.4,95.61,95.63,0.02,0.03,True,
+sum_c,t06_gray_albedo_site4 A_Gr=0.5,94.19,92.51,-1.68,0.03,False,
+sum_c,t07_agglutinate_fit sample=LS-CMP-045,38.02,38.02,-0.0,0.03,True,
+sum_c,t08_m3_sites_agglutinate site=1.0,118.11,126.67,8.56,0.03,False,difference equals c_OPX: the printed total omits the OPX term
+sum_c,t08_m3_sites_agglutinate site=2.0,147.5,147.5,-0.0,0.03,True,
+sum_c,t08_m3_sites_agglutinate site=3.0,110.7,110.7,0.0,0.03,True,
+sum_c,t08_m3_sites_agglutinate site=4.0,135.49,135.49,0.0,0.03,True,
+sum_c,t09_m3_sites_nm site=1.0,111.8,118.34,6.54,0.03,False,difference equals c_OPX: the printed total omits the OPX term
+sum_c,t09_m3_sites_nm site=2.0,106.27,106.27,0.0,0.03,True,
+sum_c,t09_m3_sites_nm site=3.0,103.22,103.22,0.0,0.03,True,
+sum_c,t09_m3_sites_nm site=4.0,110.87,110.87,0.0,0.03,True,
+sum_c,t13_m3_sites_ann_iter1 site=1.0,100.25,101.9,1.65,0.03,False,difference equals c_OPX: the printed total omits the OPX term
+sum_c,t13_m3_sites_ann_iter1 site=2.0,98.0,98.0,0.0,0.03,True,
+sum_c,t13_m3_sites_ann_iter1 site=3.0,109.95,109.95,0.0,0.03,True,
+sum_c,t13_m3_sites_ann_iter1 site=4.0,106.97,106.77,-0.2,0.03,False,
+sum_c,t14_m3_sites_ann_iter2 site=1.0,99.25,100.85,1.6,0.03,False,difference equals c_OPX: the printed total omits the OPX term
+sum_c,t14_m3_sites_ann_iter2 site=2.0,96.95,96.95,-0.0,0.03,True,
+sum_c,t14_m3_sites_ann_iter2 site=3.0,110.13,110.13,0.0,0.03,True,
+sum_c,t14_m3_sites_ann_iter2 site=4.0,106.62,106.62,0.0,0.03,True,
+sum_c,t15_m3_sites_ann_iter3 site=1.0,99.08,100.68,1.6,0.03,False,difference equals c_OPX: the printed total omits the OPX term
+sum_c,t15_m3_sites_ann_iter3 site=2.0,96.17,96.17,-0.0,0.03,True,
+sum_c,t15_m3_sites_ann_iter3 site=3.0,110.13,110.13,0.0,0.03,True,
+sum_c,t15_m3_sites_ann_iter3 site=4.0,106.07,106.07,0.0,0.03,True,
+mean,t05_gray_albedo_site1 S,137.57,137.5667,-0.0033,0.006,True,
+mean,t05_gray_albedo_site1 nFe,0.086,0.086,-0.0,0.0006,True,
+mean,t05_gray_albedo_site1 CPX,17.55,17.55,0.0,0.006,True,
+mean,t05_gray_albedo_site1 OPX,6.47,6.4733,0.0033,0.006,True,
+mean,t05_gray_albedo_site1 OLV,6.93,6.9333,0.0033,0.006,True,
+mean,t05_gray_albedo_site1 PLG,25.49,25.4867,-0.0033,0.006,True,
+mean,t05_gray_albedo_site1 ILM,7.2,7.2,-0.0,0.006,True,
+mean,t05_gray_albedo_site1 sigma_rel,0.773,0.773,0.0,0.006,True,
+stddev(ddof=1),t05_gray_albedo_site1 S,0.41,0.4082,-0.0018,0.006,True,
+stddev(ddof=1),t05_gray_albedo_site1 nFe,0.0,0.0,0.0,0.0006,True,
+stddev(ddof=1),t05_gray_albedo_site1 CPX,0.76,0.7587,-0.0013,0.006,True,
+stddev(ddof=1),t05_gray_albedo_site1 OPX,0.29,0.2889,-0.0011,0.006,True,
+stddev(ddof=1),t05_gray_albedo_site1 OLV,0.32,0.3175,-0.0025,0.006,True,
+stddev(ddof=1),t05_gray_albedo_site1 PLG,1.04,1.0414,0.0014,0.006,True,
+stddev(ddof=1),t05_gray_albedo_site1 ILM,0.32,0.3188,-0.0012,0.006,True,
+stddev(ddof=1),t05_gray_albedo_site1 sigma_rel,0.001,0.0013,0.0003,0.006,True,
+mean,t06_gray_albedo_site4 S,41.85,41.85,0.0,0.006,True,
+mean,t06_gray_albedo_site4 nFe,0.071,0.0713,0.0003,0.0006,True,
+mean,t06_gray_albedo_site4 CPX,10.63,10.6333,0.0033,0.006,True,
+mean,t06_gray_albedo_site4 OPX,1.88,1.875,-0.005,0.006,True,
+mean,t06_gray_albedo_site4 OLV,0.03,0.025,-0.005,0.006,True,
+mean,t06_gray_albedo_site4 PLG,50.07,50.0683,-0.0017,0.006,True,
+mean,t06_gray_albedo_site4 ILM,11.43,11.4283,-0.0017,0.006,True,
+mean,t06_gray_albedo_site4 sigma_rel,0.637,0.6368,-0.0002,0.006,True,
+stddev(ddof=1),t06_gray_albedo_site4 S,1.32,1.3217,0.0017,0.006,True,
+stddev(ddof=1),t06_gray_albedo_site4 nFe,0.001,0.0008,-0.0002,0.0006,True,
+stddev(ddof=1),t06_gray_albedo_site4 CPX,0.31,0.3062,-0.0038,0.006,True,
+stddev(ddof=1),t06_gray_albedo_site4 OPX,0.2,0.2042,0.0042,0.006,True,
+stddev(ddof=1),t06_gray_albedo_site4 OLV,0.06,0.0612,0.0012,0.006,True,
+stddev(ddof=1),t06_gray_albedo_site4 PLG,1.27,1.2713,0.0013,0.006,True,
+stddev(ddof=1),t06_gray_albedo_site4 ILM,0.21,0.2097,-0.0003,0.006,True,
+stddev(ddof=1),t06_gray_albedo_site4 sigma_rel,0.001,0.0016,0.0006,0.006,True,
+implied <A> agrees across tables,site 1,0.20044982989275226,0.2017,0.0013,0.01,True,range 0.2000-0.2013 over 5 tables
+implied <A> agrees across tables,site 2,0.17322699914141168,0.1749,0.0016,0.01,True,range 0.1726-0.1743 over 5 tables
+implied <A> agrees across tables,site 3,0.35817709329136116,0.3621,0.0039,0.01,True,range 0.3556-0.3595 over 5 tables
+implied <A> agrees across tables,site 4,0.2632176677001466,0.2661,0.0029,0.01,True,range 0.2620-0.2648 over 5 tables
+t_optim = epoch x t_epoch,iteration 1,0.25,0.264,0.014,0.015,True,t_epoch printed to 2 decimals
+t_optim = epoch x t_epoch,iteration 2,78.26,78.2613,0.0013,1.5752000000000002,True,t_epoch printed to 2 decimals
+t_optim = epoch x t_epoch,iteration 3,62.42,62.4213,0.0013,1.2584,True,t_epoch printed to 2 decimals

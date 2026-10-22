@@ -1,0 +1,24 @@
+id,r,comparison
+C_nFe_Is_mare,0.609151990034892,MLR Is (published)
+C_nFe_Is_high,0.7106353065314315,MLR Is (published)
+C_S_d,0.8597551083674191,MLR d (refit_all)
+C_PLG_mare,0.459159463438251,MLR PLG (published)
+C_PLG_high,0.6866740353603227,MLR PLG (published)
+C_OLV_high,0.480661658651749,MLR OLV (refit_all)
+C_OLV_mare,0.35098232054933437,MLR OLV (refit_all)
+C_CPX_mare,-0.46560821769215655,MLR CPX (published)
+C_CPX_high,-0.6709758920431034,MLR CPX (published)
+C_OPX_all,-0.8057106515159003,MLR OPX (published)
+C_ILM_TiO2_mare,0.46141945177235005,TiO2 Lucey Eq. 7
+C_ILM_TiO2_high,0.6847268218491533,TiO2 Lucey Eq. 7
+C_ILM_BD_mare,0.2689890221796501,"ilmenite, 1550-nm band depth (Surkov 2020)"
+C_ILM_BD_high,-0.04760803514499895,"ilmenite, 1550-nm band depth (Surkov 2020)"
+C_ILM_TiO2ANN_all,0.6623316617029802,"TiO2, moderately non-linear ANN (Korokhin 2008), retrained"
+C_ILM_TiO2ANN_mare,-0.06154901579413009,"TiO2, moderately non-linear ANN (Korokhin 2008), retrained"
+C_ILM_TiO2ANN_high,0.6070241784926154,"TiO2, moderately non-linear ANN (Korokhin 2008), retrained"
+C_nFe_OMAT_mare,-0.2625121382187249,OMAT Lucey Eq. 6
+C_nFe_OMAT_high,-0.8770797006788021,OMAT Lucey Eq. 6
+C_CPX_A_high,0.9694500522938172,<A>
+C_PLG_A_high,0.8381576400137689,<A>
+C_Gr_A_all,-0.8949979388178906,<A>
+C_ILM_ANN_over_BD_mare,16.9141060421995,"median ANN c_ILM / median band-depth ilmenite, mare (a ratio, not r)"

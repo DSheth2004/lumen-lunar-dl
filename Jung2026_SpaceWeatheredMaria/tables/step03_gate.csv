@@ -1,0 +1,3 @@
+check,value,tol,status
+our k round-trips to measured r,5.433245853225799e-09,1e-06,PASS
+Fig C1 SSA inside published panel (9/9),0.0,0.0,PASS

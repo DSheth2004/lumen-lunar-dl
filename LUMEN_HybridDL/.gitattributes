@@ -1,0 +1,2 @@
+# Byte-exact storage: data/ is SHA-256 checked, so no end-of-line conversion anywhere.
+* -text
