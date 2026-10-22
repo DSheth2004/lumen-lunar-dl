@@ -143,9 +143,13 @@ def section_gate(L):
           "skill = 1 − MAE / MAE(mean-of-others), with a bootstrap 95 % CI over soils.",
           "A target passes the gate (and is mapped on M³) if its LOSO CI lower bound is > 0.", "",
           md_table(g, "%.3f"), ""]
-    best = sk[sk["protocol"] == "LOSO"].pivot_table(index="target", columns="method", values="skill")
-    best = best.reindex(le.TARGETS + ["COMP_mean"])
-    L += ["LOSO skill of every method (for reference):", "", md_table(best, "%.2f"), ""]
+    for protocol in ("LOSO", "LOMO"):
+        best = sk[(sk["protocol"] == protocol) & sk["method"].isin(CLASSIC + ABL)].pivot_table(
+            index="target", columns="method", values="skill")
+        best = best.reindex(index=le.TARGETS + ["COMP_mean"],
+                            columns=[m for m in CLASSIC + ABL if m in best.columns])
+        L += ["%s skill of every method that predicts all targets (the FeO-only Fernández-Díaz "
+              "variants are in section 5):" % protocol, "", md_table(best, "%.2f"), ""]
 
 
 def section_uncertainty(L):
@@ -290,32 +294,88 @@ def headline():
                  % (best.shape[1], len(wins), ", ".join(wins) or "none"))
         H.append("  - Another method is best on: %s."
                  % (", ".join("%s (%s)" % kv for kv in lost.items()) or "none"))
+    for protocol in ("LOSO", "LOMO"):
+        b = s[(s["protocol"] == protocol)].pivot_table(index="target", columns="method", values="mae").reindex(le.TARGETS)
+        g = ov[(ov["protocol"] == protocol) & (ov["baseline"] == "A2_pretrain_real") & (ov["target"] != "COMP_mean")]
+        H.append("- **Ablations (%s).** The pre-registered primary A4 (pretrain + mixup + replay) is *not* the best "
+                 "configuration: A2 (pretrain + real spectra only) has the lower MAE on %d/13 targets (%d Holm-significant "
+                 "either way). Pretraining helps (A2 below A1 on %d/13); SSA-mixup + replay did not "
+                 "(A4 below A2 on %d/13, A3 below A2 on %d/13). Zero-shot A0 is the worst LUMEN variant "
+                 "(composition MAE %.1f vs %.1f vol %% for A4)."
+                 % (protocol, int((~g["lumen_better"]).sum()), int(g["significant"].sum()),
+                    int((b["A2_pretrain_real"] < b["A1_scratch_real"]).sum()),
+                    int((b[PRIMARY] < b["A2_pretrain_real"]).sum()),
+                    int((b["A3_pretrain_mixup"] < b["A2_pretrain_real"]).sum()),
+                    s[(s["protocol"] == protocol) & (s["method"] == "A0_zero_shot") & (s["target"] == "COMP_mean")]["mae"].iloc[0],
+                    s[(s["protocol"] == protocol) & (s["method"] == PRIMARY) & (s["target"] == "COMP_mean")]["mae"].iloc[0]))
     ident = [t for t in le.TARGETS if gate.loc[t, "identifiable"]]
-    H.append("- **Identifiability gate.** %d of 13 targets pass: %s. Withheld from the M³ maps: %s."
-             % (len(ident), ", ".join(ident), ", ".join(t for t in le.TARGETS if t not in ident) or "none"))
-    k = km[(km["protocol"] == "LOSO") & (km["set"] == "all") & (km["truth"] == "korokhin_truth")].set_index("mineral")
-    kw = [m for m in k.index if k.loc[m, "mae_" + PRIMARY] < k.loc[m, "mae_Korokhin_NM"]]
-    kb = [m for m in k.index if k.loc[m, "mae_" + PRIMARY] < k.loc[m, "mae_mean_of_others"]]
-    H.append("- **Korokhin 2024** (5-mineral proportions, 19 soils, LOSO).")
-    H.append("  - A4 beats their Nelder–Mead fit on %d/5 minerals (%s)."
-             % (len(kw), ", ".join("%s %.2f vs %.2f" % (m, k.loc[m, "mae_" + PRIMARY], k.loc[m, "mae_Korokhin_NM"])
-                                    for m in k.index)))
-    H.append("  - A4 beats the mean-of-other-soils baseline on %d/5." % len(kb))
+    H.append("- **Identifiability gate.** %d of 13 targets pass: %s. Withheld from the M³ maps: %s. "
+             "Under LOMO the skill CI also includes 0 for: %s."
+             % (len(ident), ", ".join(ident), ", ".join(t for t in le.TARGETS if t not in ident) or "none",
+                ", ".join(t for t in le.TARGETS if gate.loc[t, "ci_lo_LOMO"] <= 0) or "none"))
+    kt = pd.read_csv(T / "step06_korokhin_tests.csv")
+    kt = kt[(kt["truth"] == "korokhin_truth") & (kt["set"] == "all")]
+    H.append("- **Fairness note for the next two items.** Korokhin's and Jung's methods never see an LSCC "
+             "soil (physics-only inversions); LUMEN A4 is fine-tuned on the 18 (LOSO) or fewer (LOMO) "
+             "other soils. The like-for-like physics-only comparison is LUMEN A0 (zero-shot).")
+    for protocol in ("LOSO", "LOMO"):
+        k = km[(km["protocol"] == protocol) & (km["set"] == "all")
+               & (km["truth"] == "korokhin_truth")].set_index("mineral")
+        t = kt[kt["protocol"] == protocol]
+        sig = lambda lu, vs: t[(t["lumen"] == lu) & (t["versus"] == vs) & (t["holm_p"] < 0.05)
+                               & (t["mae_a"] < t["mae_b"])]["mineral"].tolist()
+        H.append("- **Korokhin 2024** (5-mineral proportions, 19 soils, %s)." % protocol)
+        H.append("  - A4 vs their Nelder–Mead fit: %s. A4 is lower on %d/5; Holm-significant on: %s."
+                 % (", ".join("%s %.2f vs %.2f" % (m, k.loc[m, "mae_" + PRIMARY], k.loc[m, "mae_Korokhin_NM"])
+                              for m in k.index),
+                    int((k["mae_" + PRIMARY] < k["mae_Korokhin_NM"]).sum()),
+                    ", ".join(sig(PRIMARY, "Korokhin_NM")) or "none"))
+        H.append("  - A4 vs the mean of the other soils: lower on %d/5; Holm-significant on: %s."
+                 % (int((k["mae_" + PRIMARY] < k["mae_mean_of_others"]).sum()),
+                    ", ".join(sig(PRIMARY, "mean_of_others")) or "none"))
+        if protocol == "LOSO":
+            H.append("  - Zero-shot A0 (physics-only, like-for-like) vs their fit: lower on %d/5 (%s); "
+                     "Holm-significant on: %s."
+                     % (int((k["mae_A0_zero_shot"] < k["mae_Korokhin_NM"]).sum()),
+                        ", ".join("%s %.2f vs %.2f" % (m, k.loc[m, "mae_A0_zero_shot"], k.loc[m, "mae_Korokhin_NM"])
+                                  for m in k.index), ", ".join(sig("A0_zero_shot", "Korokhin_NM")) or "none"))
+    kr = pd.read_csv(T / "step06_korokhin_maturity.csv")
+    kr = kr[(kr["protocol"] == "LOSO") & (kr["set"] == "all") & kr["spearman_korokhin_nFe"].notna()]
+    H.append("  - Maturity, pooled 19 soils, Spearman ρ vs measured Is/FeO per fraction (LOSO): LUMEN %s; "
+             "Korokhin nFe %s."
+             % (" / ".join("%.2f" % v for v in kr["spearman_lumen_IsFeO"]),
+                " / ".join("%.2f" % v for v in kr["spearman_korokhin_nFe"])))
     j = jc[(jc["method"] == PRIMARY)]
+    jm = pd.read_csv(T / "step06_jung_maturity.csv").set_index("protocol")
     for protocol in ("LOSO", "LOMO"):
         jj = j[j["protocol"] == protocol]
-        H.append("- **Jung 2026** (%s). A4 meets %d of %d worst-case claims: %s."
+        H.append("- **Jung 2026** (4 soils at 20–45 µm, %s). A4 meets %d of the %d claim variants: %s."
                  % (protocol, int(jj["meets_claim"].sum()), len(jj),
                     "; ".join("%s: %.2f (Jung %.2f, prior-only %.2f)" % (r["claim"], r["worst_err"], r["jung_worst_err"],
                                                                      r["jung_prior_only_worst_err"])
                               for _, r in jj.iterrows())))
+    a0 = jc[(jc["method"] == "A0_zero_shot") & (jc["protocol"] == "LOSO")]
+    mo = jc[(jc["method"] == le.REFERENCE) & (jc["protocol"] == "LOSO")]
+    H.append("  - With n = 4 soils this is weak evidence. Zero-shot A0 also meets %d/%d, while the mean of the "
+             "other soils meets %d/%d."
+             % (int(a0["meets_claim"].sum()), len(a0), int(mo["meets_claim"].sum()), len(mo)))
+    H.append("  - Maturity on the same 4 soils: Pearson r = %.2f for LUMEN Is/FeO vs %.2f for Jung's I_sm; "
+             "MAE %.1f vs %.1f Is/FeO units."
+             % (jm.loc["LOSO", "pearson_lumen"], jm.loc["LOSO", "pearson_jung_Ism"],
+                jm.loc["LOSO", "mae_lumen_IsFeO"], jm.loc["LOSO", "mae_jung_Ism"]))
+    ft = pd.read_csv(T / "step06_fernandez_tests.csv").set_index(["protocol", "versus"])
     for protocol in ("LOSO", "LOMO"):
         f = fd[fd["protocol"] == protocol].set_index("method")
         fdm = f[f.index.str.startswith("FD")]["mae_soil"]
-        H.append("- **Fernández-Díaz 2026** FeO (%s): A4 MAE %.3f wt %% vs best FD variant %s %.3f, "
-                 "FD as published (AE→RF, M³-trained AE) %.3f; best classic %s %.3f."
-                 % (protocol, f.loc[PRIMARY, "mae_soil"], fdm.idxmin(), fdm.min(),
-                    f.loc["FD-AE-M3/RF", "mae_soil"],
+        best_fd = fdm.idxmin()
+        H.append("- **Fernández-Díaz 2026** FeO (%s): A4 MAE %.3f wt %% vs FD as published (AE→RF, M³-trained AE) "
+                 "%.3f (paired p = %.3f, Holm over the 12 FD variants %.3f) and the best FD variant %s %.3f "
+                 "(p = %.3f, Holm %.3f). A4 is lower than all 12 FD variants; %d/12 survive Holm. Best classic: %s %.3f."
+                 % (protocol, f.loc[PRIMARY, "mae_soil"], f.loc["FD-AE-M3/RF", "mae_soil"],
+                    ft.loc[(protocol, "FD-AE-M3/RF"), "wilcoxon_p"], ft.loc[(protocol, "FD-AE-M3/RF"), "holm_p_over_fd_variants"],
+                    best_fd, fdm.min(), ft.loc[(protocol, best_fd), "wilcoxon_p"],
+                    ft.loc[(protocol, best_fd), "holm_p_over_fd_variants"],
+                    int((ft.loc[protocol]["holm_p_over_fd_variants"] < 0.05).sum()),
                     f.loc[CLASSIC, "mae_soil"].idxmin(), f.loc[CLASSIC, "mae_soil"].min()))
     for protocol in ("LOSO", "LOMO"):
         c = cov[(cov["protocol"] == protocol)].set_index(["method", "level"])
