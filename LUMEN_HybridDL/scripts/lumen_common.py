@@ -377,3 +377,51 @@ def continuum_removed(lam_um: np.ndarray, R: np.ndarray) -> np.ndarray:
         cont = np.interp(x, x[hull], y[hull])
         out[i] = y / cont
     return out
+
+
+def continuum_removed_fast(lam_um: np.ndarray, R: np.ndarray) -> np.ndarray:
+    """Same upper-hull continuum removal as continuum_removed, vectorised over rows.
+
+    Monotone chain run on all spectra at once (one stack per row); the hull is then
+    interpolated band by band from the previous and next hull vertex of each row."""
+    R = np.atleast_2d(np.asarray(R, float))
+    x = np.asarray(lam_um, float)
+    n, L = R.shape
+    rows = np.arange(n)
+    stack = np.zeros((n, L), int)
+    top = np.ones(n, int)
+    for j in range(1, L):
+        active = rows
+        while active.size:
+            t = top[active]
+            can = t >= 2
+            active = active[can]
+            if not active.size:
+                break
+            t = top[active]
+            a, b = stack[active, t - 2], stack[active, t - 1]
+            ya, yb, yj = R[active, a], R[active, b], R[active, j]
+            pop = (yb - ya) * (x[j] - x[a]) <= (yj - ya) * (x[b] - x[a])
+            active = active[pop]
+            top[active] -= 1
+        stack[rows, top] = j
+        top += 1
+    on = np.zeros((n, L), bool)
+    for t in range(L):
+        sel = top > t
+        on[rows[sel], stack[sel, t]] = True
+    idx = np.broadcast_to(np.arange(L), (n, L))
+    prev = np.maximum.accumulate(np.where(on, idx, 0), axis=1)
+    nxt = np.minimum.accumulate(np.where(on, idx, L - 1)[:, ::-1], axis=1)[:, ::-1]
+    yp, yn = np.take_along_axis(R, prev, 1), np.take_along_axis(R, nxt, 1)
+    xp, xn = x[prev], x[nxt]
+    span = np.where(nxt > prev, xn - xp, 1.0)
+    cont = np.where(nxt > prev, yp + (yn - yp) * (x[None, :] - xp) / span, R)
+    return R / cont
+
+
+def spectral_features(R: np.ndarray, lam_um: np.ndarray | None = None) -> np.ndarray:
+    """Model input: (n, 2, L) = [log reflectance, convex-hull continuum-removed R]."""
+    lam_um = input_wavelengths_um() if lam_um is None else lam_um
+    R = np.clip(np.atleast_2d(np.asarray(R, float)), 1e-4, None)
+    return np.stack([np.log(R), continuum_removed_fast(lam_um, R)], axis=1).astype(np.float32)

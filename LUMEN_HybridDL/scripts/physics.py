@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-from scipy.optimize import brentq
+from scipy.optimize import brentq, minimize_scalar
 
 import lumen_common as lc
 
@@ -90,22 +90,55 @@ def slab_ssa(alpha_um, n, k, D_um):
     return se + (1.0 - se) * (1.0 - si) * th / (1.0 - si * th)
 
 
-def k_from_reflectance(R, lam_um, n, D_um, mu0=lc.MU0, mu=lc.MU, lo=1e-9, hi=1.0):
-    """Per-band bisection for k such that the slab model reproduces R (Appendix E)."""
+def slab_reflectance(k, lam_um, n, D_um, mu0=lc.MU0, mu=lc.MU):
+    """Reflectance of a slab-model grain population with alpha = 4 pi k / lambda."""
+    return ssa_to_reflectance(slab_ssa(4.0 * np.pi * k / lam_um, n, k, D_um), mu0, mu)
+
+
+def k_at_reflectance_floor(lam_um, n, D_um, mu0=lc.MU0, mu=lc.MU, lo=1e-9, hi=1.0):
+    """k at which the slab model is darkest, per band.
+
+    R(k) is not monotone: it falls while volume absorption removes the transmitted
+    light, reaches a floor once the grain is opaque (R ~ 0.016 for n = 1.64 at
+    i = 30 / e = 0), then rises again because the surface reflection S_e grows with k.
+    Only the falling branch is physical for a silicate or oxide grain. Located on a
+    log-k grid and refined with a bounded scalar search."""
+    lam_um = np.atleast_1d(np.asarray(lam_um, float))
+    grid = np.logspace(np.log10(lo), np.log10(hi), 1201)
+    Rg = slab_reflectance(grid[None, :], lam_um[:, None], n, D_um, mu0, mu)
+    j = np.argmin(Rg, axis=1)
+    out = np.empty(lam_um.shape)
+    for i, (lam, jj) in enumerate(zip(lam_um, j)):
+        a, b = np.log10(grid[max(jj - 1, 0)]), np.log10(grid[min(jj + 1, grid.size - 1)])
+        res = minimize_scalar(lambda lk: float(slab_reflectance(10.0 ** lk, lam, n, D_um, mu0, mu)),
+                              bounds=(a, b), method="bounded", options={"xatol": 1e-10})
+        out[i] = 10.0 ** res.x
+    return out
+
+
+def k_from_reflectance(R, lam_um, n, D_um, mu0=lc.MU0, mu=lc.MU, lo=1e-9, hi=1.0,
+                       return_flags=False):
+    """Per-band root finding for k such that the slab model reproduces R (Appendix E).
+
+    The root is bracketed on the physical (falling) branch [lo, k_floor] of R(k); see
+    k_at_reflectance_floor. A band brighter than a lossless grain is clamped to lo, a
+    band darker than the slab floor is clamped to k_floor; both are flagged (+1 / -1)."""
     R = np.atleast_1d(np.asarray(R, float))
     lam_um = np.atleast_1d(np.asarray(lam_um, float))
+    k_floor = k_at_reflectance_floor(lam_um, n, D_um, mu0, mu, lo, hi)
     out = np.full(R.shape, np.nan)
-    for i, (r, lam) in enumerate(zip(R, lam_um)):
+    flag = np.zeros(R.shape, int)
+    for i, (r, lam, kf) in enumerate(zip(R, lam_um, k_floor)):
         def f(kk):
-            a = 4.0 * np.pi * kk / lam
-            return float(ssa_to_reflectance(slab_ssa(a, n, kk, D_um), mu0, mu)) - r
-        f_lo, f_hi = f(lo), f(hi)
-        if f_lo * f_hi > 0:
-            # brighter than a lossless grain, or darker than k = 1: clamp to the bound
-            out[i] = lo if abs(f_lo) < abs(f_hi) else hi
-            continue
-        out[i] = brentq(f, lo, hi, xtol=1e-14, rtol=1e-12)
-    return out
+            return float(slab_reflectance(kk, lam, n, D_um, mu0, mu)) - r
+        f_lo, f_hi = f(lo), f(kf)
+        if f_lo <= 0:
+            out[i], flag[i] = lo, 1
+        elif f_hi >= 0:
+            out[i], flag[i] = kf, -1
+        else:
+            out[i] = brentq(f, lo, kf, xtol=1e-14, rtol=1e-12)
+    return (out, flag) if return_flags else out
 
 
 # --------------------------------------------------------------------------
@@ -218,7 +251,7 @@ class EndmemberLibrary:
     def __init__(self, lam_um: np.ndarray):
         self.lam = np.asarray(lam_um, float)
         lib = lc.ENDMEMBER_LIBRARY.copy()
-        k, R, rt = [], [], []
+        k, R, rt, n_bright, n_dark = [], [], [], [], []
         for _, r in lib.iterrows():
             lam_src, refl = lc.read_relab_tab(lc.RELAB_DIR / (r["spectrum_id"] + ".tab"))
             Rm = lc.srf_resample(lam_src, refl, self.lam)
@@ -226,12 +259,15 @@ class EndmemberLibrary:
                 ok = np.isfinite(Rm)
                 Rm = np.interp(self.lam, self.lam[ok], Rm[ok])
             n = lc.EM_N[r["em_class"]]
-            kk = k_from_reflectance(Rm, self.lam, n, r["d_eff_um"])
-            back = ssa_to_reflectance(slab_ssa(4 * np.pi * kk / self.lam, n, kk, r["d_eff_um"]))
+            kk, fl = k_from_reflectance(Rm, self.lam, n, r["d_eff_um"], return_flags=True)
+            back = slab_reflectance(kk, self.lam, n, r["d_eff_um"])
             k.append(kk)
             R.append(Rm)
             rt.append(np.max(np.abs(back - Rm)))
-        self.table = lib.assign(roundtrip_max_abs=rt)
+            n_bright.append(int((fl == 1).sum()))
+            n_dark.append(int((fl == -1).sum()))
+        self.table = lib.assign(roundtrip_max_abs=rt, n_clamped_bright=n_bright,
+                                n_clamped_dark=n_dark, k_max=np.max(k, axis=1))
         self.k = np.asarray(k)
         self.R = np.asarray(R)
         self.cls = lib["em_class"].to_numpy()
@@ -251,6 +287,22 @@ REGIMES = {
     "broad": (0.30, np.array([1.2, 0.8, 0.8, 0.5, 0.4])),
 }
 CRYST = ["PLG", "LCP", "HCP", "OLV", "ILM"]
+# D2b: the Dirichlets are truncated (rejection) so that ilmenite is at most 20 % and
+# olivine at most 60 % of the crystalline part. High-Ti mare basalts carry up to ~20 vol%
+# ilmenite and soils far less; olivine-rich exposures exist (e.g. Aristarchus) but
+# dunitic soils do not. Without the caps, synthetic TiO2 reached 30 % at the 99th
+# percentile against <= ~11 % in any returned soil (Lunar Sourcebook, ch. 7).
+CRYST_CAP = np.array([1.0, 1.0, 1.0, 0.60, 0.20])
+
+
+def truncated_dirichlet(rng, alpha, size, cap=CRYST_CAP, max_rounds=200):
+    out = rng.dirichlet(alpha, size=size)
+    for _ in range(max_rounds):
+        bad = (out > cap).any(axis=1)
+        if not bad.any():
+            return out
+        out[bad] = rng.dirichlet(alpha, size=int(bad.sum()))
+    raise RuntimeError("truncated_dirichlet: acceptance too low for alpha=%s" % alpha)
 
 
 class Simulator:
@@ -263,7 +315,11 @@ class Simulator:
                         for c in ["PLG", "LCP", "HCP", "OLV", "ILM", "VGL", "HGL"]}
         self.mp_unit = mpfe_alpha_unit(3.0)
 
-    def sample(self, n: int, rng: np.random.Generator, randomize_output: bool = True) -> dict:
+    def sample(self, n: int, rng: np.random.Generator, randomize_output: bool = True,
+               prior: str = "v1") -> dict:
+        """prior="v1" is the corrected prior (D2b caps, D3b jitter); "v0" reproduces the
+        hand-off version, kept only so step02 can report the before/after numbers."""
+        assert prior in ("v0", "v1")
         lib, lam, L = self.lib, self.lam, self.lam.size
         # ---- composition ---------------------------------------------------------
         names = list(REGIMES)
@@ -272,7 +328,10 @@ class Simulator:
         cryst = np.zeros((n, 5))
         for j, nm in enumerate(names):
             m = reg == j
-            cryst[m] = rng.dirichlet(REGIMES[nm][1], size=int(m.sum()))
+            if prior == "v1":
+                cryst[m] = truncated_dirichlet(rng, REGIMES[nm][1], int(m.sum()))
+            else:
+                cryst[m] = rng.dirichlet(REGIMES[nm][1], size=int(m.sum()))
         maturity = rng.uniform(0, 1, n)
         agg = np.clip(0.65 * maturity + rng.normal(0, 0.12, n), 0.0, 0.75)
         oth = 0.25 * rng.uniform(0, 1, n) ** 2
@@ -332,10 +391,26 @@ class Simulator:
         for j, c in enumerate(CRYST):
             chem_em[:, j] = lib.chem[em[c]]
         chem_em[:, 6] = lib.chem[oth_em]
-        # per-sample jitter of phase chemistry (+-15 %, FeO/MgO anticorrelated)
-        jit = np.exp(rng.normal(0, 0.15, (n, 7, 1)))
-        chem_em[:, :, [0, 1]] *= jit                                              # FeO, TiO2
-        chem_em[:, :, 4] *= 1.0 / jit[:, :, 0]                                    # MgO
+        if prior == "v1":
+            # per-sample jitter of phase chemistry (D3b). Fe-Mg solid solution is a molar
+            # exchange, so FeO is jittered by x e^N(0, 0.15) and MgO moves by the molar
+            # equivalent (bounded by the phase's Fe+Mg budget); TiO2 x e^N(0, 0.15).
+            feo0, mgo0 = chem_em[:, :, 0].copy(), chem_em[:, :, 4].copy()
+            feo = np.clip(feo0 * np.exp(rng.normal(0, 0.15, (n, 7))), 0.0,
+                          feo0 + mgo0 * M_FEO / M_MGO)
+            chem_em[:, :, 0] = feo
+            chem_em[:, :, 4] = mgo0 - (feo - feo0) * M_MGO / M_FEO
+            chem_em[:, :, 1] *= np.exp(rng.normal(0, 0.15, (n, 7)))
+            # ilmenite is stoichiometric FeTiO3: TiO2 fixed, only the Fe <-> Mg (geikielite)
+            # exchange varies, MgO 1.5 % x e^N(0, 0.5)
+            mg = lib.chem[em["ILM"], 4] * np.exp(rng.normal(0, 0.5, n))
+            chem_em[:, 4, :] = lib.chem[em["ILM"]]
+            chem_em[:, 4, 4] = mg
+            chem_em[:, 4, 0] = lib.chem[em["ILM"], 0] - (mg - lib.chem[em["ILM"], 4]) * M_FEO / M_MGO
+        else:
+            jit = np.exp(rng.normal(0, 0.15, (n, 7, 1)))
+            chem_em[:, :, [0, 1]] *= jit
+            chem_em[:, :, 4] *= 1.0 / jit[:, :, 0]
         non_agg = [0, 1, 2, 3, 4, 6]
         m_na = mass[:, non_agg]
         chem = np.einsum("nc,nco->no", m_na, chem_em[:, non_agg]) / m_na.sum(1, keepdims=True)

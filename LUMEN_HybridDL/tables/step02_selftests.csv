@@ -1,0 +1,7 @@
+test,value,threshold,pass
+ssa_inverse_max_abs,6.619009784714081e-10,1e-06,True
+k_roundtrip_max_abs_all_endmembers,7.803735435629733e-11,1e-06,True
+k_roundtrip_n_bands_clamped,0.0,0.0,True
+random_forward_inverse_forward_max_abs,3.7185354795354897e-10,1e-06,True
+npFe0_darkening_R750_ratio,0.1832476012970711,1.0,True
+npFe0_reddening_slope_ratio,2.927752148395945,1.0,True

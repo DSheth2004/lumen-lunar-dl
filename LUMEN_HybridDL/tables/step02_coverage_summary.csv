@@ -1,0 +1,13 @@
+quantity,value
+synthetic_to_synthetic_nn_dist_median,0.14387185871601105
+synthetic_to_synthetic_nn_dist_p95,0.2326478786766529
+real_nn_dist_median,0.10151144117116928
+real_nn_dist_max,0.3632352352142334
+real_nn_dist_percentile_median,16.1
+real_frac_beyond_synth_p95,0.04
+real_nn_rms_log_reflectance_median,0.04749174286738618
+auc_real_vs_synth_logistic,0.9516266666666667
+auc_real_vs_synth_random_forest,0.9705555555555556
+auc_real_vs_synth_logistic_noise_free_synthetic,0.9756888888888887
+auc_real_vs_synth_random_forest_noise_free_synthetic,0.992688888888889
+n_reference_synthetic,100000.0
