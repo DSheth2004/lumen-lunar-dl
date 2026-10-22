@@ -257,8 +257,15 @@ def figures(summ, kor_mae, claims, fd_wide, pred, meta):
             if m.startswith("A"):
                 col = {"A0_zero_shot": "#9ec5f4", "A1_scratch_real": "#86b6ef", "A2_pretrain_real": "#5598e7",
                        "A3_pretrain_mixup": "#256abf", PRIMARY: lp.C[0]}[m]
-            ax.plot(x + (i - 4.5) * 0.07, (v / ref.reindex(le.TARGETS)).values, "o", color=col,
-                    ms=5 if m == PRIMARY else 3.5, label=m)
+            r = (v / ref.reindex(le.TARGETS)).values
+            xx = x + (i - 4.5) * 0.07
+            hollow = m == "A0_zero_shot"
+            ax.plot(xx, np.minimum(r, 2.45), "o", color=col, ms=5 if m == PRIMARY else 3.5,
+                    mfc="none" if hollow else col, label=m)
+            off = r > 2.45
+            for xo, ro in zip(xx[off], r[off]):
+                ax.annotate("%.1f" % ro, (xo, 2.45), xytext=(xo, 2.2), fontsize=6, color=lp.INK2,
+                            ha="center", arrowprops={"arrowstyle": "->", "color": lp.INK2, "lw": 0.6})
         ax.axhline(1, color=lp.INK2, lw=0.8)
         ax.set_ylabel("MAE / MAE(mean-of-others)")
         ax.set_title(protocol)
