@@ -1,0 +1,145 @@
+method,held_out_site,params
+FD-wavelet/Lasso,A11,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A12,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A14,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A15,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A15_2,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A15_3,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A16,{'m__alpha': 10.0}
+FD-wavelet/Lasso,A17,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A17_2,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A17_3,{'m__alpha': 1.0}
+FD-wavelet/Lasso,A17_4,{'m__alpha': 0.1}
+FD-wavelet/Lasso,A17_5,{'m__alpha': 1.0}
+FD-wavelet/Lasso,L16,{'m__alpha': 1.0}
+FD-wavelet/Lasso,L20,{'m__alpha': 10.0}
+FD-wavelet/Lasso,L24,{'m__alpha': 1.0}
+FD-wavelet/Lasso,CE3,{'m__alpha': 1.0}
+FD-wavelet/Lasso,CE5,{'m__alpha': 1.0}
+FD-wavelet/Lasso,CE6,{'m__alpha': 1.0}
+FD-wavelet/SVR-lin,A11,"{'m__C': 0.1, 'm__epsilon': 0.01}"
+FD-wavelet/SVR-lin,A12,"{'m__C': 0.01, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,A14,"{'m__C': 0.01, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,A15,"{'m__C': 0.1, 'm__epsilon': 0.01}"
+FD-wavelet/SVR-lin,A15_2,"{'m__C': 0.01, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,A15_3,"{'m__C': 0.1, 'm__epsilon': 0.01}"
+FD-wavelet/SVR-lin,A16,"{'m__C': 0.01, 'm__epsilon': 0.01}"
+FD-wavelet/SVR-lin,A17,"{'m__C': 0.1, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,A17_2,"{'m__C': 0.01, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,A17_3,"{'m__C': 0.1, 'm__epsilon': 0.01}"
+FD-wavelet/SVR-lin,A17_4,"{'m__C': 0.1, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,A17_5,"{'m__C': 0.1, 'm__epsilon': 0.1}"
+FD-wavelet/SVR-lin,L16,"{'m__C': 0.1, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,L20,"{'m__C': 0.1, 'm__epsilon': 0.1}"
+FD-wavelet/SVR-lin,L24,"{'m__C': 0.1, 'm__epsilon': 0.01}"
+FD-wavelet/SVR-lin,CE3,"{'m__C': 0.01, 'm__epsilon': 0.5}"
+FD-wavelet/SVR-lin,CE5,"{'m__C': 0.1, 'm__epsilon': 0.01}"
+FD-wavelet/SVR-lin,CE6,"{'m__C': 0.1, 'm__epsilon': 0.1}"
+FD-wavelet/SVR-RBF,A11,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A12,"{'m__C': 1.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A14,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A15,"{'m__C': 1.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A15_2,"{'m__C': 1.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A15_3,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A16,"{'m__C': 0.1, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A17,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A17_2,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A17_3,"{'m__C': 1.0, 'm__epsilon': 0.01, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A17_4,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,A17_5,"{'m__C': 1.0, 'm__epsilon': 0.01, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,L16,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,L20,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'auto'}"
+FD-wavelet/SVR-RBF,L24,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'auto'}"
+FD-wavelet/SVR-RBF,CE3,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,CE5,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/SVR-RBF,CE6,"{'m__C': 1.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-wavelet/RF,A11,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-wavelet/RF,A12,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-wavelet/RF,A14,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 200}"
+FD-wavelet/RF,A15,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-wavelet/RF,A15_2,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-wavelet/RF,A15_3,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 100}"
+FD-wavelet/RF,A16,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-wavelet/RF,A17,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-wavelet/RF,A17_2,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 100}"
+FD-wavelet/RF,A17_3,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 100}"
+FD-wavelet/RF,A17_4,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 100}"
+FD-wavelet/RF,A17_5,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 100}"
+FD-wavelet/RF,L16,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-wavelet/RF,L20,"{'m__max_depth': None, 'm__min_samples_split': 5, 'm__n_estimators': 500}"
+FD-wavelet/RF,L24,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-wavelet/RF,CE3,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-wavelet/RF,CE5,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 200}"
+FD-wavelet/RF,CE6,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 100}"
+FD-AE-M3/Lasso,A11,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,A12,{'m__alpha': 0.001}
+FD-AE-M3/Lasso,A14,{'m__alpha': 0.1}
+FD-AE-M3/Lasso,A15,{'m__alpha': 0.001}
+FD-AE-M3/Lasso,A15_2,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,A15_3,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,A16,{'m__alpha': 10.0}
+FD-AE-M3/Lasso,A17,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,A17_2,{'m__alpha': 1.0}
+FD-AE-M3/Lasso,A17_3,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,A17_4,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,A17_5,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,L16,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,L20,{'m__alpha': 0.1}
+FD-AE-M3/Lasso,L24,{'m__alpha': 1.0}
+FD-AE-M3/Lasso,CE3,{'m__alpha': 1.0}
+FD-AE-M3/Lasso,CE5,{'m__alpha': 0.01}
+FD-AE-M3/Lasso,CE6,{'m__alpha': 0.01}
+FD-AE-M3/SVR-lin,A11,"{'m__C': 10.0, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,A12,"{'m__C': 10.0, 'm__epsilon': 0.5}"
+FD-AE-M3/SVR-lin,A14,"{'m__C': 0.01, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,A15,"{'m__C': 10.0, 'm__epsilon': 0.01}"
+FD-AE-M3/SVR-lin,A15_2,"{'m__C': 10.0, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,A15_3,"{'m__C': 10.0, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,A16,"{'m__C': 0.01, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,A17,"{'m__C': 10.0, 'm__epsilon': 0.01}"
+FD-AE-M3/SVR-lin,A17_2,"{'m__C': 10.0, 'm__epsilon': 0.01}"
+FD-AE-M3/SVR-lin,A17_3,"{'m__C': 10.0, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,A17_4,"{'m__C': 10.0, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,A17_5,"{'m__C': 10.0, 'm__epsilon': 0.01}"
+FD-AE-M3/SVR-lin,L16,"{'m__C': 10.0, 'm__epsilon': 0.01}"
+FD-AE-M3/SVR-lin,L20,"{'m__C': 10.0, 'm__epsilon': 0.5}"
+FD-AE-M3/SVR-lin,L24,"{'m__C': 10.0, 'm__epsilon': 0.5}"
+FD-AE-M3/SVR-lin,CE3,"{'m__C': 10.0, 'm__epsilon': 0.01}"
+FD-AE-M3/SVR-lin,CE5,"{'m__C': 10.0, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-lin,CE6,"{'m__C': 10.0, 'm__epsilon': 0.1}"
+FD-AE-M3/SVR-RBF,A11,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,A12,"{'m__C': 100.0, 'm__epsilon': 0.01, 'm__gamma': 'auto'}"
+FD-AE-M3/SVR-RBF,A14,"{'m__C': 10.0, 'm__epsilon': 0.1, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,A15,"{'m__C': 100.0, 'm__epsilon': 0.01, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,A15_2,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,A15_3,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'auto'}"
+FD-AE-M3/SVR-RBF,A16,"{'m__C': 10.0, 'm__epsilon': 0.1, 'm__gamma': 'auto'}"
+FD-AE-M3/SVR-RBF,A17,"{'m__C': 10.0, 'm__epsilon': 0.1, 'm__gamma': 'auto'}"
+FD-AE-M3/SVR-RBF,A17_2,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,A17_3,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,A17_4,"{'m__C': 100.0, 'm__epsilon': 0.01, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,A17_5,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'auto'}"
+FD-AE-M3/SVR-RBF,L16,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,L20,"{'m__C': 100.0, 'm__epsilon': 0.1, 'm__gamma': 'auto'}"
+FD-AE-M3/SVR-RBF,L24,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,CE3,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'auto'}"
+FD-AE-M3/SVR-RBF,CE5,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/SVR-RBF,CE6,"{'m__C': 10.0, 'm__epsilon': 0.5, 'm__gamma': 'scale'}"
+FD-AE-M3/RF,A11,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,A12,"{'m__max_depth': None, 'm__min_samples_split': 10, 'm__n_estimators': 200}"
+FD-AE-M3/RF,A14,"{'m__max_depth': 5, 'm__min_samples_split': 5, 'm__n_estimators': 500}"
+FD-AE-M3/RF,A15,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 100}"
+FD-AE-M3/RF,A15_2,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,A15_3,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,A16,"{'m__max_depth': 5, 'm__min_samples_split': 5, 'm__n_estimators': 200}"
+FD-AE-M3/RF,A17,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-AE-M3/RF,A17_2,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,A17_3,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,A17_4,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,A17_5,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,L16,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,L20,"{'m__max_depth': None, 'm__min_samples_split': 5, 'm__n_estimators': 500}"
+FD-AE-M3/RF,L24,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,CE3,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 500}"
+FD-AE-M3/RF,CE5,"{'m__max_depth': None, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
+FD-AE-M3/RF,CE6,"{'m__max_depth': 5, 'm__min_samples_split': 2, 'm__n_estimators': 50}"
