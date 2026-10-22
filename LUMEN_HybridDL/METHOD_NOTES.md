@@ -341,3 +341,28 @@ downloaded.
     - Chang'e-5 (FeO 22.5 wt %) lies above every LSCC soil (max 18.5), so LUMEN must
       extrapolate there;
     - one landing-site pixel per site is a small, noisy target.
+
+## Addendum B — exact CV+ and M³ destriping (pre-registered before running)
+
+These close the two remaining open items of the hand-off.
+
+- **D24 exact CV+ (step11).** For every unordered pair of soils {i, j}, the 5 A4 members are
+  fine-tuned without both soils: 171 pairs × 5 = 855 jobs. The recipe and seeds rule are
+  those of D11; the seed hashes the pair.
+  - For test soil j, the calibration scores of soil i come from model M_{ij}, which saw
+    neither soil:
+    - absolute residuals R = |y_i − μ_ij(x_i)| (per spectrum);
+    - normalised residuals R / σ_ij(x_i).
+  - CV+ interval for each spectrum of j (Barber et al. 2021):
+    - absolute: [q_lo{μ_ij(x_j) − R}, q_hi{μ_ij(x_j) + R}] over every calibration spectrum
+      of every i ≠ j;
+    - normalised: the analogue with σ_ij(x_j) scaling.
+  - The same is done for LOMO with the 15 mission pairs (75 jobs).
+  - Coverage at 68 / 90 / 95 % is reported beside the approximate intervals of D17.
+- **D25 M³ destriping (step07 sensitivity).** For every band, the along-track mean of each
+  sample column is divided by a 31-sample running median of those column means, and each
+  column is divided by that ratio. This is a column-gain flat field; it preserves the
+  scene's large-scale signal.
+  - The Shapley maps and the Korokhin map comparison are recomputed on the destriped cube
+    and reported as a sensitivity.
+  - The undestriped maps stay primary, as pre-registered in D19.
