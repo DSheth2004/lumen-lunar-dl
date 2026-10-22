@@ -280,8 +280,10 @@ Every item of §6 except the optional §6.8 is done, run, committed and pushed o
 
 **Open**
 
-- **§6.8 landing-site validation** needs `planetarydata.jpl.nasa.gov` added under the cloud
-  environment's network allowed domains.
+- **§6.8 landing-site validation** is now done (Addendum A, step10), and it is negative:
+  - LUMEN does not transfer from lab spectra to M³ (FeO MAE 6.4 wt %, biased low). Methods
+    trained on M³ site spectra do better, but none is good (R² ≤ 0.27).
+  - The next scientific step is an orbital fine-tuning signal, or a learned M³ → lab mapping.
 - **M³ destriping** was not applied; stripes are visible in the maps.
 - **Nested CV+** (19 × 18 × 5 models) would make the conformal intervals exact.
 - **Products** are not in git (`products/`, regenerable): the synthetic set, the pretrained

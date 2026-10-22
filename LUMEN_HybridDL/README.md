@@ -70,6 +70,9 @@ python step05_uncertainty.py             # coverage, skill, identifiability gate
 python step06_head_to_head.py            # Jung / Korokhin / Fernandez-Diaz comparisons
 python step07_m3_apply.py                # M3: calibration, Apollo 16, Shapley maps, Aristarchus
 python step08_report.py                  # writes RESULTS.md
+python step00b_fetch_m3_sites.py         # (network) stage M3 spectra at the 18 landing sites; done once
+python step04_lumen.py regen-lomo        # save the A4 LOMO member weights (checked against step04)
+python step10_m3_sites.py                # M3 landing-site validation (Addendum A)
 python step09_paper.py                   # writes PAPER_DRAFT.md (asserts every claim in its prose)
 ```
 

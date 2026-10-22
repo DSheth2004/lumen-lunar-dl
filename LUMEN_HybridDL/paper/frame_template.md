@@ -36,6 +36,15 @@ the published methods of Korokhin et al. (2024), Jung et al. (2026) and Fernánd
 - **Against a random forest on the same inputs, its advantage is significant only for
   maturity.**
 
+**Orbital data.** On real M³ spectra at {m3_n_sites} returned-sample landing sites, the
+lab-trained network does **not** transfer:
+
+- with no site training its FeO error is {m3_lumen_mae:.1f} wt %, worse than predicting the
+  mean of the other sites;
+- even after recalibration ({m3_recal_mae:.1f}) it trails Fernández-Díaz's pipeline and a
+  band ratio ({m3_fd_best_mae:.1f} and {m3_ratio_mae:.1f}), though no method explains much
+  of the variance.
+
 **Ablations and uncertainty.**
 
 - Pretraining helps.
@@ -122,6 +131,17 @@ We release the code, the pre-registration, and every intermediate table.
   al.'s posterior finds abundant olivine, but LUMEN's olivine output is exactly the quantity
   the gate flags as unidentifiable.
 
+**Laboratory-to-orbit transfer is the open problem.**
+
+- The landing-site test shows that accuracy on laboratory spectra does not carry over to M³
+  through one linear calibration. LUMEN underestimates FeO by {m3_lumen_bias_abs:.1f} wt %
+  on average and compresses the range.
+- The lab advantage over the three papers is therefore a laboratory result.
+- On orbital FeO, the methods trained directly on M³ landing-site spectra, including
+  Fernández-Díaz's, do better.
+- Closing this gap needs orbital fine-tuning data or a learned M³-to-laboratory mapping, not
+  just a better laboratory model.
+
 ## 7. Limitations
 
 - **Small ground truth.** 19 soils, 75 spectra, and only 56 with modal mineralogy. All
@@ -141,13 +161,13 @@ We release the code, the pre-registration, and every intermediate table.
   re-learned during fine-tuning, but they limit the zero-shot model.
 - **One schedule, not tuned.** The fine-tuning schedule was fixed a priori and not tuned. The
   ablations show that a simpler configuration would have done better.
-- **No orbital ground truth for FeO.** We could not run the orbital landing-site FeO
-  validation (the planned optional extension): the PDS imaging node was not reachable from the
-  compute environment.
+- **Orbital ground truth is thin.** It has {m3_n_sites} sites, with coordinates as listed by
+  Fernández-Díaz et al. (one mixes stations). The laboratory-trained model fails on it.
 
 ## 8. Conclusions
 
-Physics-based pretraining followed by fine-tuning on real soils gives a single network that:
+On laboratory spectra, physics-based pretraining followed by fine-tuning on real soils gives
+a single network that:
 
 - predicts lunar soil mineralogy, chemistry and maturity more accurately than three recently
   published methods, on identical data and under identical protocols;
@@ -157,6 +177,9 @@ Physics-based pretraining followed by fine-tuning on real soils gives a single n
 The comparison also shows how much of the published methods' error is removed simply by
 honest calibration against real soils, and how little of LUMEN's own advantage over a strong
 conventional regressor can yet be established with the 19 soils available.
+
+On orbital M³ spectra the same model fails at the returned-sample landing sites. A useful
+orbital product will need training signal from orbit, not only from the laboratory.
 
 ## References
 

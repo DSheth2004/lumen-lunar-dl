@@ -268,9 +268,11 @@ stage is re-run unchanged in every other respect.
    - D18 specified paired Wilcoxon tests of A4 against every FD variant.
    - The report additionally applies a Holm correction over the 12 variants, and shows the
      raw p alongside.
-4. **Optional extension not run.** The M³ landing-site FeO / TiO₂ validation (hand-off
-   §6.8) needs HTTP range requests to planetarydata.jpl.nasa.gov. The compute environment's
-   network policy denied that host.
+4. **Optional extension, run later as Addendum A.** The M³ landing-site validation (hand-off
+   §6.8) was first blocked because the network policy denied planetarydata.jpl.nasa.gov.
+   - Once the host was allowed, it was pre-registered (Addendum A) and run as step00b
+     (staging) and step10 (scoring).
+   - It is FeO only: the ground truth has no TiO₂.
 5. **Paper draft generated from the tables.**
    - `PAPER_DRAFT.md` is assembled by `scripts/step09_paper.py` from hand-written sections
      in `paper/` and numbers read from `tables/`.

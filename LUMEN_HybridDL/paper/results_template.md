@@ -160,3 +160,32 @@ mare/highland contrasts: FeO {sh_feo_m:.1f} vs {sh_feo_h:.1f} wt %, Al₂O₃ {s
 - LUMEN's olivine output failed the identifiability gate, and the training soils contain
   little olivine. The disagreement is therefore a domain-shift warning rather than evidence
   against Jung.
+
+### 5.7 Landing-site validation on M³ (pre-registered addendum)
+
+**Setup.** M³ L2 spectra were fetched at all {m3_n_sites} distinct coordinates of
+Fernández-Díaz et al.'s 50 returned samples ({m3_n_strips} strips within 0.01°). Each site
+is scored once, with its samples averaged.
+
+**LUMEN does not transfer to orbital spectra.**
+
+- Applied with the published lab-scale calibration and without any landing-site data — for
+  Apollo sites, by models that never saw that mission's soils — LUMEN's FeO MAE is
+  {m3_lumen_mae:.2f} wt %.
+- It is biased low by {m3_lumen_bias:.1f} wt % and is worse than predicting the mean of the
+  other sites ({m3_mo_mae:.2f}).
+- It is significantly worse than {m3_n_sig_worse} of {m3_n_comp} comparators after Holm
+  correction.
+- A leave-one-site-out linear recalibration of its output reduces the MAE to
+  {m3_recal_mae:.2f}. That is still behind:
+  - the best Fernández-Díaz variant ({m3_fd_best} {m3_fd_best_mae:.2f});
+  - a two-band ratio ({m3_ratio_mae:.2f}).
+
+**No method does well on this task.**
+
+- Fernández-Díaz as published (autoencoder → random forest) reaches {m3_fd_pub_mae:.2f}
+  wt % (R² = {m3_fd_pub_r2:.2f}).
+- No method exceeds R² = {m3_best_r2:.2f} over the {m3_n_sites} sites.
+- The ground truth is part of the difficulty: one Apollo 17 coordinate mixes samples
+  spanning {m3_a17_range:.1f} wt % FeO.
+

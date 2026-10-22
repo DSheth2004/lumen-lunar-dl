@@ -36,6 +36,15 @@ the published methods of Korokhin et al. (2024), Jung et al. (2026) and Fernánd
 - **Against a random forest on the same inputs, its advantage is significant only for
   maturity.**
 
+**Orbital data.** On real M³ spectra at 18 returned-sample landing sites, the
+lab-trained network does **not** transfer:
+
+- with no site training its FeO error is 6.4 wt %, worse than predicting the
+  mean of the other sites;
+- even after recalibration (3.6) it trails Fernández-Díaz's pipeline and a
+  band ratio (3.1 and 3.2), though no method explains much
+  of the variance.
+
 **Ablations and uncertainty.**
 
 - Pretraining helps.
@@ -442,6 +451,35 @@ mare/highland contrasts: FeO 10.2 vs 6.6 wt %, Al₂O₃ 20.0 vs
   little olivine. The disagreement is therefore a domain-shift warning rather than evidence
   against Jung.
 
+### 5.7 Landing-site validation on M³ (pre-registered addendum)
+
+**Setup.** M³ L2 spectra were fetched at all 18 distinct coordinates of
+Fernández-Díaz et al.'s 50 returned samples (66 strips within 0.01°). Each site
+is scored once, with its samples averaged.
+
+**LUMEN does not transfer to orbital spectra.**
+
+- Applied with the published lab-scale calibration and without any landing-site data — for
+  Apollo sites, by models that never saw that mission's soils — LUMEN's FeO MAE is
+  6.36 wt %.
+- It is biased low by -5.7 wt % and is worse than predicting the mean of the
+  other sites (3.70).
+- It is significantly worse than 5 of 10 comparators after Holm
+  correction.
+- A leave-one-site-out linear recalibration of its output reduces the MAE to
+  3.56. That is still behind:
+  - the best Fernández-Díaz variant (FD-AE-M3/SVR-lin 3.07);
+  - a two-band ratio (3.18).
+
+**No method does well on this task.**
+
+- Fernández-Díaz as published (autoencoder → random forest) reaches 3.48
+  wt % (R² = 0.02).
+- No method exceeds R² = 0.27 over the 18 sites.
+- The ground truth is part of the difficulty: one Apollo 17 coordinate mixes samples
+  spanning 7.0 wt % FeO.
+
+
 
 ## 6. Discussion
 
@@ -511,6 +549,17 @@ mare/highland contrasts: FeO 10.2 vs 6.6 wt %, Al₂O₃ 20.0 vs
   al.'s posterior finds abundant olivine, but LUMEN's olivine output is exactly the quantity
   the gate flags as unidentifiable.
 
+**Laboratory-to-orbit transfer is the open problem.**
+
+- The landing-site test shows that accuracy on laboratory spectra does not carry over to M³
+  through one linear calibration. LUMEN underestimates FeO by 5.7 wt %
+  on average and compresses the range.
+- The lab advantage over the three papers is therefore a laboratory result.
+- On orbital FeO, the methods trained directly on M³ landing-site spectra, including
+  Fernández-Díaz's, do better.
+- Closing this gap needs orbital fine-tuning data or a learned M³-to-laboratory mapping, not
+  just a better laboratory model.
+
 ## 7. Limitations
 
 - **Small ground truth.** 19 soils, 75 spectra, and only 56 with modal mineralogy. All
@@ -530,13 +579,13 @@ mare/highland contrasts: FeO 10.2 vs 6.6 wt %, Al₂O₃ 20.0 vs
   re-learned during fine-tuning, but they limit the zero-shot model.
 - **One schedule, not tuned.** The fine-tuning schedule was fixed a priori and not tuned. The
   ablations show that a simpler configuration would have done better.
-- **No orbital ground truth for FeO.** We could not run the orbital landing-site FeO
-  validation (the planned optional extension): the PDS imaging node was not reachable from the
-  compute environment.
+- **Orbital ground truth is thin.** It has 18 sites, with coordinates as listed by
+  Fernández-Díaz et al. (one mixes stations). The laboratory-trained model fails on it.
 
 ## 8. Conclusions
 
-Physics-based pretraining followed by fine-tuning on real soils gives a single network that:
+On laboratory spectra, physics-based pretraining followed by fine-tuning on real soils gives
+a single network that:
 
 - predicts lunar soil mineralogy, chemistry and maturity more accurately than three recently
   published methods, on identical data and under identical protocols;
@@ -546,6 +595,9 @@ Physics-based pretraining followed by fine-tuning on real soils gives a single n
 The comparison also shows how much of the published methods' error is removed simply by
 honest calibration against real soils, and how little of LUMEN's own advantage over a strong
 conventional regressor can yet be established with the 19 soils available.
+
+On orbital M³ spectra the same model fails at the returned-sample landing sites. A useful
+orbital product will need training signal from orbit, not only from the laboratory.
 
 ## References
 

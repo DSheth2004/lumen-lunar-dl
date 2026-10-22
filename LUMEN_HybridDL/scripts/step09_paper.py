@@ -212,6 +212,26 @@ def main() -> int:
     rw = kr[(kr["protocol"] == "LOSO") & (kr["set"] != "all") & kr["spearman_korokhin_nFe"].notna()]
     assert (rw["spearman_lumen_IsFeO"].values >= rw["spearman_korokhin_nFe"].values - 1e-9).all()
 
+    # --- M3 landing sites (Addendum A)
+    m3 = pd.read_csv(T / "step10_metrics.csv").set_index("method")
+    m3t = pd.read_csv(T / "step10_tests.csv")
+    m3s = pd.read_csv(lc.DATA / "m3_sites" / "sites.csv")
+    m3q = pd.read_csv(T / "step10_strip_quality.csv")
+    fdm3 = m3[m3.index.str.startswith("FD")]
+    V.update(m3_n_sites=int(m3.loc["LUMEN-M3", "n_sites"]), m3_n_strips=len(m3q),
+             m3_lumen_mae=m3.loc["LUMEN-M3", "mae"], m3_lumen_bias=m3.loc["LUMEN-M3", "bias"],
+             m3_lumen_bias_abs=abs(m3.loc["LUMEN-M3", "bias"]),
+             m3_mo_mae=m3.loc["mean of other sites", "mae"],
+             m3_recal_mae=m3.loc["LUMEN-M3 + site recalibration", "mae"],
+             m3_fd_best=fdm3["mae"].idxmin(), m3_fd_best_mae=fdm3["mae"].min(),
+             m3_fd_pub_mae=m3.loc["FD-AE-M3/RF", "mae"], m3_fd_pub_r2=m3.loc["FD-AE-M3/RF", "r2"],
+             m3_ratio_mae=m3.loc["band ratio (Lucey theta)", "mae"], m3_best_r2=m3["r2"].max(),
+             m3_n_comp=len(m3t), m3_n_sig_worse=int(((m3t["holm_p"] < 0.05) & (m3t["mae_lumen"] > m3t["mae_other"])).sum()),
+             m3_a17_range=m3s["feo_range"].max())
+    assert V["m3_lumen_mae"] > V["m3_mo_mae"] and V["m3_lumen_bias"] < 0
+    assert V["m3_recal_mae"] > V["m3_fd_best_mae"] and V["m3_recal_mae"] > V["m3_ratio_mae"]
+    assert V["m3_best_r2"] < 0.3
+
     # --- tables
     rows = {}
     for t in le.TARGETS + ["COMP_mean"]:

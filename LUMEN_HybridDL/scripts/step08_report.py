@@ -409,6 +409,17 @@ def headline():
         H.append("- **Coverage** (%s, mean over targets, 68/90/95 %%): raw ensemble %s; normalised conformal %s."
                  % (protocol, "/".join("%.2f" % c.loc[("raw_ensemble", l), "coverage_spectrum"] for l in (0.68, 0.9, 0.95)),
                     "/".join("%.2f" % c.loc[("conformal_normalised", l), "coverage_spectrum"] for l in (0.68, 0.9, 0.95))))
+    if (T / "step10_metrics.csv").exists():
+        m3 = pd.read_csv(T / "step10_metrics.csv").set_index("method")
+        fdm = m3[m3.index.str.startswith("FD")]["mae"]
+        H.append("- **M³ landing sites (Addendum A, %d sites).** LUMEN does *not* transfer to orbital spectra: "
+                 "FeO MAE %.2f wt %% (bias %+.1f) with no site training, worse than the mean of the other sites "
+                 "(%.2f); %.2f after leave-one-site-out recalibration, against %.2f for the best Fernández-Díaz "
+                 "variant (%s), %.2f for FD as published and %.2f for a band ratio. Best R² of any method %.2f."
+                 % (int(m3.loc["LUMEN-M3", "n_sites"]), m3.loc["LUMEN-M3", "mae"], m3.loc["LUMEN-M3", "bias"],
+                    m3.loc["mean of other sites", "mae"], m3.loc["LUMEN-M3 + site recalibration", "mae"],
+                    fdm.min(), fdm.idxmin(), m3.loc["FD-AE-M3/RF", "mae"], m3.loc["band ratio (Lucey theta)", "mae"],
+                    m3["r2"].max()))
     H.append("")
     return H
 
