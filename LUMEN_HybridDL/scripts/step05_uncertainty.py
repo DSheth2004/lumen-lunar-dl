@@ -92,7 +92,8 @@ def skill_table(pred, meta, rng):
             if method == le.REFERENCE:
                 continue
             for t in le.TARGETS + ["COMP_mean"]:
-                if t != "COMP_mean" and ("pred_" + t not in g or g["pred_" + t].isna().all()):
+                need = lc.COMP if t == "COMP_mean" else [t]
+                if any("pred_" + c not in g or g["pred_" + c].isna().all() for c in need):
                     continue
                 if t == "COMP_mean":
                     em, er = le.per_soil_comp_mean(g, meta), le.per_soil_comp_mean(ref, meta)

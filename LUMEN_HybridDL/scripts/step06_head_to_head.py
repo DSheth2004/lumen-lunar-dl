@@ -92,38 +92,48 @@ def korokhin_scores(df, fit_cols):
 
 
 def korokhin(pred, meta):
+    """Scored against THEIR 5-mineral truth (the reproduction takes the pyroxene split
+    straight from LSCC Table 2; step01 rescales it to the Table 1 pyroxene total). The gap
+    between the two definitions is recorded, and the comparison is repeated against our
+    truth as a sensitivity."""
     k = pd.read_csv(lc.BASELINE_DIR / "korokhin2024" / "step10_lscc_fits.csv", dtype={"soil": str})
     key = meta.reset_index().rename(columns={"index": "row"})[["row", "soil", "fraction"]]
     k = k.merge(key, on=["soil", "fraction"], how="left")
     assert k["row"].notna().all() and len(k) == 56
-    truth = five_mineral(meta.loc[k["row"].astype(int), lc.COMP].reset_index(drop=True))
-    for j, m in enumerate(K_MAP):
-        assert np.allclose(truth[:, j], k["prop_true_" + m], atol=1e-6), "5-mineral truth mismatch"
+    ours = five_mineral(meta.loc[k["row"].astype(int), lc.COMP].reset_index(drop=True))
+    gap = pd.DataFrame([{"mineral": m, "mean_abs_diff": np.abs(ours[:, j] - k["prop_true_" + m]).mean(),
+                         "max_abs_diff": np.abs(ours[:, j] - k["prop_true_" + m]).max()}
+                        for j, m in enumerate(K_MAP)])
     rows_mae, rows_test, rows_rho = [], [], []
     for protocol in ("LOSO", "LOMO"):
-        df = k.copy()
+        df0 = k.copy()
         fit_cols = {"Korokhin_NM": "prop_fit_%s"}
         for method in (PRIMARY, "A0_zero_shot"):
             g = method_frame(pred, protocol, method)
             p = five_mineral(g.loc[k["row"].astype(int), ["pred_" + c for c in lc.COMP]]
                              .rename(columns=lambda c: c[5:]).reset_index(drop=True))
             for j, m in enumerate(K_MAP):
-                df["prop_%s_%s" % (method, m)] = p[:, j]
+                df0["prop_%s_%s" % (method, m)] = p[:, j]
             fit_cols[method] = "prop_" + method + "_%s"
-        for set_name, sub in [("all", df)] + list(df.groupby("set")):
-            err = korokhin_scores(sub, fit_cols)
-            for m in K_MAP:
-                r = {"protocol": protocol, "set": set_name, "mineral": m,
-                     "n_soils": len(err[("base", m)]), "mae_mean_of_others": err[("base", m)].mean()}
-                for name in fit_cols:
-                    r["mae_" + name] = err[(name, m)].mean()
-                rows_mae.append(r)
-                for name in (PRIMARY, "A0_zero_shot"):
-                    for ref in ("Korokhin_NM", "base"):
-                        t = le.paired(err[(name, m)], err[(ref, m)])
-                        rows_test.append({"protocol": protocol, "set": set_name, "mineral": m,
-                                          "lumen": name, "versus": "mean_of_others" if ref == "base" else ref,
-                                          **t})
+        for truth_name in ("korokhin_truth", "lumen_truth"):
+            df = df0.copy()
+            if truth_name == "lumen_truth":
+                for j, m in enumerate(K_MAP):
+                    df["prop_true_" + m] = ours[:, j]
+            for set_name, sub in [("all", df)] + list(df.groupby("set")):
+                err = korokhin_scores(sub, fit_cols)
+                for m in K_MAP:
+                    r = {"protocol": protocol, "truth": truth_name, "set": set_name, "mineral": m,
+                         "n_soils": len(err[("base", m)]), "mae_mean_of_others": err[("base", m)].mean()}
+                    for name in fit_cols:
+                        r["mae_" + name] = err[(name, m)].mean()
+                    rows_mae.append(r)
+                    for name in (PRIMARY, "A0_zero_shot"):
+                        for ref in ("Korokhin_NM", "base"):
+                            t = le.paired(err[(name, m)], err[(ref, m)])
+                            rows_test.append({"protocol": protocol, "truth": truth_name, "set": set_name,
+                                              "mineral": m, "lumen": name,
+                                              "versus": "mean_of_others" if ref == "base" else ref, **t})
         # maturity: Spearman per fraction (LUMEN Is/FeO and Korokhin nFe vs measured Is/FeO)
         g = method_frame(pred, protocol, PRIMARY)
         for frac in lc.MODAL_FRACTIONS + ["<45"]:
@@ -137,9 +147,9 @@ def korokhin(pred, meta):
                                  "n": len(rows), "spearman_lumen_IsFeO": rho_l,
                                  "spearman_korokhin_nFe": rho_k})
     tests = pd.DataFrame(rows_test)
-    for (pr, st, lu, vs), idx in tests.groupby(["protocol", "set", "lumen", "versus"]).groups.items():
+    for _, idx in tests.groupby(["protocol", "truth", "set", "lumen", "versus"]).groups.items():
         tests.loc[idx, "holm_p"] = le.holm(tests.loc[idx, "wilcoxon_p"])
-    return pd.DataFrame(rows_mae), tests, pd.DataFrame(rows_rho)
+    return pd.DataFrame(rows_mae), tests, pd.DataFrame(rows_rho), gap
 
 
 # --------------------------------------------------------------------------
@@ -259,7 +269,8 @@ def figures(summ, kor_mae, claims, fd_wide, pred, meta):
 
     fig, axs = plt.subplots(1, 2, figsize=(10, 3.4), sharey=True)
     for ax, protocol in zip(axs, ("LOSO", "LOMO")):
-        k = kor_mae[(kor_mae["protocol"] == protocol) & (kor_mae["set"] == "all")].set_index("mineral")
+        k = kor_mae[(kor_mae["protocol"] == protocol) & (kor_mae["set"] == "all")
+                    & (kor_mae["truth"] == "korokhin_truth")].set_index("mineral")
         x = np.arange(5)
         for i, (col, lab, c) in enumerate([("mae_mean_of_others", "mean of other soils", "#8a8984"),
                                            ("mae_Korokhin_NM", "Korokhin 2024 (NM fit)", lp.C[5]),
@@ -327,12 +338,13 @@ def main() -> int:
                                                    significant_worse=("significant", lambda s: int((s & ~ov.loc[s.index, "lumen_better"]).sum())))
           .to_string())
 
-    kor_mae, kor_tests, kor_rho = korokhin(pred, meta)
+    kor_mae, kor_tests, kor_rho, kor_gap = korokhin(pred, meta)
+    kor_gap.to_csv(lc.TABLES / "step06_korokhin_truth_definition_gap.csv", index=False)
     kor_mae.to_csv(lc.TABLES / "step06_korokhin_mae.csv", index=False)
     kor_tests.to_csv(lc.TABLES / "step06_korokhin_tests.csv", index=False)
     kor_rho.to_csv(lc.TABLES / "step06_korokhin_maturity.csv", index=False)
     print("  Korokhin 2024: 5-mineral MAE, pooled 19 soils")
-    print(kor_mae[kor_mae["set"] == "all"].round(2).to_string(index=False))
+    print(kor_mae[(kor_mae["set"] == "all") & (kor_mae["truth"] == "korokhin_truth")].round(2).to_string(index=False))
 
     jper, jclaims, jmat = jung(pred, meta)
     jper.to_csv(lc.TABLES / "step06_jung_per_soil.csv", index=False)

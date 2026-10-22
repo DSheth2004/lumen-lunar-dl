@@ -245,4 +245,19 @@ stage is re-run unchanged in every other respect.
 
 ## Deviations
 
-*(none yet)*
+1. **Korokhin truth definition (clarification of D18, before any LUMEN result existed).**
+   The Korokhin reproduction takes the pyroxene split from LSCC Table 2 as printed. step01
+   rescales it to the Table 1 pyroxene total, which keeps the 7-part composition closed.
+   - The two 5-mineral truths differ by a mean of ≤ 0.23 pp per mineral, and by more than
+     1 pp only for 61141 (<10, 10–20 µm) and 62231 (10–20 µm), where Table 2's pyroxene
+     sum disagrees with Table 1.
+   - Following D18 ("scored the way that paper scores itself"), every method in the
+     Korokhin comparison is scored against **their** truth. The comparison against our
+     truth is reported as a sensitivity.
+   - The gap was found by a dry run of the evaluation code on placeholder predictions.
+2. **Run order (no effect on results).**
+   - step03 was restarted once, with the FD autoencoder pinned to one CPU thread, to stop
+     it starving the concurrent pretraining. Every seed is fixed, so the outputs are
+     unchanged.
+   - Fine-tuning started about 10 minutes late because of a process-wait bug in the
+     launcher.

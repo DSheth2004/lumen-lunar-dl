@@ -175,6 +175,14 @@ def section_head_to_head(L):
           "- per-soil means over the <10 / 10–20 / 20–45 µm fractions;",
           "- the mean-of-other-soils baseline is fraction-matched within the scored set;",
           "- MAE in percentage points.", ""]
+    gap = pd.read_csv(T / "step06_korokhin_truth_definition_gap.csv")
+    L += ["Their truth takes the pyroxene split straight from LSCC Table 2; ours rescales it to the "
+          "Table 1 pyroxene total. Every method is scored against *their* truth. The definitional gap is "
+          "small (mean |Δ| %.2f–%.2f pp, max %.2f pp, at 61141 and 62231), and the same comparison against "
+          "our truth is in `tables/step06_korokhin_mae.csv` (`truth = lumen_truth`)."
+          % (gap["mean_abs_diff"].min(), gap["mean_abs_diff"].max(), gap["max_abs_diff"].max()), ""]
+    km = km[km["truth"] == "korokhin_truth"].drop(columns="truth")
+    kt = kt[kt["truth"] == "korokhin_truth"].drop(columns="truth")
     for protocol in ("LOSO", "LOMO"):
         t = km[km["protocol"] == protocol].set_index(["set", "mineral"]).drop(columns="protocol")
         L += ["**%s**" % protocol, "", md_table(t, "%.2f"), ""]
@@ -285,7 +293,7 @@ def headline():
     ident = [t for t in le.TARGETS if gate.loc[t, "identifiable"]]
     H.append("- **Identifiability gate.** %d of 13 targets pass: %s. Withheld from the M³ maps: %s."
              % (len(ident), ", ".join(ident), ", ".join(t for t in le.TARGETS if t not in ident) or "none"))
-    k = km[(km["protocol"] == "LOSO") & (km["set"] == "all")].set_index("mineral")
+    k = km[(km["protocol"] == "LOSO") & (km["set"] == "all") & (km["truth"] == "korokhin_truth")].set_index("mineral")
     kw = [m for m in k.index if k.loc[m, "mae_" + PRIMARY] < k.loc[m, "mae_Korokhin_NM"]]
     kb = [m for m in k.index if k.loc[m, "mae_" + PRIMARY] < k.loc[m, "mae_mean_of_others"]]
     H.append("- **Korokhin 2024** (5-mineral proportions, 19 soils, LOSO).")
