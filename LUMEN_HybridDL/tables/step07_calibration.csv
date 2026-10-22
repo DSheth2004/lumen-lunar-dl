@@ -1,0 +1,4 @@
+calibration,slope,intercept,rms_rel_err_vs_62231_pct
+"Korokhin Eq. 2 (published, primary)",1.685,0.0355,9.06470446519382
+Korokhin reproduction re-derivation,1.669,0.016,1.4529578460490962
+"re-derived here (A16 3x3 vs 62231 <45 um, 71 bands)",1.685739720639168,0.01356296023794175,1.4202146237744744
