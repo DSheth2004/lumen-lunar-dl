@@ -70,6 +70,7 @@ python step05_uncertainty.py             # coverage, skill, identifiability gate
 python step06_head_to_head.py            # Jung / Korokhin / Fernandez-Diaz comparisons
 python step07_m3_apply.py                # M3: calibration, Apollo 16, Shapley maps, Aristarchus
 python step08_report.py                  # writes RESULTS.md
+python step09_paper.py                   # writes PAPER_DRAFT.md (asserts every claim in its prose)
 ```
 
 `scripts/dev_synthetic_only.py` holds the synthetic-only development checks used to fix the

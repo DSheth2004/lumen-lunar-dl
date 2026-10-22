@@ -257,7 +257,23 @@ stage is re-run unchanged in every other respect.
    - The gap was found by a dry run of the evaluation code on placeholder predictions.
 2. **Run order (no effect on results).**
    - step03 was restarted once, with the FD autoencoder pinned to one CPU thread, to stop
-     it starving the concurrent pretraining. Every seed is fixed, so the outputs are
-     unchanged.
+     it starving the concurrent pretraining. It had not yet written any output, and the
+     rerun used the same seeds.
    - Fine-tuning started about 10 minutes late because of a process-wait bug in the
      launcher.
+   - The fine-tuning pool was restarted once, from 3 to 4 workers. Finished jobs were kept,
+     after checking every saved job file, and each job's seed depends only on (protocol,
+     fold, configuration, member).
+3. **Holm over the Fernández-Díaz variants (more conservative than pre-registered).**
+   - D18 specified paired Wilcoxon tests of A4 against every FD variant.
+   - The report additionally applies a Holm correction over the 12 variants, and shows the
+     raw p alongside.
+4. **Optional extension not run.** The M³ landing-site FeO / TiO₂ validation (hand-off
+   §6.8) needs HTTP range requests to planetarydata.jpl.nasa.gov. The compute environment's
+   network policy denied that host.
+5. **Paper draft generated from the tables.**
+   - `PAPER_DRAFT.md` is assembled by `scripts/step09_paper.py` from hand-written sections
+     in `paper/` and numbers read from `tables/`.
+   - Every directional claim in the prose is asserted against the numbers before the draft
+     is written.
+
