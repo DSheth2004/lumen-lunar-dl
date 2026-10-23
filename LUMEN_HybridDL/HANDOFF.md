@@ -278,7 +278,7 @@ Every item of §6 except the optional §6.8 is done, run, committed and pushed o
 - The raw ensemble is overconfident. Normalised conformal intervals give nominal coverage
   under LOSO and slightly under it under LOMO.
 
-**Open**
+**Former open items (all closed)**
 
 - **§6.8 landing-site validation** is now done (Addendum A, step10), and it is negative:
   - LUMEN does not transfer from lab spectra to M³ (FeO MAE 6.4 wt %, biased low). Methods
