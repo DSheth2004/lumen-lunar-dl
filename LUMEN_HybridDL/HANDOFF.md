@@ -290,4 +290,8 @@ Every item of §6 except the optional §6.8 is done, run, committed and pushed o
   nominal coverage under LOSO and gives slightly better LOMO coverage than the approximation.
 - **Products** are not in git (`products/`, regenerable): the synthetic set, the pretrained
   and final checkpoints, and the maps. Rebuild with the README commands.
+- **Orbital fine-tuning (Addendum C, step12):** done. LUMEN fine-tuned on the other sites'
+  M³ spectra is the best method on M³: FeO MAE 2.64 wt %, R² 0.46, against 3.07 for the best
+  FD variant. Only 2 of 10 comparisons are Holm-significant with 18 sites, so more
+  landing-site ground truth is the next need.
 

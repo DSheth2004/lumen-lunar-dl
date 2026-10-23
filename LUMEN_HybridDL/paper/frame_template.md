@@ -44,6 +44,9 @@ lab-trained network does **not** transfer:
 - even after recalibration ({m3_recal_mae:.1f}) it trails Fernández-Díaz's pipeline and a
   band ratio ({m3_fd_best_mae:.1f} and {m3_ratio_mae:.1f}), though no method explains much
   of the variance.
+- Fine-tuning on the other landing sites' M³ spectra fixes this: FeO error
+  {ft_mae:.1f} wt % (R² {ft_r2:.2f}), the best of all methods, though with 18 sites the
+  margin is mostly not significant.
 
 **Ablations and uncertainty.**
 
@@ -139,8 +142,9 @@ We release the code, the pre-registration, and every intermediate table.
 - The lab advantage over the three papers is therefore a laboratory result.
 - On orbital FeO, the methods trained directly on M³ landing-site spectra, including
   Fernández-Díaz's, do better.
-- Closing this gap needs orbital fine-tuning data or a learned M³-to-laboratory mapping, not
-  just a better laboratory model.
+- A small orbital training signal closes most of the gap. Fine-tuning on the other 17
+  landing sites makes LUMEN the most accurate method on M³ (Section 5.8). More landing-site
+  ground truth is the limiting resource.
 
 ## 7. Limitations
 

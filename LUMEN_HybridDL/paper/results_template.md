@@ -194,3 +194,16 @@ is scored once, with its samples averaged.
 - The ground truth is part of the difficulty: one Apollo 17 coordinate mixes samples
   spanning {m3_a17_range:.1f} wt % FeO.
 
+### 5.8 Orbital fine-tuning (pre-registered addendum)
+
+**Setup.** LUMEN is fine-tuned on the M³ pixel spectra of the other 17 sites ({ft_n_pix}
+pixels; FeO only, mixed 1:1 with laboratory spectra) and evaluated leave-one-site-out.
+
+**It becomes the most accurate method on M³.**
+
+- FeO MAE {ft_mae:.2f} wt %, R² = {ft_r2:.2f}.
+- Comparators: {m3_fd_best_mae:.2f} for the best Fernández-Díaz variant, {m3_fd_pub_mae:.2f}
+  for their published configuration, and {m3_ratio_mae:.2f} for the band ratio.
+- It has a lower error than every comparator. With 18 sites, however, the differences are
+  significant after Holm correction for only {ft_n_sig} of {ft_n_comp}.
+

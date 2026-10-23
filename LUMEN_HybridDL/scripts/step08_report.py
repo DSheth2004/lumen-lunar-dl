@@ -274,6 +274,17 @@ def section_m3_sites(L):
                                              "Al2O3", "logIsFeO", "FeO_strip_min", "FeO_strip_max"]], "%.2f"), ""]
 
 
+def section_m3_finetune(L):
+    if not (T / "step12_metrics.csv").exists():
+        return
+    L += ["## 6c. Orbital fine-tuning on M³ landing sites (step12, pre-registered as Addendum C)", "",
+          "LUMEN fine-tuned on M³ pixel spectra of the other 17 sites (FeO only, mixed 1:1 with its laboratory "
+          "spectra), leave-one-site-out. Same 18 sites and comparators as 6b.", "",
+          md_table(pd.read_csv(T / "step12_metrics.csv").set_index("method"), "%.3f"), "",
+          "LUMEN-M3-FT against each comparator (paired Wilcoxon over sites, Holm):", "",
+          md_table(pd.read_csv(T / "step12_tests.csv").set_index("versus"), "%.3g"), ""]
+
+
 def section_deviations(L):
     txt = (lc.PROJECT_ROOT / "METHOD_NOTES.md").read_text()
     dev = txt.split("## Deviations", 1)[1].strip() if "## Deviations" in txt else "(none)"
@@ -296,6 +307,7 @@ def main() -> int:
     section_head_to_head(L)
     section_m3(L)
     section_m3_sites(L)
+    section_m3_finetune(L)
     section_deviations(L)
     (lc.PROJECT_ROOT / "RESULTS.md").write_text("\n".join(L) + "\n")
     print("  RESULTS.md: %d lines" % len(L))
@@ -430,6 +442,16 @@ def headline():
                     m3.loc["mean of other sites", "mae"], m3.loc["LUMEN-M3 + site recalibration", "mae"],
                     fdm.min(), fdm.idxmin(), m3.loc["FD-AE-M3/RF", "mae"], m3.loc["band ratio (Lucey theta)", "mae"],
                     m3["r2"].max()))
+    if (T / "step12_metrics.csv").exists():
+        m = pd.read_csv(T / "step12_metrics.csv").set_index("method")
+        t = pd.read_csv(T / "step12_tests.csv")
+        fd = m[m.index.str.startswith("FD")]["mae"]
+        H.append("- **M³ with orbital fine-tuning (Addendum C).** Fine-tuning LUMEN on the other sites' M³ spectra "
+                 "makes it the best method on M³: FeO MAE %.2f wt %% (R² %.2f) vs %.2f for the best Fernández-Díaz "
+                 "variant and %.2f for FD as published; lower MAE than every comparator, but Holm-significant "
+                 "against only %d of %d with 18 sites."
+                 % (m.loc["LUMEN-M3-FT (orbital fine-tuning)", "mae"], m.loc["LUMEN-M3-FT (orbital fine-tuning)", "r2"],
+                    fd.min(), m.loc["FD-AE-M3/RF", "mae"], int((t["holm_p"] < 0.05).sum()), len(t)))
     H.append("")
     return H
 

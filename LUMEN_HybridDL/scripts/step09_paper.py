@@ -235,6 +235,12 @@ def main() -> int:
     assert V["m3_recal_mae"] > V["m3_fd_best_mae"] and V["m3_recal_mae"] > V["m3_ratio_mae"]
     assert V["m3_best_r2"] < 0.3
 
+    ftm = pd.read_csv(T / "step12_metrics.csv").set_index("method")
+    ftt = pd.read_csv(T / "step12_tests.csv")
+    V.update(ft_mae=ftm.loc["LUMEN-M3-FT (orbital fine-tuning)", "mae"], ft_r2=ftm.loc["LUMEN-M3-FT (orbital fine-tuning)", "r2"],
+             ft_n_sig=int((ftt["holm_p"] < 0.05).sum()), ft_n_comp=len(ftt), ft_n_pix=594)
+    assert V["ft_mae"] < ftm[ftm.index.str.startswith("FD")]["mae"].min() and V["ft_mae"] == ftm["mae"].min()
+
     # --- tables
     rows = {}
     for t in le.TARGETS + ["COMP_mean"]:
