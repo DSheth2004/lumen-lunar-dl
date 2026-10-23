@@ -366,3 +366,30 @@ These close the two remaining open items of the hand-off.
   - The Shapley maps and the Korokhin map comparison are recomputed on the destriped cube
     and reported as a sensitivity.
   - The undestriped maps stay primary, as pre-registered in D19.
+
+## Addendum C — orbital fine-tuning on M³ landing sites (pre-registered before running)
+
+Addendum A showed that LUMEN trained on laboratory spectra does not transfer to M³. This
+addendum tests whether a small orbital training signal fixes that. FeO only, scored on the
+same 18 sites, leave-one-site-out, against the step10 comparators (unchanged).
+
+- **D26 data.** The already-staged 3 × 3 blocks (`data/m3_sites`), no new download:
+  - every valid pixel of every contributing strip is one training spectrum, labelled with
+    its site's mean FeO;
+  - the held-out site is predicted from its site spectrum, exactly as in step10;
+  - Korokhin Eq. 2 calibration.
+- **D27 LUMEN-M3-FT (primary).** For held-out site s and member k:
+  - start from the same A4 member used in step10 (LOMO member of s's mission for Apollo
+    sites, the final member otherwise);
+  - fine-tune for 600 steps, AdamW lr 1e-4, wd 1e-4, cosine decay;
+  - each batch holds 16 M³ pixel spectra from the other 17 sites (FeO supervised; the
+    other targets masked) and 16 laboratory spectra from that model's own training soils
+    (all targets), with the simulator's output randomisation;
+  - seed = hash(site, member); prediction is the 5-member ensemble mean.
+- **D28 LUMEN-embed + ridge (secondary).** The 128-d trunk embedding of the step10 model,
+  averaged over members, then ridge regression on the other sites' pixel embeddings
+  (α by inner leave-one-site-out over {0.1, 1, 10, 100}).
+- **D29 scoring.** As D23: MAE, RMSE, R² over the 18 sites. Paired Wilcoxon of
+  LUMEN-M3-FT against each step10 comparator, Holm over the comparators. The claim
+  "beats Fernández-Díaz on M³" requires a lower MAE than every FD variant; significance
+  is reported separately.
