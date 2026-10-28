@@ -1,0 +1,760 @@
+PDS_VERSION_ID = PDS3                                                         
+LABEL_REVISION_NOTE = "2012-03-08  M3:ACT/sam  Added 28 data products from    
+  Aug 2009 that were missing from the original V1.0 delivery and increased    
+  STOP_TIME accordingly."                                                     
+RECORD_TYPE    = "FIXED_LENGTH"                                               
+RECORD_BYTES   = 1248                                                         
+FILE_RECORDS   = 887                                                          
+                                                                              
+^INDEX_TABLE   = "L2_INDEX.TAB"                                               
+                                                                              
+START_TIME     = 2008-11-18T22:26:04                                          
+STOP_TIME      = 2009-08-16T05:25:55                                          
+                                                                              
+OBJECT     = INDEX_TABLE                                                      
+  INTERCHANGE_FORMAT = "ASCII"                                                
+  INDEX_TYPE         = "SINGLE"                                               
+  NAME               = "INDEX_TABLE"                                          
+  ROWS               = 887                                                    
+  ROW_BYTES          = 1248                                                   
+  COLUMNS            = 63                                                     
+  DESCRIPTION        = "This is the PDS-required index table that             
+    identifies the location of each data product within this data set.        
+    It is sorted by START_TIME (column 7) and includes scientifically useful  
+    values from the data product labels such as detector temperature and      
+    instrument mode."                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 1                                                         
+    NAME          = "VOLUME_ID"                                               
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 2                                                         
+    BYTES         = 10                                                        
+    FORMAT        = "A10"                                                     
+    DESCRIPTION   = "The identifier of the volume on which the product        
+      is stored."                                                             
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 2                                                         
+    NAME          = "DATA_SET_ID"                                             
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 15                                                        
+    BYTES         = 34                                                        
+    FORMAT        = "A34"                                                     
+    DESCRIPTION   = "Data set ID"                                             
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 3                                                         
+    NAME          = "PRODUCT_ID"                                              
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 52                                                        
+    BYTES         = 26                                                        
+    FORMAT        = "A26"                                                     
+    DESCRIPTION   = "A permanent, unique identifier assigned to a             
+      data product by its producer."                                          
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 4                                                         
+    NAME          = "PRODUCT_TYPE"                                            
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 81                                                        
+    BYTES         = 17                                                        
+    FORMAT        = "A17"                                                     
+    DESCRIPTION   = "The type or category of a product within a data          
+      set.  Level 2 Reflectance = L2."                                        
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 5                                                         
+    NAME          = "FILE_SPECIFICATION_NAME"                                 
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 101                                                       
+    BYTES         = 62                                                        
+    FORMAT        = "A62"                                                     
+    DESCRIPTION   = "The full name of a file, including a path name,          
+      relative to a PDS volume.  It excludes node or volume location."        
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 6                                                         
+    NAME          = "PRODUCT_CREATION_TIME"                                   
+    DATA_TYPE     = "TIME"                                                    
+    START_BYTE    = 166                                                       
+    BYTES         = 23                                                        
+    FORMAT        = "A23"                                                     
+    DESCRIPTION   = "UTC date and time when this product was created,         
+      in the format yyyy-mm-ddThh:mm:ss."                                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 7                                                         
+    NAME          = "START_TIME"                                              
+    DATA_TYPE     = "TIME"                                                    
+    START_BYTE    = 192                                                       
+    BYTES         = 19                                                        
+    FORMAT        = "A19"                                                     
+    DESCRIPTION   = "UTC date and time at the beginning of data acquisition   
+      for this product, in the format yyyy-mm-ddThh:mm:ss."                   
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 8                                                         
+    NAME          = "STOP_TIME"                                               
+    DATA_TYPE     = "TIME"                                                    
+    START_BYTE    = 214                                                       
+    BYTES         = 19                                                        
+    FORMAT        = "A19"                                                     
+    DESCRIPTION   = "UTC date and time at the end of data acquisition         
+      for this product, in the format yyyy-mm-ddThh:mm:ss."                   
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 9                                                         
+    NAME          = "SPACECRAFT_CLOCK_START_COUNT"                            
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 236                                                       
+    BYTES         = 14                                                        
+    FORMAT        = "A14"                                                     
+    DESCRIPTION   = "The value of the spacecraft clock at the beginning of    
+      data acquisition for this product."                                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 10                                                        
+    NAME          = "SPACECRAFT_CLOCK_STOP_COUNT"                             
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 253                                                       
+    BYTES         = 14                                                        
+    FORMAT        = "A14"                                                     
+    DESCRIPTION   = "The value of the spacecraft clock at the end of          
+      data acquisition for this product."                                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 11                                                        
+    NAME          = "ORBIT_NUMBER"                                            
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 269                                                       
+    BYTES         = 5                                                         
+    FORMAT        = "A5"                                                      
+    DESCRIPTION   = "The number of the orbital revolution of the spacecraft   
+      around a target body.  The value ''99999'' means the orbit number was   
+      not available."                                                         
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 12                                                        
+    NAME          = "INSTRUMENT_MODE_ID"                                      
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 276                                                       
+    BYTES         = 6                                                         
+    FORMAT        = "A6"                                                      
+    DESCRIPTION   = "The instrument mode at the time of observation."         
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 13                                                        
+    NAME          = "SOLAR_DISTANCE"                                          
+    UNIT          = "AU"                                                      
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 284                                                       
+    BYTES         = 14                                                        
+    FORMAT        = "F14.12"                                                  
+    DESCRIPTION   = "The distance from the center of the sun to the           
+      center of a target body."                                               
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 14                                                        
+    NAME          = "CH1:SWATH_WIDTH"                                         
+    DATA_TYPE     = "ASCII_INTEGER"                                           
+    START_BYTE    = 299                                                       
+    BYTES         = 5                                                         
+    FORMAT        = "I5"                                                      
+    DESCRIPTION   = "The total number of pixels in the horizontal             
+      position of a *RFL image.  CH1:SWATH_WIDTH equals LINE_SAMPLES          
+      for a *RFL image."                                                      
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 15                                                        
+    NAME          = "CH1:SWATH_LENGTH"                                        
+    DATA_TYPE     = "ASCII_INTEGER"                                           
+    START_BYTE    = 305                                                       
+    BYTES         = 7                                                         
+    FORMAT        = "I7"                                                      
+    DESCRIPTION   = "The total number of pixels in the vertical               
+      position of a *RFL image.  CH1:SWATH_LENGTH equals LINES                
+      for a *RFL image."                                                      
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 16                                                        
+    NAME          = BANDS                                                     
+    DATA_TYPE     = ASCII_INTEGER                                             
+    START_BYTE    = 313                                                       
+    BYTES         = 5                                                         
+    FORMAT        = "I5"                                                      
+    DESCRIPTION   = "The number of spectral bands in a *RFL image."           
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 17                                                        
+    NAME          = "CH1:SPECTRAL_CALIBRATION_FILE_NAME"                      
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 320                                                       
+    BYTES         = 24                                                        
+    FORMAT        = "A24"                                                     
+    DESCRIPTION   = "Name of the M3 Level 1B spectral calibration file        
+      that contains channel number, wavelength center position, FWHM for      
+      equivalent gaussian.  This file is archived in the calibration          
+      directory of the Level 1B dataset identified by SOURCE_DATA_SET_ID      
+      below."                                                                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 18                                                        
+    NAME          = "CH1:RAD_GAIN_FACTOR_FILE_NAME"                           
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 347                                                       
+    BYTES         = 24                                                        
+    FORMAT        = "A24"                                                     
+    DESCRIPTION   = "Name of the M3 Level 1B radiometric gain factor file     
+      that contains multiplication factors to store radiance as 16-bit        
+      integers.  This file is archived in the calibration directory of        
+      the Level 1B dataset identified by SOURCE_DATA_SET_ID below."           
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 19                                                        
+    NAME          = "CH1:GLOBAL_BANDPASS_FILE_NAME"                           
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 378                                                       
+    BYTES         = 25                                                        
+    FORMAT        = "A25"                                                     
+    DESCRIPTION   = "Name of the M3 Level 1B global band passes image         
+      made by averaging target best-fit gaussians, then renormalizing to      
+      unit sum 85 global bands.  This file is archived in the calibration     
+      directory of the Level 1B dataset identified by SOURCE_DATA_SET_ID      
+      below."                                                                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 20                                                        
+    NAME          = "SOURCE_DATA_SET_ID"                                      
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 401                                                       
+    BYTES         = 32                                                        
+    FORMAT        = "A32"                                                     
+    DESCRIPTION   = "Data set ID that contains the Level 1B radiance          
+      product (see SOURCE_PRODUCT_ID) used as input for this Level 2          
+      data product."                                                          
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 21                                                        
+    NAME          = "SOURCE_PRODUCT_ID"                                       
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 436                                                       
+    BYTES         = 26                                                        
+    FORMAT        = "A26"                                                     
+    DESCRIPTION   = "Product ID of the M3 Level 1B radiance product within    
+      SOURCE_DATA_SET_ID used as input for this Level 2 data product."        
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 22                                                        
+    NAME          = "CH1:RADIANCE_IMAGE_FILE_NAME"                            
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 465                                                       
+    BYTES         = 30                                                        
+    FORMAT        = "A30"                                                     
+    DESCRIPTION   = "Name of the M3 Level 1B radiance image used as input     
+      for this Level 2 data product.  This file is archived in the data       
+      directory of the Level 1B dataset identified by SOURCE_DATA_SET_ID      
+      below."                                                                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 23                                                        
+    NAME          = "CH1:OBS_GEOMETRY_FILE_NAME"                              
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 498                                                       
+    BYTES         = 30                                                        
+    FORMAT        = "A30"                                                     
+    DESCRIPTION   = "Name of the M3 Level 1B observation geometry file used   
+      as input for this Level 2 data product.  The file contains ten          
+      parameters that characterize the details of the observation geometry    
+      and illumination of an image.  This file is archived in the data        
+      directory of the Level 1B dataset identified by SOURCE_DATA_SET_ID      
+      below."                                                                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 24                                                        
+    NAME          = "CH1:PIXEL_LOCATION_FILE_NAME"                            
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 531                                                       
+    BYTES         = 30                                                        
+    FORMAT        = "A30"                                                     
+    DESCRIPTION   = "Name of the M3 Level 1B pixel location file used         
+      as input for this Level 2 data product.  The file contains the          
+      latitude, longitude, and radius information of an image.  This          
+      file is archived in the data directory of the Level 1B dataset          
+      identified by SOURCE_DATA_SET_ID below."                                
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 25                                                        
+    NAME          = "CH1:SOLAR_SPECTRUM_FILE_NAME"                            
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 564                                                       
+    BYTES         = 31                                                        
+    FORMAT        = "A31"                                                     
+    DESCRIPTION   = "Name of the M3 Level 2 calibration file that contains    
+      the solar spectrum used by the Level 2 pipeline (step 1) to convert     
+      Level 1B radiance to reflectance, I*pi/F.  This file is archived in     
+      the calibration directory of this Level 2 dataset."                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 26                                                        
+    NAME          = "CH1:STATISTICAL_POLISHER_FILE_NAME"                      
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 598                                                       
+    BYTES         = 31                                                        
+    FORMAT        = "A31"                                                     
+    DESCRIPTION   = "Name of the M3 Level 2 calibration file that contains    
+      multiplicative gain factors and additive offsets used by the Level 2    
+      pipeline for statistical polishing (step 2).  This file is archived     
+      in the calibration directory of this Level 2 dataset."                  
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 27                                                        
+    NAME          = "CH1:THERMAL_CORRECTION_FLAG"                             
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 632                                                       
+    BYTES         = 1                                                         
+    FORMAT        = "A1"                                                      
+    DESCRIPTION   = "Flag indicating if the Level 2 pipeline applied the      
+      thermal correction (step 3).  Y = Yes, thermal correct was applied;     
+      N = No, thermal correct was not applied."                               
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 28                                                        
+    NAME          = "CH1:PHOTOMETRY_CORR_FILE_NAME"                           
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 636                                                       
+    BYTES         = 31                                                        
+    FORMAT        = "A31"                                                     
+    DESCRIPTION   = "Name of the M3 Level 2 calibration file that contains    
+      F-of-Alpha values used by the Level 2 pipeline for photometric          
+      correction (step 4).  This file is archived in the calibration          
+      directory of this Level 2 dataset."                                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 29                                                        
+    NAME          = "CH1:GROUND_TRUTH_CORR_FILE_NAME"                         
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 670                                                       
+    BYTES         = 31                                                        
+    FORMAT        = "A31"                                                     
+    DESCRIPTION   = "Name of the M3 Level 2 calibration file that contains    
+      multiplicative gain factors and additive offsets used by the Level 2    
+      pipeline for ground truth correction (step 5).  The ground truth        
+      correction is an optional step.  If the correction was applied then     
+      CH1:GROUND_TRUTH_CORR_FILE_NAME provides a file name. (The file is      
+      archived in the calibration directory of this Level 2 dataset.)         
+      If the ground truth correction was not then                             
+      CH1:GROUND_TRUTH_CORR_FILE_NAME is set to ''N/A''."                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 30                                               
+    NAME                   = MISSION_ID                                       
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 704                                              
+    BYTES                  = 3                                                
+    FORMAT                 = "A3"                                             
+    DESCRIPTION            = "Synonym or mnemonic for the MISSION_NAME        
+                              element"                                        
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 31                                               
+    NAME                   = MISSION_NAME                                     
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 710                                              
+    BYTES                  = 13                                               
+    FORMAT                 = "A13"                                            
+    DESCRIPTION            = "Identifies the major planetary mission or       
+                              project"                                        
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 32                                               
+    NAME                   = INSTRUMENT_HOST_ID                               
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 726                                              
+    BYTES                  = 7                                                
+    FORMAT                 = "A7"                                             
+    DESCRIPTION            = "A unique identifier for the host                
+                              where the instrument is located."               
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 33                                               
+    NAME                   = INSTRUMENT_HOST_NAME                             
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 736                                              
+    BYTES                  = 21                                               
+    FORMAT                 = "A21"                                            
+    DESCRIPTION            = "The full name of the host on which              
+                              the instrument is based"                        
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 34                                               
+    NAME                   = INSTRUMENT_NAME                                  
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 760                                              
+    BYTES                  = 22                                               
+    FORMAT                 = "A22"                                            
+    DESCRIPTION            = "The full name of the instrument"                
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 35                                               
+    NAME                   = INSTRUMENT_ID                                    
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 785                                              
+    BYTES                  = 2                                                
+    FORMAT                 = "A2"                                             
+    DESCRIPTION            = "The abbreviated name or acronym which           
+                              identifies the instrument"                      
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 36                                               
+    NAME                   = TARGET_NAME                                      
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 790                                              
+    BYTES                  = 4                                                
+    FORMAT                 = "A4"                                             
+    DESCRIPTION            = "Identifies the target"                          
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 37                                               
+    NAME                   = TARGET_TYPE                                      
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 797                                              
+    BYTES                  = 9                                                
+    FORMAT                 = "A9"                                             
+    DESCRIPTION            = "The type of a named target"                     
+  END_OBJECT               = COLUMN                                           
+                                                                              
+ OBJECT                    = COLUMN                                           
+    COLUMN_NUMBER          = 38                                               
+    NAME                   = MISSION_PHASE_NAME                               
+    DATA_TYPE              = CHARACTER                                        
+    START_BYTE             = 809                                              
+    BYTES                  = 15                                               
+    FORMAT                 = "A15"                                            
+    DESCRIPTION            = "The commonly-used identifier of a mission       
+                              phase"                                          
+  END_OBJECT               = COLUMN                                           
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 39                                                        
+    NAME          = "PRODUCT_VERSION_TYPE"                                    
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 827                                                       
+    BYTES         = 6                                                         
+    FORMAT        = "A6"                                                      
+    DESCRIPTION   = "The version of an individual data product."              
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 40                                                        
+    NAME          = "DETECTOR_TEMPERATURE"                                    
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 835                                                       
+    BYTES         = 8                                                         
+    FORMAT        = "F8.2"                                                    
+    DESCRIPTION   = "Temperature of the detector in Kelvin"                   
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 41                                                        
+    NAME          = "CH1:SPACECRAFT_YAW_DIRECTION"                            
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 845                                                       
+    BYTES         = 15                                                        
+    FORMAT        = "A15"                                                     
+    DESCRIPTION   = "Describes the spacecraft yaw (look) mode"                
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 42                                                        
+    NAME          = "CH1:ORBIT_LIMB_DIRECTION"                                
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 863                                                       
+    BYTES         = 18                                                        
+    FORMAT        = "A18"                                                     
+    DESCRIPTION   = "Describes the direction of the spacecraft orbit          
+      with respect to the lunar limb"                                         
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 43                                                        
+    NAME          = "SPACECRAFT_ROLL"                                         
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 883                                                       
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Data-derived M3 instrument roll angle as                 
+      referenced to the CH1 orbit frame."                                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 44                                                        
+    NAME          = "SPACECRAFT_PITCH"                                        
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 901                                                       
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Data-derived M3 instrument pitch angle as                
+      referenced to the CH1 orbit frame."                                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 45                                                        
+    NAME          = "SPACECRAFT_YAW"                                          
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 919                                                       
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Data-derived M3 instrument yaw angle as                  
+      referenced to the CH1 orbit frame."                                     
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 46                                                        
+    NAME          = "SAMPLE_TYPE"                                             
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 938                                                       
+    BYTES         = 7                                                         
+    FORMAT        = "A7"                                                      
+    DESCRIPTION   = "Describes the data storage representation of             
+      the spectral reflectance image cube (RFL.IMG)"                          
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 47                                                        
+    NAME          = "SAMPLE_BITS"                                             
+    DATA_TYPE     = "ASCII_INTEGER"                                           
+    START_BYTE    = 947                                                       
+    BYTES         = 2                                                         
+    FORMAT        = "I2"                                                      
+    DESCRIPTION   = "Describes the stored number of bits, or units            
+      of binary information, contained in the spectral                        
+      reflectance image cube (RFL.IMG)"                                       
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 48                                                        
+    NAME          = "BAND_STORAGE_TYPE"                                       
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 951                                                       
+    BYTES         = 16                                                        
+    FORMAT        = "A16"                                                     
+    DESCRIPTION   = "The storage sequence of lines, samples and               
+      bands of the spectral reflectance image cube (RFL.IMG)"                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 49                                                        
+    NAME          = "LINE_DISPLAY_DIRECTION"                                  
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 970                                                       
+    BYTES         = 4                                                         
+    FORMAT        = "A4"                                                      
+    DESCRIPTION   = "The orientation of lines within the spectral             
+      reflectance image cube (RFL.IMG) for viewing on                         
+      a display device"                                                       
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 50                                                        
+    NAME          = "SAMPLE_DISPLAY_DIRECTION"                                
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 977                                                       
+    BYTES         = 5                                                         
+    FORMAT        = "A5"                                                      
+    DESCRIPTION   = "The orientation of samples within a line of              
+      the spectral reflectance image cube (RFL.IMG) for viewing on            
+      a display device"                                                       
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 51                                                        
+    NAME          = "INITIAL_SC_ROLL"                                         
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 984                                                       
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "The initial S/C roll position with respect to            
+      local orbit frame at T0 for this orbit"                                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 52                                                        
+    NAME          = "INITIAL_SC_PITCH"                                        
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1002                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "The initial S/C pitch position with respect to           
+      local orbit frame at T0 for this orbit"                                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 53                                                        
+    NAME          = "INITIAL_SC_YAW"                                          
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1020                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "The initial S/C yaw position with respect to             
+      local orbit frame at T0 for this orbit"                                 
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 54                                                        
+    NAME          = "CH1:SC_ORIENTATION_EPOCH_TDB_TIME"                       
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1038                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.6"                                                   
+    NOT_APPLICABLE_CONSTANT = -999999999.999999                               
+    DESCRIPTION   = "T0 TDB time (dark side equator crossing                  
+      time for this orbit)"                                                   
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 55                                                        
+    NAME          = "SC_ROLL_RATE"                                            
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1056                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Rotation roll rate in degrees per sec"                   
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 56                                                        
+    NAME          = "SC_PITCH_RATE"                                           
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1074                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Rotation pitch rate in degrees per sec"                  
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 57                                                        
+    NAME          = "SC_YAW_RATE"                                             
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1092                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Rotation yaw rate in degrees per sec"                    
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 58                                                        
+    NAME          = "SC_ROTATION_X_AXIS"                                      
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1110                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Rotation axis (X J2000 coordinate of                     
+      derived axis of S/C rotation, unit vector)"                             
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 59                                                        
+    NAME          = "SC_ROTATION_Y_AXIS"                                      
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1128                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Rotation axis (Y J2000 coordinate of                     
+      derived axis of S/C rotation, unit vector)"                             
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 60                                                        
+    NAME          = "SC_ROTATION_Z_AXIS"                                      
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1146                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Rotation axis (Z J2000 coordinate of                     
+      derived axis of S/C rotation, unit vector)"                             
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 61                                                        
+    NAME          = "CH1:SC_ROTATION_RATE"                                    
+    DATA_TYPE     = "ASCII_REAL"                                              
+    START_BYTE    = 1164                                                      
+    BYTES         = 17                                                        
+    FORMAT        = "F17.12"                                                  
+    NOT_APPLICABLE_CONSTANT = -999.999999999999                               
+    DESCRIPTION   = "Rotation rate (derived rate of rotation of S/C           
+      about the derived axis in degrees per sec)"                             
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 62                                                        
+    NAME          = "RFL_IMAGE_FILE_NAME"                                     
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 1183                                                      
+    BYTES         = 30                                                        
+    FORMAT        = "A30"                                                     
+    DESCRIPTION   = "Name of the M3 Level 2 reflectance image"                
+  END_OBJECT = COLUMN                                                         
+                                                                              
+  OBJECT     = COLUMN                                                         
+    COLUMN_NUMBER = 63                                                        
+    NAME          = "SUP_IMAGE_FILE_NAME"                                     
+    DATA_TYPE     = "CHARACTER"                                               
+    START_BYTE    = 1216                                                      
+    BYTES         = 30                                                        
+    FORMAT        = "A30"                                                     
+    DESCRIPTION   = "Name of the M3 Level 2 supplemental image"               
+  END_OBJECT = COLUMN                                                         
+                                                                              
+END_OBJECT = INDEX_TABLE                                                      
+                                                                              
+END                                                                           
