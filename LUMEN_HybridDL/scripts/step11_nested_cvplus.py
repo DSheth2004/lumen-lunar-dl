@@ -82,7 +82,7 @@ def cmd_run(args):
     todo = [j for j in jobs if not path(j).exists()]
     print("  %d jobs, %d to run, %d workers" % (len(jobs), len(todo), args.workers), flush=True)
     n, tr = 0, time.time()
-    with get_context("fork").Pool(args.workers, initializer=s4._worker_init) as pool:
+    with get_context(lc.POOL_START).Pool(args.workers, initializer=s4._worker_init) as pool:
         for _ in pool.imap_unordered(_run, todo):
             n += 1
             if n % 50 == 0 or n == len(todo):

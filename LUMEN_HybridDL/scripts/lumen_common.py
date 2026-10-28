@@ -36,6 +36,8 @@ TABLES = PROJECT_ROOT / "tables"
 FIGURES = PROJECT_ROOT / "figures"
 PRODUCTS = PROJECT_ROOT / "products"
 MANIFEST = DATA / "manifest.csv"
+# multiprocessing start method: "fork" on POSIX (as originally run), "spawn" on Windows (METHOD_NOTES D31)
+POOL_START = "fork" if sys.platform != "win32" else "spawn"
 
 LSCC_DIR = DATA / "lscc"
 GT_DIR = DATA / "ground_truth"

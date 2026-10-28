@@ -191,7 +191,49 @@ def sites_table():
     return pd.DataFrame(rows)
 
 
+QIU_DEFAULT_SOURCE = (lc.PROJECT_ROOT.parent.parent / "paper-implementations" / "FernandezDiaz2026_WaveletAE_FeO"
+                      / "data" / "ground_truth" / "sampling_sites_feo.csv")
+QIU_TABLE = "qiu2025_sampling_sites_feo.csv"
+
+
+def qiu_mission(site):
+    """Landing-site group of a Qiu et al. (2025) row (Addendum D, D33 protocol P2)."""
+    s = site.replace("'", "").replace("-", "")
+    for pre, m in (("Apollo11", "A11"), ("Apollo12", "A12"), ("Apollo14", "A14"), ("Apollo15", "A15"),
+                   ("Apollo16", "A16"), ("Apollo17", "A17"), ("Luna16", "L16"), ("Luna20", "L20"),
+                   ("Luna24", "L24"), ("ChangE3", "CE3"), ("ChangE5", "CE5"), ("ChangE6", "CE6")):
+        if s.startswith(pre):
+            return m
+    raise ValueError("unknown mission for Qiu site %r" % site)
+
+
+def check_qiu_table(gt):
+    """Identity checks on the Qiu et al. (2025) table before it enters data/ (D30)."""
+    assert len(gt) == 49, "expected 49 sites, got %d" % len(gt)
+    assert gt["site"].is_unique and not gt[["lat_deg", "lon_deg_east"]].round(4).duplicated().any()
+    r = gt.set_index("site").loc["Apollo17LRV12"]          # FD's worked example: 17.4 wt%, 30d46'E 20d11'N
+    assert r["FeO_wt_pct"] == 17.4 and abs(r["lat_deg"] - 20.1833) < 0.02 and abs(r["lon_deg_east"] - 30.7667) < 0.02
+    assert (gt[["clem_r415", "clem_r750", "clem_r900", "clem_r950", "clem_r1000"]] > 0).all().all()
+    gt["site"].map(qiu_mission)                             # raises on an unknown site name
+
+
+def sites_table_qiu(gt):
+    return pd.DataFrame({"site_id": gt["site"], "mission": gt["site"].map(qiu_mission),
+                         "lat": gt["lat_deg"], "lon": wrap(gt["lon_deg_east"].to_numpy(float)),
+                         "n_samples": 1, "feo_mean": gt["FeO_wt_pct"], "feo_sd": 0.0, "feo_range": 0.0,
+                         "samples": gt["site"], "sources": "Qiu, Yan & Liu (2025) Supplementary Table 1"})
+
+
 def main() -> int:
+    global OUT, STAGING
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--truth", choices=["fd50", "qiu"], default="fd50",
+                    help="fd50: Addendum A sites (default, unchanged); qiu: the 49 Qiu et al. 2025 sites (D30, D33)")
+    ap.add_argument("--qiu-source", type=Path, default=QIU_DEFAULT_SOURCE)
+    args = ap.parse_args()
+    if args.truth == "qiu":
+        return main_qiu(args)
     t0 = lc.banner(STAGE, "stage M3 L2 spectra at the landing sites (Addendum A)")
     lc.verify_manifest(STAGE)
     (STAGING / "index").mkdir(parents=True, exist_ok=True)
@@ -247,6 +289,82 @@ def main() -> int:
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(STAGING, OUT)
+    df = lc.write_manifest()
+    print("  manifest regenerated: %d files, %.1f MB" % (len(df), df["bytes"].sum() / 1e6))
+    lc.done(STAGE, t0)
+    return 0
+
+
+def fetch_blocks(sites, prod, lines, lon, lat):
+    """The D21 strip search and 3 x 3 block download for every row of `sites`."""
+    rows, blocks = [], []
+    for _, s in sites.iterrows():
+        cands = candidates(s["lat"], s["lon"], lines, lon, lat)
+        kept = 0
+        for i, guess, seg in cands:
+            p = prod.iloc[i]
+            try:
+                ln, smp, dist = locate(p["loc_url"], p["n_lines"], guess, seg, s["lat"], s["lon"])
+            except RuntimeError as e:
+                print("    %s %s: LOC read failed (%s)" % (s["site_id"], p["product"], e))
+                continue
+            ok = dist <= MAX_DIST_DEG and EDGE <= smp <= NS - 1 - EDGE and 1 <= ln <= p["n_lines"] - 2
+            rec = {"site_id": s["site_id"], "product": p["product"], "line": ln, "sample": smp,
+                   "dist_deg": dist, "kept": ok, "rfl_url": p["rfl_url"], "loc_url": p["loc_url"]}
+            if ok:
+                raw = get(p["rfl_url"], ((ln - 1) * RFL_REC, (ln + 2) * RFL_REC - 1))
+                blk = np.frombuffer(raw, "<f4").reshape(3, NB, NS)[:, :, smp - 1:smp + 2].copy()
+                rec["block"] = len(blocks)
+                blocks.append(blk)
+                kept += 1
+            rows.append(rec)
+        print("  %-14s (%7.3f, %8.3f) FeO %.1f: %d candidate strips, %d within %.2f deg"
+              % (s["site_id"], s["lat"], s["lon"], s["feo_mean"], len(cands), kept, MAX_DIST_DEG), flush=True)
+    return pd.DataFrame(rows), blocks
+
+
+def main_qiu(args) -> int:
+    """Addendum D, D30/D33: the Qiu et al. (2025) table and M3 blocks at its 49 sites."""
+    t0 = lc.banner(STAGE, "stage the Qiu et al. (2025) sites and their M3 L2 spectra (Addendum D)")
+    lc.verify_manifest(STAGE)
+    out = lc.DATA / "m3_sites_qiu"
+    staging = lc.PRODUCTS / "m3_sites_qiu_staging"
+    gt_dst = lc.GT_DIR / QIU_TABLE
+    if gt_dst.exists():
+        gt = pd.read_csv(gt_dst)
+        print("  Qiu table already staged: %s" % gt_dst.relative_to(lc.PROJECT_ROOT))
+    else:
+        if not args.qiu_source.exists():
+            sys.exit("[%s] FATAL: Qiu table not staged and source %s not found." % (STAGE, args.qiu_source))
+        gt = pd.read_csv(args.qiu_source)
+    check_qiu_table(gt)
+    print("  Qiu table: 49 sites, identity checks passed (LRV12 = 17.4 wt%% FeO)")
+    (staging / "index").mkdir(parents=True, exist_ok=True)
+    for f in INDEX_FILES:
+        p = staging / "index" / Path(f).name
+        src = OUT / "index" / Path(f).name                 # reuse the Addendum A copy of the index
+        if not p.exists():
+            p.write_bytes(src.read_bytes() if src.exists() else get(BASE + f))
+    prod = global_products((staging / "index" / "L2_INDEX.TAB").read_text())
+    lines, lon, lat = footprints(prod)
+    print("  footprints: %d global-mode strips" % len(prod))
+    sites = sites_table_qiu(gt)
+    strips, blocks = fetch_blocks(sites, prod, lines, lon, lat)
+    sites.to_csv(staging / "sites.csv", index=False)
+    strips.to_csv(staging / "site_strips.csv", index=False)
+    np.save(staging / "site_strip_blocks.npy", np.asarray(blocks, np.float32).reshape(-1, 3, NB, 3))
+    (staging / "provenance.md").write_text(
+        "M3 L2 reflectance (CH1M3_0004) and L1B LOC (CH1M3_0003) from %s, fetched by "
+        "scripts/step00b_fetch_m3_sites.py --truth qiu on %s with HTTP range requests. Sites: the 49 rows of "
+        "data/ground_truth/%s (Qiu, Yan & Liu 2025, Commun. Earth Environ., Supplementary Table 1; "
+        "METHOD_NOTES D30). Same strip and pixel rules as Addendum A (D21).\n"
+        % (BASE, time.strftime("%Y-%m-%d", time.gmtime()), QIU_TABLE))
+    lc.verify_manifest(STAGE)                               # nothing in data/ moved while fetching
+    if not gt_dst.exists():
+        shutil.copyfile(args.qiu_source, gt_dst)            # byte-exact copy of the verified source
+    if out.exists():
+        shutil.rmtree(out)
+    shutil.copytree(staging, out)
     df = lc.write_manifest()
     print("  manifest regenerated: %d files, %.1f MB" % (len(df), df["bytes"].sum() / 1e6))
     lc.done(STAGE, t0)

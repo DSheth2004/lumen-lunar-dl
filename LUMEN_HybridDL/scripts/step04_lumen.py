@@ -178,7 +178,7 @@ def cmd_regen_lomo(args):
     lc.verify_manifest(STAGE)
     _, meta = load_lab()
     jobs = [("LOMO", fold, "A4_full", k) for fold, _ in folds(meta, "LOMO") for k in range(N_MEMBERS)]
-    with get_context("fork").Pool(args.workers, initializer=_worker_init) as pool:
+    with get_context(lc.POOL_START).Pool(args.workers, initializer=_worker_init) as pool:
         rows = pool.map(_regen_job, jobs)
     df = pd.DataFrame(rows)
     df.to_csv(lc.TABLES / "step04_lomo_regeneration_check.csv", index=False)
@@ -205,7 +205,7 @@ def cmd_finetune(args):
     todo = [j for j in jobs if not (JOB_DIR / ("%s_%s_%s_m%d.npz" % j)).exists()]
     print("  %d jobs, %d to run, %d workers" % (len(jobs), len(todo), args.workers))
     done_n, t_run = 0, time.time()
-    with get_context("fork").Pool(args.workers, initializer=_worker_init) as pool:
+    with get_context(lc.POOL_START).Pool(args.workers, initializer=_worker_init) as pool:
         for path, dt in pool.imap_unordered(_run_job, todo):
             done_n += 1
             if done_n % 25 == 0 or done_n == len(todo):

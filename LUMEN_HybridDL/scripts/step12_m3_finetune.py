@@ -159,7 +159,7 @@ def main() -> int:
     sites = _G["sites"]
     print("  M3 pixel spectra: %d over %d sites" % (len(_G["pix"]), len(np.unique(_G["pix_site"]))))
     jobs = [(s, k) for s in sites["site_id"] for k in range(s4.N_MEMBERS)]
-    with get_context("fork").Pool(4, initializer=_init) as pool:
+    with get_context(lc.POOL_START).Pool(4, initializer=_init) as pool:
         res = pool.map(_job, jobs)
     r = pd.DataFrame(res, columns=["site_id", "member", "FeO", "var"])
     ft = r.groupby("site_id")["FeO"].mean()

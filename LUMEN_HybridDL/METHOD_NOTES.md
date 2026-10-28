@@ -393,3 +393,151 @@ same 18 sites, leave-one-site-out, against the step10 comparators (unchanged).
   LUMEN-M3-FT against each step10 comparator, Holm over the comparators. The claim
   "beats Fernández-Díaz on M³" requires a lower MAE than every FD variant; significance
   is reported separately.
+
+## Addendum D — paper experiments E1–E7 (pre-registered before running, 2026-10-28)
+
+Written before any of the experiments below was run, and committed before their scripts were
+run on real folds. These experiments prepare the journal paper (target: MDPI *Remote Sensing*).
+Each one answers a specific objection that a reviewer could raise against the main study.
+
+### D30 Correction of the orbital ground truth (supersedes D20 for every new result)
+
+- **The problem.** `data/ground_truth/fernandez2026_ground_truth_50.csv`, used in Addenda A and
+  C, is **not** Fernández-Díaz et al.'s ground truth. FD state that their labels are "49 samples
+  compiled by [21] plus one sample from the Chang'E-6 mission". [21] is Qiu et al. (2025),
+  Table S1, which lists **49 distinct, station-level sampling sites**. The table used in A/C
+  instead collapses samples onto 18 coordinates; for example, 8 Apollo 12 samples sit at one LM
+  coordinate, where Qiu has a single Apollo 12 row.
+- **Consequences.**
+  - The "pseudo-replication" argument made against FD (D20 and the draft) describes that
+    reconstruction, not FD's paper, and is withdrawn.
+  - The results of Addenda A and C remain valid on their own 18-site table, but they are not
+    comparable with FD's published numbers.
+- **The replacement.** `data/ground_truth/qiu2025_sampling_sites_feo.csv` is the open-access
+  companion table by the same first author (Qiu, Yan & Liu 2025, *Commun. Earth Environ.*,
+  Supplementary Table 1). It was staged and verified in the user's independent FD reproduction
+  against FD's worked example (Apollo 17 LRV12: 20.198°N 30.781°E, FeO 17.4 wt %).
+  - It holds 49 sites: lab FeO, coordinates and Clementine UVVIS reflectances at 415, 750, 900,
+    950 and 1000 nm.
+  - Its Chang'E-6 row already covers FD's extra sample, so FD's 50th label would double-count
+    it. We use the 49 sites.
+
+### D31 Checkpoints and execution environment
+
+- **Regenerated checkpoints.** All Addendum D experiments use products regenerated on
+  2026-10-28: the synthetic set (`step02`, seed 1) and the 5 pretrained members (`step04
+  pretrain`).
+  - They were regenerated on a different machine (Windows, x86-64). The regenerated `step02`
+    tables differ from the stored ones only at floating-point level (max abs difference
+    1.8e-7).
+  - The pretrained member weights are therefore not bit-identical to the original ones.
+    Wherever an experiment compares against A2 or A4, those configurations are **re-run with the
+    same regenerated checkpoints**, so every comparison is like-for-like.
+  - `tables/stepD_regeneration_check.csv` reports how far the regenerated A2/A4 outer-fold
+    predictions are from the stored `step04` predictions. This is a reproducibility check, not a
+    result.
+- **Shared checkpoints.** The pretrained member weights (about 1.5 MB each) are committed under
+  `checkpoints/pretrained/`, so that parallel cloud sessions use identical weights. The step02
+  tables stay at their committed values; cloud sessions regenerate the synthetic set
+  themselves (about 2 min).
+- **Windows support.** The multiprocessing pools use `fork` on POSIX and `spawn` on Windows. This
+  is a code-path change only; job seeds depend only on the job tuple (D19).
+
+### D32 E1 — choosing the configuration inside the cross-validation
+
+- **Why.** The pre-registered primary model A4 is significant against RF on 1/13 targets (LOSO).
+  A2 is lower on 12/13 targets, but A2 was identified after the fact. E1 makes the choice
+  between A2 and A4 part of the method, inside each outer training fold, so the outer-fold
+  result is a proper confirmatory estimate.
+- **Candidates:** `A2_pretrain_real` and `A4_full`. All recipes are unchanged.
+- **Inner split.** For each outer fold (LOSO, 19 folds; LOMO, 6 folds), the outer training soils
+  are split by `sklearn.model_selection.GroupKFold(n_splits=5)`.
+  - Groups are soils, in sorted soil-id order.
+  - Inner fine-tunes use members k = 0 and 1 only.
+  - Inner job seed: `crc32("E1|<outer protocol>|<outer fold>|inner<j>|<config>|<k>")`.
+- **Selection score.** For each candidate, the mean over the 13 targets of
+  inner MAE_t / inner MAE_t(fraction-matched mean of the other inner-training soils).
+  - Per-soil MAE is defined as in the main evaluation. The candidate with the lower score is
+    selected.
+  - An exact tie selects A4, the pre-registered primary.
+- **Outer prediction.** The selected configuration's 5-member ensemble, re-run on the outer fold
+  with the regenerated checkpoints. A2 and A4 are both re-run on every outer fold
+  (25 folds × 2 × 5 = 250 jobs), so either can be selected and both can be reported.
+- **Primary test.** LUMEN-selected vs RF (step03 predictions, unchanged): paired Wilcoxon over the
+  19 soils, Holm over the 13 targets, LOSO. LOMO is reported as secondary.
+  - Also reported: LUMEN-selected vs mean-of-others, PLS and ridge; how often each candidate
+    was selected per protocol; regenerated A4 vs regenerated A2.
+
+### D33 E2 + E3 + E6 — orbital FeO on the 49 Qiu sites
+
+- **Sites.** The 49 sites of D30. A site with no qualifying M³ strip is reported and excluded.
+  The user's reproduction has no strip covering Chang'E-5.
+- **Spectra (primary).** The D21 procedure applied unchanged to the Qiu coordinates, staged into
+  `data/m3_sites_qiu/` with the manifest regenerated:
+  - candidate strips from the L2 index;
+  - footprint within 0.01°, at least 5 samples from either swath edge;
+  - a 3 × 3 block around the nearest pixel, keeping valid pixels only, and ≥ 5 / 9 valid pixels
+    for a strip to contribute;
+  - the site spectrum is the per-band median over contributing strips.
+  - Sensitivity: the single-pixel spectra of the user's reproduction, with the run repeated on
+    them.
+- **Methods (FeO).** All are refitted inside every training fold, using the same M³ site spectra:
+  - **LUMEN-M3** (zero-shot, D22 rule): for an Apollo site of mission X, the A4 LOMO members that
+    held out mission X; for every other site, the final ensemble. Korokhin Eq. 2 calibration.
+  - **LUMEN-M3 + recalibration:** OLS y = a + b·ŷ fitted on the training sites.
+  - **LUMEN-M3-FT** (D27 recipe, unchanged): 600 steps; 16 M³ pixel spectra from the training
+    sites (FeO only) + 16 lab spectra per batch.
+  - **LUMEN-embed + ridge** (D28).
+  - **FD as published** (AE → RF), plus FD-AE / FD-wavelet × {Lasso, SVR-lin, SVR-RBF, RF}, with
+    the D22 settings.
+  - **E3 baselines:**
+    - two M³ bands, linear (R950/R750, R750);
+    - Lucey θ with M³ bands nearest 750/950 nm, refitted;
+    - Lucey et al. (2000) published constants on the Clementine reflectances of the Qiu table,
+      with nothing fitted. This is **flagged as in-sample**: the Lucey constants were derived
+      from returned-sample sites.
+    - two Clementine bands, linear, refitted;
+    - the training-fold mean.
+- **Protocols.**
+  - **(P1) FD's own:** 10-fold `KFold(shuffle=True)` over sites, with the user's reproduction seed
+    (`feo_common.SEED`), so the numbers are directly comparable with FD's published 2.29 and the
+    reproduction's 1.95. Repeated with 5 further seeds as a sensitivity.
+  - **(P2) leave-one-landing-site-out:** groups are A11, A12, A14, A15, A16, A17, L16, L20, L24,
+    CE3, CE5 and CE6. Stations of one mission share terrain and are spatially autocorrelated, so
+    this is the spatially honest protocol.
+- **Scoring.** MAE, RMSE, R² and bias over sites, plus per-landing-site means.
+- **Primary test.** LUMEN-M3-FT vs FD as published (AE → RF), paired Wilcoxon over sites under
+  P2. Holm over the comparators. P1 is reported for comparability.
+- **E6 (intervals).** Under P2, normalised conformal intervals for LUMEN-M3-FT. The score is
+  |y − μ| / σ, where σ is the ensemble sd, computed from the out-of-fold predictions of the other
+  landing sites. Report empirical coverage at 68 / 90 / 95 % over the sites.
+
+### D34 E4 — design-choice ablations (input channels, architecture)
+
+- **Variants.** The A4 recipe is unchanged in every variant:
+  - (a) log-reflectance channel only;
+  - (b) continuum-removed channel only;
+  - (c) an MLP with the same heads (flattened 2 × 71 → 256 → 128 trunk);
+  - (d) a 1-D ResNet (3 residual blocks, GroupNorm, 64 channels, with the same trunk and heads).
+- **Ensemble size.** Each variant is pretrained (the same schedule as the main model) and
+  fine-tuned with **2 members (k = 0, 1)**. It is compared against the main CNN with members 0–1
+  only, so ensemble size is equal.
+- **Folds.** LOSO and LOMO.
+- **Test.** Paired Wilcoxon over soils, Holm over 13 targets; report the number of targets with a
+  lower MAE.
+- **Interpretation.** Interpreted only as "does the chosen design hold up against plausible
+  alternatives", not as model selection. No variant replaces the primary model.
+
+### D35 E7 — map consistency with independent FeO products
+
+- **Products.** Named before download:
+  - (i) Clementine UVVIS FeO (Lucey et al. 2000);
+  - (ii) a Kaguya MI-derived FeO product (Lemelin et al. 2016/2019, or Otake et al. 2012),
+    whichever is publicly obtainable.
+  Neither is ground truth.
+- **Scenes.** The Shapley strip and the Apollo 16 block (step07), plus the Copernicus scene if
+  the M³ cube is available.
+- **Method.** LUMEN FeO, and FD FeO as published, are resampled to each product's grid by area
+  averaging.
+- **Metrics.** Pearson r, OLS slope, mean bias, and the mare/highland contrast. Pixels flagged by
+  the identifiability gate or masked by step07 are excluded.
