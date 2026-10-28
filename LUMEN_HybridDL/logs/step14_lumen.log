@@ -1,0 +1,20 @@
+
+==============================================================================
+[step14] LUMEN on the Qiu sites: zero-shot, recalibration, embed + ridge, M3-FT
+==============================================================================
+  LUMEN-M3-FT: 1185 fine-tunes, 1185 to run, 4 workers
+     20 / 1185  (119 s elapsed, ~6937 s left)
+     40 / 1185  (230 s elapsed, ~6578 s left)
+     60 / 1185  (346 s elapsed, ~6484 s left)
+     80 / 1185  (460 s elapsed, ~6351 s left)
+    100 / 1185  (571 s elapsed, ~6191 s left)
+    120 / 1185  (681 s elapsed, ~6044 s left)
+    140 / 1185  (800 s elapsed, ~5971 s left)
+    160 / 1185  (912 s elapsed, ~5844 s left)
+    180 / 1185  (1025 s elapsed, ~5721 s left)
+    200 / 1185  (1139 s elapsed, ~5608 s left)
+    220 / 1185  (1248 s elapsed, ~5472 s left)
+    240 / 1185  (1353 s elapsed, ~5328 s left)
+    260 / 1185  (1458 s elapsed, ~5186 s left)
+    280 / 1185  (1565 s elapsed, ~5058 s left)
+    300 / 1185  (1681 s elapsed, ~4960 s left)
