@@ -102,8 +102,8 @@ def global_products(index_text):
 def footprints(prod):
     """Probe N_PROBE lines per strip; cached so a re-run does not re-download."""
     if CACHE.exists():
-        c = np.load(CACHE, allow_pickle=False)
-        if list(c["product"]) == list(prod["product"]):
+        c = np.load(CACHE, allow_pickle=True)              # own cache; "product" is a string (object) array
+        if [str(x) for x in c["product"]] == [str(x) for x in prod["product"]]:
             return c["lines"], c["lon"], c["lat"]
     lines = np.stack([np.unique(np.linspace(0, n - 1, N_PROBE).astype(int)) if n >= N_PROBE
                       else np.arange(N_PROBE) % n for n in prod["n_lines"]])
@@ -231,6 +231,7 @@ def main() -> int:
     ap.add_argument("--truth", choices=["fd50", "qiu"], default="fd50",
                     help="fd50: Addendum A sites (default, unchanged); qiu: the 49 Qiu et al. 2025 sites (D30, D33)")
     ap.add_argument("--qiu-source", type=Path, default=QIU_DEFAULT_SOURCE)
+    ap.add_argument("--workers", type=int, default=1, help="concurrent sites (qiu mode); output does not depend on it")
     args = ap.parse_args()
     if args.truth == "qiu":
         return main_qiu(args)
@@ -295,31 +296,47 @@ def main() -> int:
     return 0
 
 
-def fetch_blocks(sites, prod, lines, lon, lat):
-    """The D21 strip search and 3 x 3 block download for every row of `sites`."""
+def _one_site(s, prod, lines, lon, lat):
+    """The D21 strip search and 3 x 3 block download for one site: [(record, block or None)]."""
+    out = []
+    cands = candidates(s["lat"], s["lon"], lines, lon, lat)
+    for i, guess, seg in cands:
+        p = prod.iloc[i]
+        try:
+            ln, smp, dist = locate(p["loc_url"], p["n_lines"], guess, seg, s["lat"], s["lon"])
+        except RuntimeError as e:
+            print("    %s %s: LOC read failed (%s)" % (s["site_id"], p["product"], e))
+            continue
+        ok = dist <= MAX_DIST_DEG and EDGE <= smp <= NS - 1 - EDGE and 1 <= ln <= p["n_lines"] - 2
+        rec = {"site_id": s["site_id"], "product": p["product"], "line": ln, "sample": smp,
+               "dist_deg": dist, "kept": ok, "rfl_url": p["rfl_url"], "loc_url": p["loc_url"]}
+        blk = None
+        if ok:
+            raw = get(p["rfl_url"], ((ln - 1) * RFL_REC, (ln + 2) * RFL_REC - 1))
+            blk = np.frombuffer(raw, "<f4").reshape(3, NB, NS)[:, :, smp - 1:smp + 2].copy()
+        out.append((rec, blk))
+    print("  %-14s (%7.3f, %8.3f) FeO %.1f: %d candidate strips, %d within %.2f deg"
+          % (s["site_id"], s["lat"], s["lon"], s["feo_mean"], len(cands),
+             sum(b is not None for _, b in out), MAX_DIST_DEG), flush=True)
+    return out
+
+
+def fetch_blocks(sites, prod, lines, lon, lat, workers=1):
+    """D21 for every row of `sites`. Sites are fetched concurrently when workers > 1; the output
+    (row order, block numbering) is assembled in site order, so it does not depend on `workers`."""
+    site_rows = [s for _, s in sites.iterrows()]
+    if workers > 1:
+        with ThreadPoolExecutor(workers) as ex:
+            per_site = list(ex.map(lambda s: _one_site(s, prod, lines, lon, lat), site_rows))
+    else:
+        per_site = [_one_site(s, prod, lines, lon, lat) for s in site_rows]
     rows, blocks = [], []
-    for _, s in sites.iterrows():
-        cands = candidates(s["lat"], s["lon"], lines, lon, lat)
-        kept = 0
-        for i, guess, seg in cands:
-            p = prod.iloc[i]
-            try:
-                ln, smp, dist = locate(p["loc_url"], p["n_lines"], guess, seg, s["lat"], s["lon"])
-            except RuntimeError as e:
-                print("    %s %s: LOC read failed (%s)" % (s["site_id"], p["product"], e))
-                continue
-            ok = dist <= MAX_DIST_DEG and EDGE <= smp <= NS - 1 - EDGE and 1 <= ln <= p["n_lines"] - 2
-            rec = {"site_id": s["site_id"], "product": p["product"], "line": ln, "sample": smp,
-                   "dist_deg": dist, "kept": ok, "rfl_url": p["rfl_url"], "loc_url": p["loc_url"]}
-            if ok:
-                raw = get(p["rfl_url"], ((ln - 1) * RFL_REC, (ln + 2) * RFL_REC - 1))
-                blk = np.frombuffer(raw, "<f4").reshape(3, NB, NS)[:, :, smp - 1:smp + 2].copy()
+    for res in per_site:
+        for rec, blk in res:
+            if blk is not None:
                 rec["block"] = len(blocks)
                 blocks.append(blk)
-                kept += 1
             rows.append(rec)
-        print("  %-14s (%7.3f, %8.3f) FeO %.1f: %d candidate strips, %d within %.2f deg"
-              % (s["site_id"], s["lat"], s["lon"], s["feo_mean"], len(cands), kept, MAX_DIST_DEG), flush=True)
     return pd.DataFrame(rows), blocks
 
 
@@ -349,7 +366,7 @@ def main_qiu(args) -> int:
     lines, lon, lat = footprints(prod)
     print("  footprints: %d global-mode strips" % len(prod))
     sites = sites_table_qiu(gt)
-    strips, blocks = fetch_blocks(sites, prod, lines, lon, lat)
+    strips, blocks = fetch_blocks(sites, prod, lines, lon, lat, workers=args.workers)
     sites.to_csv(staging / "sites.csv", index=False)
     strips.to_csv(staging / "site_strips.csv", index=False)
     np.save(staging / "site_strip_blocks.npy", np.asarray(blocks, np.float32).reshape(-1, 3, NB, 3))
