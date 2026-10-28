@@ -1,6 +1,0 @@
-
-==============================================================================
-[step14] comparators: Fernandez-Diaz variants and E3 baselines
-==============================================================================
-    AE: 22 epochs, best val MSE 5.696e-05 (n = 269952)
-  block3x3 P2: comparators done (656 s)
