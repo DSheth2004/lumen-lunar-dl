@@ -278,6 +278,24 @@ stage is re-run unchanged in every other respect.
      in `paper/` and numbers read from `tables/`.
    - Every directional claim in the prose is asserted against the numbers before the draft
      is written.
+6. **E4 (D34) implementation details (clarifications, not changes; fixed before any E4 run).**
+   D34 leaves these open. They were set in `step15_ablations.py` / `lumen_model.py` before
+   any variant was pretrained:
+   - (a)/(b) keep LumenNet's CNN unchanged except for the first convolution, which takes
+     one channel (log R or continuum-removed R) instead of two.
+   - (d) ResNet: stem conv (k = 7, 2 → 64) + GroupNorm + GELU, then residual block (k = 5),
+     max-pool, residual block (k = 5), max-pool, residual block (k = 3). Each block is
+     conv–GN–GELU–conv–GN plus identity, then GELU. The two pools match LumenNet's, so the
+     trunk input (64 × 17) and the trunk itself are identical.
+   - Every fine-tune, the main-CNN reference included, uses the step04 job seed of
+     `A4_full` for its (protocol, fold, member). The real, mixup and replay draws are
+     therefore identical across networks; the reference is step04's A4 members 0–1
+     re-run on the shared D31 checkpoints.
+   - Variant pretraining runs the 8 (variant, member) jobs in 4 parallel processes with one
+     torch thread each, instead of step04's sequential 4-thread run. This has no effect on
+     the schedule, only on floating-point summation order.
+   - The test uses the 13 targets of `lumen_eval.TARGETS`. The composition mean is reported
+     in the metrics table but not tested.
 
 ## Addendum A — M³ landing-site validation (pre-registered before any site spectrum was fetched)
 
