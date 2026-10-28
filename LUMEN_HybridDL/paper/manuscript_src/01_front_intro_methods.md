@@ -425,7 +425,3 @@ learning rate 10⁻⁴, weight decay 10⁻⁴, cosine decay). Each batch holds:
 - 16 laboratory spectra from that model's own training soils, with all targets.
 
 The held-out site is predicted from its site spectrum.
-
-### 2.4. Use of Generative Artificial Intelligence
-
-Parts of the analysis code and of the manuscript text were drafted with the assistance of a generative AI system (Anthropic Claude). The AI system was not used to generate data. Every reported number was produced by the released code from the staged input data, and the evaluation protocol was fixed in version control before scoring. The authors reviewed the code, the analysis and the text, and take full responsibility for the content.
