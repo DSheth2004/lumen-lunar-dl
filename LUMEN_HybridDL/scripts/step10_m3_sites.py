@@ -43,21 +43,30 @@ MISSION_FOLD = {"Apollo 11": "A11", "Apollo 12": "A12", "Apollo 14": "A14", "Apo
 SEED = 0
 
 
-def site_spectra():
-    sites = pd.read_csv(SITES / "sites.csv")
-    strips = pd.read_csv(SITES / "site_strips.csv")
-    blocks = np.load(SITES / "site_strip_blocks.npy")              # (k, 3, 85, 3)
+def block_pixels(block, centre_only=False):
+    """(3, 85, 3) block -> its pixels (9 x 85, or the centre pixel only), the valid mask and
+    the minimum number of valid pixels for the strip to contribute (D21)."""
+    px = np.transpose(block, (0, 2, 1)).reshape(9, 85)
+    if centre_only:
+        px = px[[4]]
+    sub = px[:, FD_BANDS]
+    ok = np.isfinite(sub).all(1) & (sub > 0).all(1) & (sub < 1).all(1)
+    return px, ok, 1 if centre_only else 5
+
+
+def site_spectra(root=SITES, centre_only=False):
+    sites = pd.read_csv(root / "sites.csv")
+    strips = pd.read_csv(root / "site_strips.csv")
+    blocks = np.load(root / "site_strip_blocks.npy")               # (k, 3, 85, 3)
     kept = strips[strips["kept"]].copy()
     spec_rows, per_strip = {}, []
     for sid, g in kept.groupby("site_id"):
         S = []
         for _, r in g.iterrows():
-            px = np.transpose(blocks[int(r["block"])], (0, 2, 1)).reshape(9, 85)
-            sub = px[:, FD_BANDS]
-            ok = np.isfinite(sub).all(1) & (sub > 0).all(1) & (sub < 1).all(1)
+            px, ok, need = block_pixels(blocks[int(r["block"])], centre_only)
             per_strip.append({"site_id": sid, "product": r["product"], "n_valid_pixels": int(ok.sum()),
-                              "contributes": bool(ok.sum() >= 5)})
-            if ok.sum() >= 5:
+                              "contributes": bool(ok.sum() >= need)})
+            if ok.sum() >= need:
                 S.append(px[ok].mean(0))
         if S:
             spec_rows[sid] = (np.median(np.asarray(S), axis=0), np.asarray(S))
@@ -112,12 +121,17 @@ def lucey_theta(R85, wl_nm):
     return np.arctan((r950 / r750 - 1.19) / (r750 - 0.08))
 
 
-def fd_loso(sites, specs, gt, seed):
-    """FD on its own task, leave-one-site-out; training rows are samples."""
+def fd_encoder(seed):
+    """FD's autoencoder, trained unsupervised on the Shapley-scene pixels (unscaled L2, 83 bands)."""
     raw = np.load(lc.M3_SHAPLEY_DIR / "scene_rfl.npy")
     pix = np.transpose(raw, (0, 2, 1)).reshape(-1, raw.shape[1])[:, FD_BANDS].astype(float)
     pix = pix[np.isfinite(pix).all(1) & (pix > 0).all(1) & (pix < 1).all(1)]
-    enc, hist = train_fd_autoencoder(dwt_a2d2(pix), seed, print)
+    return train_fd_autoencoder(dwt_a2d2(pix), seed, print)
+
+
+def fd_loso(sites, specs, gt, seed):
+    """FD on its own task, leave-one-site-out; training rows are samples."""
+    enc, hist = fd_encoder(seed)
     sid = sites["site_id"].to_numpy()
     W_site = dwt_a2d2(np.vstack([specs[s][0][FD_BANDS] for s in sid])).astype(np.float64)
     feats = {"FD-wavelet": W_site, "FD-AE-M3": enc(W_site.astype(np.float32))}

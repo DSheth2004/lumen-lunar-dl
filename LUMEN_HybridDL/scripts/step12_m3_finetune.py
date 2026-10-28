@@ -35,16 +35,14 @@ ALPHAS = [0.1, 1.0, 10.0, 100.0]
 _G = {}
 
 
-def pixel_spectra():
-    sites = pd.read_csv(s10.SITES / "sites.csv")
-    strips = pd.read_csv(s10.SITES / "site_strips.csv")
-    blocks = np.load(s10.SITES / "site_strip_blocks.npy")
+def pixel_spectra(root=s10.SITES, centre_only=False):
+    sites = pd.read_csv(root / "sites.csv")
+    strips = pd.read_csv(root / "site_strips.csv")
+    blocks = np.load(root / "site_strip_blocks.npy")
     R, sid = [], []
     for _, r in strips[strips["kept"]].iterrows():
-        px = np.transpose(blocks[int(r["block"])], (0, 2, 1)).reshape(9, 85)
-        sub = px[:, s10.FD_BANDS]
-        ok = np.isfinite(sub).all(1) & (sub > 0).all(1) & (sub < 1).all(1)
-        if ok.sum() >= 5:
+        px, ok, need = s10.block_pixels(blocks[int(r["block"])], centre_only)
+        if ok.sum() >= need:
             R.append(px[ok])
             sid += [r["site_id"]] * int(ok.sum())
     return sites, np.vstack(R), np.asarray(sid)
@@ -74,25 +72,38 @@ def to_lab(R85):
     return s10.EQ2[0] * np.atleast_2d(R85)[:, lc.input_band_index()] + s10.EQ2[1]
 
 
+def lab_training_idx(meta, fold):
+    """Laboratory spectra the start model was fine-tuned on (all soils but its held-out mission)."""
+    return np.flatnonzero(meta["mission"] != fold) if fold != "FINAL" else np.arange(len(meta))
+
+
 def _job(job):
     site, k = job
     S, meta, X = _G["sites"], _G["meta"], _G["X"]
     srow = S[S["site_id"] == site].iloc[0]
     fold = model_fold(srow["mission"])
     seed = zlib.crc32(("m3ft|%s|%d" % (site, k)).encode()) % (2 ** 31)
+    # data: M3 pixels of the other sites; lab spectra of this model's training soils
+    tr = _G["pix_site"] != site
+    feo_site = S.set_index("site_id")["feo_mean"]
+    ym = feo_site.loc[_G["pix_site"][tr]].to_numpy(float)
+    real = s4.real_dict(X, meta, lab_training_idx(meta, fold))
+    model = finetune_m3(state_path(fold, k), _G["pix"][tr], ym, real, seed)
+    o = lm.member_outputs(model, _G["scaler"](lc.spectral_features(to_lab(_G["site_spec"][site]), _G["lam"])))
+    return site, k, float(o["scal_mean"][0, 0]), float(o["scal_var"][0, 0])
+
+
+def finetune_m3(start_path, R_pix, y_pix, real, seed):
+    """D27: fine-tune one start member on M3 pixel spectra (FeO only) mixed 1:1 with its own
+    laboratory training spectra (all targets). Needs _G["scaler"] and _G["lam"]."""
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     model = lm.LumenNet()
-    model.load_state_dict(torch.load(state_path(fold, k)))
-    # data: M3 pixels of the other sites; lab spectra of this model's training soils
-    tr = _G["pix_site"] != site
-    Rm = to_lab(_G["pix"][tr])
-    feo_site = S.set_index("site_id")["feo_mean"]
-    ym = feo_site.loc[_G["pix_site"][tr]].to_numpy(float)
-    lab_idx = np.flatnonzero(meta["mission"] != fold) if fold != "FINAL" else np.arange(len(meta))
-    real = s4.real_dict(X, meta, lab_idx)
+    model.load_state_dict(torch.load(start_path))
+    Rm, ym = to_lab(R_pix), np.asarray(y_pix, float)
+    lab_n = len(real["R"])
     jm = rng.integers(0, len(Rm), STEPS * N_M3)
-    jl = rng.integers(0, len(lab_idx), STEPS * N_LAB)
+    jl = rng.integers(0, lab_n, STEPS * N_LAB)
     R_all = lm.output_randomisation(np.vstack([Rm[jm], real["R"][jl]]), rng, _G["lam"])
     Xf = _G["scaler"](lc.spectral_features(R_all, _G["lam"]))
     scal_m = np.full((len(jm), len(lm.SCALARS)), np.nan)
@@ -113,8 +124,7 @@ def _job(job):
         opt.zero_grad(); loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), 5.0)
         opt.step(); sched.step()
-    o = lm.member_outputs(model, _G["scaler"](lc.spectral_features(to_lab(_G["site_spec"][site]), _G["lam"])))
-    return site, k, float(o["scal_mean"][0, 0]), float(o["scal_var"][0, 0])
+    return model
 
 
 @torch.no_grad()
@@ -136,19 +146,23 @@ def embed_ridge(sites):
         tr = _G["pix_site"] != site
         E = embeddings(ms, _G["pix"][tr])
         y = sites.set_index("site_id")["feo_mean"].loc[_G["pix_site"][tr]].to_numpy(float)
-        g = _G["pix_site"][tr]
-        best, ba = np.inf, ALPHAS[0]
-        for a in ALPHAS:                                   # inner leave-one-site-out
-            err = []
-            for gs in np.unique(g):
-                m = g != gs
-                r = Ridge(alpha=a).fit(E[m], y[m])
-                err.append(abs(r.predict(E[~m]).mean() - y[~m][0]))
-            if np.mean(err) < best:
-                best, ba = np.mean(err), a
-        r = Ridge(alpha=ba).fit(E, y)
+        r, _ = fit_embed_ridge(E, y, _G["pix_site"][tr])
         pred[site] = float(r.predict(embeddings(ms, _G["site_spec"][site][None]))[0])
     return pred
+
+
+def fit_embed_ridge(E, y, g):
+    """D28: ridge on pixel embeddings, alpha by inner leave-one-site-out (g = pixel site ids)."""
+    best, ba = np.inf, ALPHAS[0]
+    for a in ALPHAS:                                       # inner leave-one-site-out
+        err = []
+        for gs in np.unique(g):
+            m = g != gs
+            r = Ridge(alpha=a).fit(E[m], y[m])
+            err.append(abs(r.predict(E[~m]).mean() - y[~m][0]))
+        if np.mean(err) < best:
+            best, ba = np.mean(err), a
+    return Ridge(alpha=ba).fit(E, y), ba
 
 
 def main() -> int:
