@@ -220,7 +220,7 @@ class Writer:
     # -- blocks
     def heading(self, lvl, text):
         style = {2: "MDPI_2.1_heading1", 3: "MDPI_2.2_heading2", 4: "MDPI_2.3_heading3"}[lvl]
-        self.para(style, text)
+        self.para(style, text).paragraph_format.keep_with_next = True
 
     def equation(self, num):
         tbl = copy.deepcopy(self.eq_template)
@@ -305,6 +305,7 @@ class Writer:
                 p.style = self.doc.styles["MDPI_4.2_table_body"]
                 txt = r[j] if j < len(r) else ""
                 self.inline(p, txt, bold=(i == 0))
+                p.paragraph_format.keep_with_next = i < min(3, len(rows) - 1)   # caption, header and first rows stay together
                 if i == 0:                                   # rule under the header row
                     tcPr = cell._tc.get_or_add_tcPr()
                     tb = OxmlElement("w:tcBorders")
@@ -318,9 +319,59 @@ class Writer:
         p = self.para("MDPI_5.2_figure", align=WD_ALIGN_PARAGRAPH.CENTER)
         p.paragraph_format.left_indent = Cm(0)
         p.add_run().add_picture(str((HERE / path).resolve()), width=Cm(17.0))
+        p.paragraph_format.keep_with_next = True
 
 
 # --------------------------------------------------------------------------------------------
+def clean_headers_footers(path: Path) -> None:
+    """Strip the template's journal boilerplate from every header and footer part.
+
+    Removes "Remote Sens. 2026, 18, x FOR PEER REVIEW", the journal and MDPI logos and the
+    10.3390/xxxxx DOI lines. The running header keeps only a right-aligned "page N of M"; every
+    other header/footer becomes a single empty paragraph.
+    """
+    w = "{%s}" % W_NS
+    buf = io.BytesIO()
+    with zipfile.ZipFile(path) as zin, zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = zin.read(item.filename)
+            if re.fullmatch(r"word/(header|footer)\d+\.xml", item.filename):
+                root = etree.fromstring(data)
+                had_page = b"PAGE" in data and item.filename.startswith("word/header")
+                for ch in list(root):
+                    root.remove(ch)
+                p = etree.SubElement(root, w + "p")
+                if had_page:
+                    ppr = etree.SubElement(p, w + "pPr")
+                    etree.SubElement(ppr, w + "jc").set(w + "val", "right")
+
+                    def run(text=None, fld=None):
+                        if fld:
+                            for kind, extra in (("begin", None), ("instr", fld), ("end", None)):
+                                r = etree.SubElement(p, w + "r")
+                                rpr = etree.SubElement(r, w + "rPr")
+                                etree.SubElement(rpr, w + "sz").set(w + "val", "16")
+                                if kind == "instr":
+                                    t = etree.SubElement(r, w + "instrText")
+                                    t.text = " %s " % fld
+                                    t.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
+                                else:
+                                    etree.SubElement(r, w + "fldChar").set(w + "fldCharType", kind)
+                        else:
+                            r = etree.SubElement(p, w + "r")
+                            rpr = etree.SubElement(r, w + "rPr")
+                            etree.SubElement(rpr, w + "sz").set(w + "val", "16")
+                            t = etree.SubElement(r, w + "t")
+                            t.text = text
+                            t.set("{http://www.w3.org/XML/1998/namespace}space", "preserve")
+                    run(fld="PAGE")
+                    run(text=" of ")
+                    run(fld="NUMPAGES")
+                data = etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
+            zout.writestr(item, data)
+    path.write_bytes(buf.getvalue())
+
+
 def main() -> int:
     text = SRC_MD.read_text(encoding="utf-8")
     title = re.search(r"^# (.+)$", text, re.M).group(1).strip()
@@ -377,6 +428,15 @@ def main() -> int:
     set_text(i_abs, " ".join(abstract.split()))
     set_text(i_kw, keywords.replace("; ", "; "), bold_prefix="Keywords: ")
 
+    # no sample data: author / affiliation / correspondence lines stay, empty, with MDPI styles;
+    # the front-page side box (academic editor, dates, copyright) and the publisher's note go
+    for i, p in paras.items():
+        if p.style.name in ("MDPI_1.3_authornames", "MDPI_1.6_affiliation"):
+            set_text(i, "")
+    for k in kids[:i_line]:
+        if k.tag == qn("w:tbl") and "Academic Editor" in "".join(k.itertext()):
+            body.remove(k)
+
     # body blocks
     prev, back = None, False
     n_tab = n_fig = n_eq = 0
@@ -409,14 +469,14 @@ def main() -> int:
             s = b["text"]
             if re.match(r"\*\*Table \d+\.\*\*", s):
                 nx_wide = nxt and nxt["t"] == "tbl" and max(len(r) for r in nxt["rows"]) >= 5
-                writer.para("MDPI_4.1.1_one_table_caption" if nx_wide else "MDPI_4.1_table_caption", s)
+                writer.para("MDPI_4.1.1_one_table_caption" if nx_wide else "MDPI_4.1_table_caption", s).paragraph_format.keep_with_next = True
             elif re.match(r"\*\*Figure \d+\.\*\*", s):
                 writer.para("MDPI_5.1.1_one_figure_caption", s)
             elif prev and prev["t"] == "tbl" and (s.startswith("ᵃ") or s.startswith("*(")):
                 writer.para("MDPI_4.3_table_footer", s)
             elif back and s == "**Abbreviations**":
                 writer.heading(2, "Abbreviations")
-                writer.para("MDPI_3.2_text_no_indent", "The following abbreviations are used in this manuscript:")
+                writer.para("MDPI_3.2_text_no_indent", "The following abbreviations are used in this manuscript:").paragraph_format.keep_with_next = True
             elif back:
                 writer.para("MDPI_6.2_back_matter", s)
             elif nxt and nxt["t"] == "list":
@@ -431,8 +491,10 @@ def main() -> int:
     left = sum(1 for _ in writer.maths)
     if left:
         raise SystemExit("internal error: %d converted math elements unused" % left)
+    body.remove(kids[i_disc])                            # Disclaimer/Publisher's Note
     doc.core_properties.title = title
     doc.save(OUT)
+    clean_headers_footers(OUT)
     print("wrote %s: %d equations, %d tables, %d figures, %d inline+display math objects"
           % (OUT.name, n_eq, n_tab, n_fig, len(maths)))
     return 0

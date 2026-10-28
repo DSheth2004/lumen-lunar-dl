@@ -4,54 +4,13 @@
 
 #### 3.1.1. Comparison Algorithms
 
-On the laboratory spectra, LUMEN is compared with the following methods. All are trained and
-scored on identical spectra and folds.
+On the laboratory spectra every method uses identical spectra and folds. The classical baselines are the fraction-matched mean of the training soils (a zero-information reference); partial least squares (PLS), ridge regression and a random forest (RF) on LUMEN's 142 input values; and an RF on raw reflectance, all tuned by inner grouped cross-validation. The Fernández-Díaz et al. pipeline [@fernandez2026] is re-implemented in full on the same spectra (db4 A2 + D2 wavelet coefficients; a 42 → 32 → 16 → 6 → 16 → 32 → 42 autoencoder trained on M³ pixels as published or on our synthetic spectra; Lasso, linear SVR, RBF SVR and RF with the paper's search grids; and the no-autoencoder variant), giving twelve variants, of which "FD as published" is the M³-trained autoencoder with RF. The outputs of Korokhin et al. [@korokhin2024] and Jung et al. [@jung2026] come from independent reproductions validated against the papers' printed numbers (46 of 65 and 32 of 34 gated targets), each scored as the paper scores itself.
 
-**Classical baselines**
-- **Mean of other soils.** The fraction-matched mean of the training soils, a zero-information
-  reference.
-- **Classical regressors on LUMEN's inputs.** Partial least squares (PLS), ridge regression and a
-  random forest (RF), all using the same 142 input values as LUMEN (2 channels × 71 bands).
-- **RF on raw reflectance.**
-- Hyperparameters of every classical baseline are tuned by inner grouped cross-validation on the
-  training soils only.
-
-**Fernández-Díaz et al. [@fernandez2026], re-implemented in full on the same 71-band spectra**
-- A two-level db4 wavelet decomposition (periodisation), keeping the A2 and D2 coefficients.
-- An autoencoder 42 → 32 → 16 → 6 → 16 → 32 → 42, trained unsupervised either on M³ pixels (as
-  published) or on our synthetic spectra.
-- Four regressors (Lasso, linear SVR, RBF SVR, RF), with the paper's search grids, tuned by inner
-  cross-validation.
-- The no-autoencoder variant (wavelet coefficients → regressor).
-- Twelve variants in total. "FD as published" denotes the M³-trained autoencoder followed by RF.
-
-**Korokhin et al. [@korokhin2024] and Jung et al. [@jung2026]**
-- Their outputs on the LSCC soils come from independent reproductions of each method. Each
-  reproduction was validated against the paper's printed numbers: 46 of 65 and 32 of 34 gated
-  targets reproduced.
-- Each method is scored exactly as the paper scores itself (Section 3.4).
-
-**On M³ (Section 3.6)**
-- Four LUMEN variants: zero-shot (Section 2.3.6); zero-shot followed by a linear recalibration
-  $y = a + b\hat y$ fitted on the training sites; LUMEN-M3-FT (Section 2.3.6); and a ridge
-  regression on the 128-dimensional trunk embedding, averaged over members ("LUMEN-embed +
-  ridge", α chosen by inner leave-one-site-out).
-- The Fernández-Díaz variants, retrained on M³ site spectra.
-- A linear model on two M³ bands (R950/R750 and R750).
-- The Lucey θ parameter [@lucey2000], refitted on M³.
-- The Lucey et al. published constants applied to the Clementine reflectances of the ground-truth
-  table, plus a two-band Clementine model refitted.
-- The training-fold mean.
+On M³ (Section 3.6) we compare zero-shot LUMEN, zero-shot LUMEN with a linear recalibration $y = a + b\hat y$ fitted on the training sites, LUMEN-M3-FT, and a ridge regression on the 128-dimensional trunk embedding ("LUMEN-embed + ridge") with the Fernández-Díaz variants retrained on M³ site spectra, a linear model on two M³ bands (R950/R750 and R750), the Lucey θ parameter [@lucey2000] refitted on M³, the published Lucey et al. constants and a refitted two-band model on the table's Clementine reflectances, and the training-fold mean.
 
 #### 3.1.2. Parameter Settings
 
-Table 1 lists the fixed settings.
-- All LUMEN hyperparameters were set from synthetic-only development runs.
-- They were committed to version control, together with the evaluation protocol, before any model
-  was scored on real folds.
-- No hyperparameter was tuned on a held-out soil.
-- The later experiments (the nested selection of Section 3.3, Section 3.6 and the design
-  alternatives of Section 3.7) were committed in the same way before they were run.
+Table 1 lists the fixed settings. All LUMEN hyperparameters were set from synthetic-only development runs and committed to version control with the evaluation protocol before any model was scored on real folds, and the later experiments (Sections 3.3, 3.6 and 3.7) were committed in the same way before they were run.
 
 **Table 1.** Fixed LUMEN settings.
 
@@ -69,61 +28,21 @@ Table 1 lists the fixed settings.
 
 #### 3.1.3. Evaluation Protocols and Metrics
 
-**Protocols**
-- **Leave-one-soil-out (LOSO, 19 folds).** All four fractions of the held-out soil are excluded
-  from fine-tuning, from mixup and from normalisation statistics.
-- **Leave-one-mission-out (LOMO, 6 folds: A11, A12, A14, A15, A16, A17).** This is the
-  out-of-distribution test. Holding out A16 removes every feldspathic soil, and holding out A17
-  every high-Ti soil.
+Figure 4 summarises the evaluation design. Under leave-one-soil-out (LOSO, 19 folds), all four fractions of the held-out soil are excluded from fine-tuning, mixup and normalisation statistics. Leave-one-mission-out (LOMO, 6 folds: A11, A12, A14, A15, A16, A17) is the out-of-distribution test: holding out A16 removes every feldspathic soil, and holding out A17 every high-Ti soil. The primary metric is the per-soil mean absolute error (MAE): each soil's labelled fractions are averaged and then the 19 soils are averaged, so the number of independent units is the number of soils, not of spectra. R² and RMSE are reported per spectrum. Methods are compared with paired Wilcoxon signed-rank tests over soils [@wilcoxon1945] with Holm correction [@holm1979] over the 13 targets or over the comparators, and bootstrap confidence intervals are computed over soils.
 
-**Metrics**
-- The primary metric is the per-soil mean absolute error (MAE): each soil's labelled fractions are
-  averaged, then the 19 soils are averaged. The number of independent units is therefore the
-  number of soils, not the number of spectra.
-- R² and RMSE are reported per spectrum.
-- Methods are compared with paired Wilcoxon signed-rank tests over soils [@wilcoxon1945], with
-  Holm correction [@holm1979] over the 13 targets or over the comparators.
-- Bootstrap confidence intervals are computed over soils.
+![Figure 4](../figures/fig04_evaluation.png)
+
+**Figure 4.** Evaluation design. Laboratory models are evaluated by leave-one-soil-out and leave-one-mission-out cross-validation, with the A2/A4 configuration chosen by an inner grouped five-fold split of each outer training set. Orbital FeO is evaluated at the 49 returned-sample sites by ten-fold cross-validation over sites (P1, the protocol of [@fernandez2026]) and by leave-one-landing-site-out (P2).
 
 ### 3.2. Simulator Validation
 
-Every self-test of the simulator passes.
-
-| Test | Result |
-|---|---|
-| Round trip (each end-member's k(λ) reproduces its measured reflectance) | to 7.8 × 10⁻¹¹ |
-| Truncated prior: 99th-percentile synthetic TiO₂ | 30.5 → 14.0 wt% (LSCC maximum 10.7) |
-| Truncated prior: 99th-percentile synthetic FeO | 31.8 → 24.4 wt% |
-| Label model (modal composition × phase chemistry vs measured bulk oxides) | r = 0.93–0.98, but mare TiO₂ biased by +2.9 wt% (affects only the scale of the pretraining labels) |
-| Coverage: median nearest-synthetic-neighbour distance of the 75 LSCC spectra | 0.102, vs 0.144 between synthetic spectra; the real data lie inside the synthetic distribution |
-| Separability: AUC of a classifier separating real from synthetic spectra | 0.97 (0.99 against noise-free synthetics); real soils are redder than their nearest synthetic neighbours |
-| Measured <45 µm spectra reproduced by mixing their sieve fractions | to 0.6% RMS |
-
-The last two rows matter for what follows. The real spectra sit inside the synthetic
-distribution, yet remain separable from it: this is the sim-to-real gap that fine-tuning must
-close.
+Every self-test of the simulator passes. Each end-member's k(λ) reproduces its measured reflectance to 7.8 × 10⁻¹¹. Truncating the composition prior lowers the 99th-percentile synthetic TiO₂ from 30.5 to 14.0 wt% (LSCC maximum 10.7) and FeO from 31.8 to 24.4 wt%. Modal composition multiplied by class-average phase chemistry reproduces the LSCC bulk oxides with r = 0.93–0.98, but mare TiO₂ is biased by +2.9 wt%, which affects only the scale of the pretraining labels. The measured <45 µm spectra are reproduced by mixing their sieve fractions to 0.6% RMS. The median nearest-synthetic-neighbour distance of the 75 LSCC spectra is 0.102, against 0.144 between synthetic spectra, so the real data lie inside the synthetic distribution; yet a classifier separates real from synthetic spectra with an AUC of 0.97 (0.99 against noise-free synthetics), real soils being redder than their nearest synthetic neighbours. This sim-to-real gap is what fine-tuning must close.
 
 ### 3.3. Accuracy on the LSCC Soils
 
-Table 2 gives per-soil MAEs.
+Table 2 gives per-soil MAEs. Under LOSO, LUMEN (A4) has a skill over the zero-information reference of 0.50 for composition and 0.72 for FeO. It has a lower error than each classical baseline on 12 of 13 targets, the exception always being olivine, and after Holm correction it is significantly better than PLS on 9 targets and than the mean of other soils on 10. Against the strongest baseline, a random forest on the same inputs, A4 is lower on 12 of 13 targets, but only maturity is significant after correction (for FeO, raw p = 0.005, Holm p = 0.064). Under LOMO every method degrades: A4's composition MAE rises from 2.66 to 4.70 vol% and its FeO MAE from 1.26 to 2.59 wt%. A4 remains lower than RF on 10 of 13 targets, significantly so for LCP, HCP and TiO₂, while for the "other" class no method beats the zero-information reference.
 
-**Leave-one-soil-out (LOSO)**
-- **Skill.** Against the zero-information reference, LUMEN (A4) has a skill of 0.50 for
-  composition and 0.72 for FeO.
-- **Against classical baselines.** A4 has the lower error than each classical baseline on 12 of
-  13 targets; the exception is always olivine. After Holm correction it is significantly better
-  than PLS on 9 targets and than the mean of other soils on 10.
-- **Against the strongest baseline**, a random forest on the same inputs, A4 is lower on 12 of 13
-  targets. Only maturity is significant after correction (for FeO, raw p = 0.005, Holm p = 0.064).
-
-**Leave-one-mission-out (LOMO)**
-- Every method degrades. A4's composition MAE rises from 2.66 to 4.70 vol% and its FeO MAE from
-  1.26 to 2.59 wt%.
-- A4 remains lower than RF on 10 of 13 targets, and significantly so for LCP, HCP and TiO₂.
-- For the "other" class, no method beats the zero-information reference.
-
-**Table 2.** Per-soil MAE, LOSO / LOMO (composition in vol%, oxides in wt%, maturity in log₁₀
-Is/FeO). Bold: lowest per row and protocol.
+**Table 2.** Per-soil MAE, LOSO / LOMO (composition in vol%, oxides in wt%, maturity in log₁₀ Is/FeO). Bold: lowest per row and protocol.
 
 | Target | Mean of others | PLS | Ridge | RF | LUMEN (A4) |
 |---|---|---|---|---|---|
@@ -142,62 +61,19 @@ Is/FeO). Bold: lowest per row and protocol.
 | log₁₀ Is/FeO | 0.31 / 0.30 | 0.20 / 0.24 | 0.22 / 0.21 | 0.20 / 0.23 | **0.11 / 0.15** |
 | Composition (mean) | 5.32 / 6.25 | 4.53 / 6.13 | 4.31 / 6.02 | 3.42 / 5.19 | **2.66 / 4.70** |
 
-**Configuration chosen inside the cross-validation (E1).** The pre-registered primary model, A4,
-is not the best configuration (Section 3.7). We therefore re-ran the choice between A4 and the
-simpler A2 inside each outer training fold, by inner five-fold grouped cross-validation, so that
-the outer-fold estimate stays confirmatory.
-- **Selection.** The inner score favoured A2 in every outer fold: 19 of 19 under LOSO and 6 of 6
-  under LOMO. "LUMEN-selected" is therefore A2 throughout.
-- **Outer errors (LOSO).** Composition 2.35 vol%, FeO 1.23 wt%, TiO₂ 0.55 wt% and maturity 0.12
-  (log₁₀ Is/FeO).
-- **Primary test, LUMEN-selected vs RF (LOSO).** LUMEN-selected is lower on 12 of 13 targets; the
-  exception is again olivine (0.86 vs 0.84 vol%). After Holm correction over the 13 targets, it is
-  significantly better on 8: PLG, LCP, HCP, ILM, FeO, TiO₂, Al₂O₃ and maturity. For FeO, 1.23 vs
-  2.13 wt%, raw p = 0.001, Holm p = 0.011.
-- **Other baselines (LOSO).** Significant on 11 of 13 targets against PLS and against ridge, and on
-  10 against the mean of other soils.
-- **LOMO (secondary).** Composition 4.77 vol%, FeO 2.63 wt%. LUMEN-selected is lower than RF on
-  10 of 13 targets (not for OLV, OTH and MgO), and significantly so on 6: LCP, HCP, FeO, TiO₂,
-  Al₂O₃ and maturity.
-- **A4 vs A2, re-run.** No difference is significant under either protocol; A4 is lower on 1 of
-  13 targets under LOSO and 5 of 13 under LOMO.
+Because the pre-registered primary model A4 is not the best configuration (Section 3.7), we repeated the choice between A4 and the simpler A2 inside each outer training fold by inner five-fold grouped cross-validation, keeping the outer estimate confirmatory. A2 was selected in every fold (19 of 19 under LOSO, 6 of 6 under LOMO). The selected model reaches 1.23 wt% FeO, 0.55 wt% TiO₂ and 2.35 vol% composition under LOSO and, against RF, is lower on 12 of 13 targets (not olivine, 0.86 vs 0.84 vol%) and significantly better after Holm correction on 8: PLG, LCP, HCP, ILM, FeO, TiO₂, Al₂O₃ and maturity (FeO 1.23 vs 2.13 wt%, Holm p = 0.011). It is significant on 11 of 13 targets against PLS and ridge and on 10 against the mean of other soils. Under LOMO it is significantly better than RF on 6 targets (LCP, HCP, FeO, TiO₂, Al₂O₃ and maturity; FeO 2.63 wt%). No A4–A2 difference is significant under either protocol. These runs use pretrained members regenerated on a different machine, which reproduce the stored per-soil MAEs to within 0.06 for every target, configuration and protocol. Figure 5 shows the LOSO predictions for four headline targets.
 
-These runs use pretrained members regenerated on a different machine. Re-running A2 and A4 with
-them reproduces the stored per-soil MAEs to within 0.06 (in each target's unit) for every target,
-configuration and protocol.
+![Figure 5](../figures/fig05_pred_true.png)
 
-![Figure 2](../figures/step06_pred_vs_true.png)
-
-**Figure 2.** LUMEN (A4) predictions against measured values for the 19 LSCC soils under LOSO.
+**Figure 5.** LUMEN (A4) predictions against measured values for the 19 LSCC soils under leave-one-soil-out, for FeO, TiO₂, plagioclase and maturity. Each point is one sieve fraction; the line is 1:1.
 
 ### 3.4. Comparison with Published Methods
 
 #### 3.4.1. Wavelet–Autoencoder FeO Regression [@fernandez2026]
 
-This is the fairest comparison: the pipeline is trained on exactly the same spectra and folds as
-LUMEN (Table 3).
+This is the fairest comparison, because the pipeline is trained on exactly the same spectra and folds (Table 3, Figure 6). Under LOSO, LUMEN's FeO error (1.26 wt%, R² = 0.85) is 42% lower than that of FD as published (2.17 wt%, R² = 0.62) and lower than all twelve variants, the best being wavelet → RBF SVR without the autoencoder (1.91 wt%). Each paired test has p < 0.05, the test fixed in the protocol; with an additional Holm correction over the twelve variants, 3 of 12 remain significant (vs FD as published, Holm p = 0.069). Under LOMO, LUMEN has 2.59 wt% against 3.48 for FD as published (p = 0.018) and 2.91 for the best variant (p = 0.49). Under LOSO the M³-trained autoencoder is worse than the raw wavelet coefficients for 4 of 4 regressors, as in our reproduction of the original study (RF 1.55 vs 1.95 wt% with the autoencoder), whereas under LOMO it helps the two linear regressors.
 
-**LOSO**
-- LUMEN's FeO MAE is 1.26 wt% (R² = 0.85).
-- FD as published has 2.17 wt% (R² = 0.62), so LUMEN's error is 42% lower.
-- The best FD variant on these data, wavelet → RBF SVR without the autoencoder, has 1.91 wt%.
-- LUMEN is lower than all twelve variants. Each paired test has p < 0.05, which is the test fixed
-  in the protocol. With the additional, more conservative Holm correction over the twelve
-  variants, 3 of 12 remain significant (vs FD as published: Holm p = 0.069).
-
-**LOMO**
-- LUMEN has 2.59 wt%, against 3.48 for FD as published (p = 0.018) and 2.91 for the best variant
-  (p = 0.49).
-
-**The effect of the autoencoder depends on the protocol**
-- Under LOSO, the M³-trained autoencoder is worse than the raw wavelet coefficients for 4 of 4
-  regressors. This agrees with our reproduction of the original study, where RF on the raw
-  coefficients reached 1.55 wt% against 1.95 wt% with the autoencoder.
-- Under LOMO, the autoencoder helps the two linear regressors.
-
-**Table 3.** FeO (wt%) on identical spectra and folds. "FD-AE-M3" is the published autoencoder,
-trained on M³ pixels; "FD-AE-synth" is trained on our synthetic spectra; "FD-wavelet" has no
-autoencoder.
+**Table 3.** FeO (wt%) on identical spectra and folds. "FD-AE-M3" is the published autoencoder, trained on M³ pixels; "FD-AE-synth" is trained on our synthetic spectra; "FD-wavelet" has no autoencoder. The remaining FD variants are in the repository tables.
 
 | Method | MAE LOSO | R² LOSO | MAE LOMO | R² LOMO |
 |---|---|---|---|---|
@@ -214,32 +90,13 @@ autoencoder.
 | RF (raw reflectance) | 2.19 | 0.58 | 3.45 | 0.27 |
 | Mean of other soils | 4.47 | −0.06 | 5.56 | −0.70 |
 
-*(The remaining FD variants are in the repository tables.)*
+![Figure 6](../figures/fig06_fd_feo.png)
 
-![Figure 3](../figures/step06_fernandez_feo.png)
-
-**Figure 3.** FeO error of LUMEN and of the Fernández-Díaz et al. variants on identical folds.
+**Figure 6.** Per-soil FeO error of LUMEN, the Fernández-Díaz et al. variants and the classical baselines on identical folds, under leave-one-soil-out (left) and leave-one-mission-out (right).
 
 #### 3.4.2. Shkuratov-Model Inversion [@korokhin2024]
 
-Each method is scored on five-mineral proportions (CPX, OPX, OLV, PLG, ILM, renormalised to 100%)
-over the three sieved fractions, as the reproduction of Korokhin et al. scores itself (Table 4).
-
-**LOSO**
-- LUMEN reduces the error for every mineral by 54–74%. Every difference is Holm-significant.
-- For example: olivine 1.91 vs 7.44 points, and plagioclase 5.55 vs 12.08.
-
-**LOMO**
-- LUMEN is still lower on four of five minerals, but significantly so only for olivine. It is
-  slightly worse for plagioclase (12.64 vs 12.08).
-
-**Caveat**
-- The inversion never sees an LSCC soil, whereas LUMEN is fine-tuned on the others.
-- The like-for-like comparison is therefore LUMEN's zero-shot model (A0, physics-trained only). It
-  is lower on three of five minerals, but significantly so only for olivine.
-
-**Maturity.** LUMEN's Is/FeO ranks the soils better than the inversion's nFe parameter. Spearman ρ
-is 0.72, 0.81 and 0.96 for the <10, 10–20 and 20–45 µm fractions, against 0.55, 0.37 and 0.44.
+Each method is scored on five-mineral proportions (CPX, OPX, OLV, PLG, ILM, renormalised to 100%) over the three sieved fractions, as the reproduction of Korokhin et al. scores itself (Table 4). Under LOSO, LUMEN reduces the error for every mineral by 54–74%, every difference being Holm-significant; for example, olivine is 1.91 against 7.44 points and plagioclase 5.55 against 12.08. Under LOMO, LUMEN is still lower on four of five minerals, significantly only for olivine, and slightly worse for plagioclase (12.64 vs 12.08). The inversion never sees an LSCC soil, whereas LUMEN is fine-tuned on the others, so the like-for-like comparison is LUMEN's zero-shot model (A0, physics-trained only): it is lower on three of five minerals, significantly only for olivine. LUMEN's Is/FeO also ranks the soils better than the inversion's nFe parameter, with Spearman ρ of 0.72, 0.81 and 0.96 for the <10, 10–20 and 20–45 µm fractions against 0.55, 0.37 and 0.44.
 
 **Table 4.** MAE of five-mineral proportions (percentage points), 19 soils.
 
@@ -253,36 +110,11 @@ is 0.72, 0.81 and 0.96 for the <10, 10–20 and 20–45 µm fractions, against 0
 
 #### 3.4.3. Hapke–Bayesian Inversion [@jung2026]
 
-The comparison uses the four test soils of Jung et al. (12001, 12030, 15071 and 71061, 20–45 µm),
-and their crystalline proportions.
-- **LUMEN.** Its worst-case LOSO errors are 1.00 points (olivine), 1.24 (ilmenite) and 7.95
-  (plagioclase). All three published accuracy bounds (7, 10 and 30 points) are met.
-- **The converged inversion** reaches 17.56 points for ilmenite.
-- **Caveat.** With four soils this is weak evidence. The zero-shot model also meets every bound,
-  while the mean of other soils misses the ilmenite and plagioclase bounds.
-- **Maturity.** Across the four soils, LUMEN's Is/FeO correlates with the measured value at
-  r = 0.99, against r ≈ 0.00 for the inversion's maturity index.
+On the four test soils of Jung et al. (12001, 12030, 15071 and 71061, 20–45 µm), scored on crystalline proportions, LUMEN's worst-case LOSO errors are 1.00 points for olivine, 1.24 for ilmenite and 7.95 for plagioclase, meeting all three published accuracy bounds (7, 10 and 30 points), whereas the converged inversion reaches 17.56 points for ilmenite. With four soils this is weak evidence: the zero-shot model also meets every bound, while the mean of other soils misses the ilmenite and plagioclase bounds. Across the four soils, LUMEN's Is/FeO correlates with the measured value at r = 0.99, against r ≈ 0.00 for the inversion's maturity index.
 
 ### 3.5. Uncertainty and Identifiability
 
-**Raw ensemble intervals are over-confident** (Figure 4). For nominal 68/90/95% intervals, mean
-empirical coverage is:
-- 0.59/0.82/0.89 under LOSO;
-- 0.33/0.55/0.64 under LOMO.
-
-**Normalised conformal calibration fixes this:**
-- 0.68/0.90/0.95 under LOSO;
-- 0.64/0.86/0.92 under LOMO.
-
-Exact CV+ uses models that saw neither the calibration soil nor the test soil. It gives
-0.69/0.90/0.96 (LOSO) and 0.70/0.88/0.93 (LOMO), so the approximation is slightly conservative out
-of distribution.
-
-**The identifiability gate passes 11 of 13 targets** (Table 5). It withholds:
-- **olivine**, whose LOSO skill is −0.06 (CI −0.40 to 0.22);
-- the **"other"** class (0.22, CI −0.03 to 0.42).
-
-Under LOMO, the agglutinate fraction also loses significance (0.04, CI −0.34 to 0.25).
+Raw ensemble intervals are over-confident (Figure 7): for nominal 68/90/95% intervals, mean empirical coverage is 0.59/0.82/0.89 under LOSO and 0.33/0.55/0.64 under LOMO. Normalised conformal calibration restores 0.68/0.90/0.95 under LOSO and 0.64/0.86/0.92 under LOMO. Exact CV+, which uses models that saw neither the calibration soil nor the test soil, gives 0.69/0.90/0.96 (LOSO) and 0.70/0.88/0.93 (LOMO), so the approximation is slightly conservative out of distribution. The identifiability gate passes 11 of 13 targets (Table 5). It withholds olivine, whose LOSO skill is −0.06 (CI −0.40 to 0.22), and the "other" class (0.22, CI −0.03 to 0.42); under LOMO the agglutinate fraction also loses significance (0.04, CI −0.34 to 0.25).
 
 **Table 5.** Skill over the zero-information reference with 95% bootstrap CI.
 
@@ -302,29 +134,15 @@ Under LOMO, the agglutinate fraction also loses significance (0.04, CI −0.34 t
 | MgO | 0.61 [0.37, 0.77] | 0.31 [0.05, 0.47] | yes |
 | log₁₀ Is/FeO | 0.63 [0.56, 0.71] | 0.50 [0.32, 0.61] | yes |
 
-![Figure 4](../figures/step05_coverage.png)
+![Figure 7](../figures/step05_coverage.png)
 
-**Figure 4.** Empirical against nominal interval coverage, for the raw ensemble and after
-conformal calibration, under LOSO and LOMO.
+**Figure 7.** Empirical against nominal interval coverage for the raw ensemble and after conformal calibration, under leave-one-soil-out and leave-one-mission-out.
 
 ### 3.6. FeO from M³ Spectra at Returned-Sample Sites
 
-This experiment tests the base method on its own task, orbital FeO, against the ground truth it
-was calibrated on [@fernandez2026; @qiu2025].
+This experiment tests the base method on its own task, orbital FeO, against the ground truth it was calibrated on [@fernandez2026; @qiu2025], under two protocols (Figure 4): P1, the base study's own 10-fold cross-validation over sites, comparable with its published MAE of 2.29 wt%; and P2, leave-one-landing-site-out, in which all stations of a mission are held out together because they share terrain and are spatially autocorrelated. All 49 sites have M³ coverage and are scored (Table 6, Figure 8).
 
-**Protocols**
-- **P1.** The base study's own 10-fold cross-validation over sites, so the numbers are comparable
-  with the published MAE of 2.29 wt%.
-- **P2.** Leave-one-landing-site-out, where all stations of a mission are held out together. Those
-  stations share terrain and are spatially autocorrelated, so this is the spatially honest test.
-
-All 49 sites have M³ coverage and are scored. Table 6 gives the errors and Figure 5 shows the
-P2 predictions.
-
-**Table 6.** FeO (wt%) at the 49 returned-sample sites, P1 (10-fold, seed 42) / P2
-(leave-one-landing-site-out), 3 × 3-pixel site spectra. Bias is predicted minus laboratory FeO.
-Every method except the zero-shot model and the Lucey et al. constants is fitted inside each
-training fold.
+**Table 6.** FeO (wt%) at the 49 returned-sample sites, P1 (10-fold, seed 42) / P2 (leave-one-landing-site-out), 3 × 3-pixel site spectra. Bias is predicted minus laboratory FeO. Every method except the zero-shot model and the Lucey et al. constants is fitted inside each training fold.
 
 | Method | P1 MAE | P1 RMSE | P1 R² | P1 bias | P2 MAE | P2 RMSE | P2 R² | P2 bias |
 |---|---|---|---|---|---|---|---|---|
@@ -346,67 +164,19 @@ training fold.
 | Two Clementine bands (refitted) | 1.34 | 1.74 | 0.88 | 0.03 | 1.82 | 2.32 | 0.78 | −0.31 |
 | Training-fold mean | 4.34 | 5.07 | −0.04 | 0.00 | 4.78 | 5.69 | −0.32 | 0.03 |
 
-ᵃ In-sample. The published constants [@lucey2000] were derived from returned-sample sites, and
-nothing is fitted here, so this row is not a held-out estimate and is not comparable with the
-others.
+ᵃ In-sample. The published constants [@lucey2000] were derived from returned-sample sites, and nothing is fitted here, so this row is not a held-out estimate and is not comparable with the others.
 
-**Primary test (P2).** LUMEN-M3-FT has a lower MAE than FD as published (3.27 vs 3.58 wt%), but
-it is the more accurate of the two at only 24 of the 49 sites. The difference is not significant
-(Wilcoxon p = 0.74; Holm p = 1.00 over the 13 comparators).
+In the primary test (P2), LUMEN-M3-FT has a lower MAE than FD as published (3.27 vs 3.58 wt%) but is the more accurate of the two at only 24 of the 49 sites, and the difference is not significant (Wilcoxon p = 0.74; Holm p = 1.00 over 13 comparators). It is significantly better only than the training-fold mean (Holm p < 0.001) and significantly worse than the two M³ bands (Holm p = 0.009), FD-AE-M3 / SVR-lin (Holm p = 0.029), the two Clementine bands (Holm p = 0.001) and the in-sample Lucey et al. constants (Holm p < 0.001). Under P1, FD as published (1.90 wt%) is close to our reproduction of the original study (1.95 wt%) and below its published 2.29 wt% [@fernandez2026]; LUMEN-M3-FT (2.20 wt%) differs significantly from no FD variant and not from the two M³ bands, is significantly less accurate than the two Clementine bands (Holm p = 0.020) and significantly more accurate than the refitted Lucey θ on M³ (Holm p = 0.020).
 
-**LUMEN-M3-FT against the other comparators (P2, Holm).**
-- It is significantly better only than the training-fold mean (Holm p < 0.001).
-- It is significantly worse than four methods:
-  - two M³ bands (2.11 wt%, Holm p = 0.009);
-  - FD-AE-M3 / SVR-lin (2.27 wt%, Holm p = 0.029);
-  - two Clementine bands (1.82 wt%, Holm p = 0.001);
-  - the in-sample Lucey et al. constants (1.25 wt%, Holm p < 0.001).
-- No other difference is significant.
+The result is robust. Over six P1 seeds LUMEN-M3-FT averages 2.13 wt% (2.08–2.20) and FD as published 1.91 wt% (1.81–1.97), FD being lower under every seed, and with each strip's centre pixel instead of the 3 × 3 block LUMEN-M3-FT has 3.26 wt% against 3.35 wt% (Holm p = 1.00) and remains significantly worse than the two M³ bands (2.02 wt%, Holm p = 0.006). Under P2, conformal intervals for LUMEN-M3-FT cover 0.63, 0.92 and 0.98 of the sites at nominal 68, 90 and 95% (raw ensemble 0.51, 0.76 and 0.86), with mean half-widths of 4.6 wt% at 68% and 10.6 wt% at 95%.
 
-**Under P1**, the base study's own protocol:
-- FD as published reaches 1.90 wt%. That is close to our reproduction of the original study
-  (1.95 wt%) and below the published 2.29 wt% [@fernandez2026].
-- LUMEN-M3-FT has a higher error, 2.20 wt%. The difference is not significant (Holm p = 1.00).
-- No FD variant differs significantly from LUMEN-M3-FT. The two-M³-band model does not either
-  (1.99 wt%, Holm p = 1.00).
-- Two Clementine bands are significantly more accurate than LUMEN-M3-FT (1.34 wt%, Holm
-  p = 0.020). LUMEN-M3-FT is significantly more accurate than the refitted Lucey θ on M³ (3.26 wt%,
-  Holm p = 0.020).
+![Figure 8](../figures/fig05_m3_sites.png)
 
-**Sensitivity.**
-- *P1 seed.* Over six P1 seeds, LUMEN-M3-FT averages 2.13 wt% (2.08–2.20) and FD as published
-  1.91 wt% (1.81–1.97), so FD as published has the lower error under every seed.
-- *Single pixel.* Using each strip's centre pixel instead of the 3 × 3 block leaves the P2 picture
-  unchanged. LUMEN-M3-FT has 3.26 wt% against 3.35 wt% for FD as published (Holm p = 1.00), and
-  it remains significantly worse than the two M³ bands (2.02 wt%, Holm p = 0.006).
-
-**Intervals (E6).** Under P2, normalised conformal intervals for LUMEN-M3-FT cover 0.63, 0.92 and
-0.98 of the 49 sites at nominal 68, 90 and 95%. The raw ensemble intervals cover 0.51, 0.76 and
-0.86. The calibrated intervals are wide: the mean half-width is 4.6 wt% at 68% and 10.6 wt% at
-95%.
-
-![Figure 5](../figures/fig05_m3_sites.png)
-
-**Figure 5.** Predicted against laboratory FeO at the 49 returned-sample sites under P2
-(leave-one-landing-site-out), for LUMEN-M3-FT, FD as published and the two-M³-band linear model.
-Marker shape gives the landing site; the line is 1:1.
+**Figure 8.** Predicted against laboratory FeO at the 49 returned-sample sites under P2 (leave-one-landing-site-out), for LUMEN-M3-FT, FD as published and the two-M³-band linear model. Marker shape gives the landing site; the line is 1:1.
 
 ### 3.7. Ablations and Parameter Analysis
 
-**Pretraining helps, but the pre-registered primary model is not the best configuration**
-(Table 7).
-- **Pretraining.** A2 (pretrained, fine-tuned on real spectra) has a lower error than A1 (the same
-  network trained from scratch on real spectra) on all 13 targets under LOSO. The 13 targets are
-  correlated, however, and no single target's difference is significant after Holm correction.
-  Under LOMO, two targets are (HCP and maturity).
-- **SSA-mixup and synthetic replay.** These were meant to enlarge the 18-soil training set. Added
-  to the pretrained network (A4 vs A2), they lower the error on only 1 of 13 targets. No A4–A2
-  difference is significant.
-- **Mixup without pretraining.** Mixup does help a network trained from scratch under LOSO (lower
-  on 12 of 13 targets), but not under LOMO (2 of 13).
-- **Zero-shot model (A0).** The physics-only analogue of a simulator-trained inversion has a
-  composition MAE of 9.1 vol%, far above every fine-tuned variant. This is the sim-to-real gap made
-  concrete.
+Pretraining helps, but the pre-registered primary model is not the best configuration (Table 7). The pretrained A2 has a lower error than the same network trained from scratch (A1) on all 13 targets under LOSO, although, the targets being correlated, no single difference is significant after Holm correction; under LOMO two are (HCP and maturity). SSA-mixup and synthetic replay lower the error of the pretrained network (A4 vs A2) on only 1 of 13 targets, with no significant difference, and help a network trained from scratch under LOSO (12 of 13 targets) but not under LOMO (2 of 13). The zero-shot A0, the physics-only analogue of a simulator-trained inversion, has a composition MAE of 9.1 vol%, far above every fine-tuned variant.
 
 **Table 7.** Ablations: per-soil MAE, LOSO / LOMO. A4 is the pre-registered primary model.
 
@@ -427,37 +197,11 @@ Marker shape gives the landing site; the line is 1:1.
 | log₁₀ Is/FeO | 0.30 / 0.30 | 0.15 / 0.19 | 0.14 / 0.18 | 0.12 / 0.14 | 0.13 / 0.15 | 0.11 / 0.15 |
 | Composition (mean) | 9.14 / 9.14 | 2.69 / 4.88 | 2.51 / 4.95 | 2.36 / 4.77 | 2.43 / 4.87 | 2.66 / 4.70 |
 
-**Is the network itself better than classical regression?** A1 is the same network trained from
-scratch, without the physics. Against RF it is already significantly better (Holm) on 5 of 13
-targets under LOSO (PLG, ILM, FeO, TiO₂ and Al₂O₃), and on 3 of 13 under LOMO. The simpler
-pretrained variant A2 is significantly better than RF on 8 of 13 targets under LOSO and 6 of 13
-under LOMO. A2 was identified after the fact, which is why its choice is moved inside the
-cross-validation in Section 3.3 (E1).
+Without the physics, the network already improves on classical regression: A1 is significantly better than RF on 5 of 13 targets under LOSO (PLG, ILM, FeO, TiO₂ and Al₂O₃) and 3 under LOMO, and the pretrained A2 on 8 and 6 targets, which is why its choice is moved inside the cross-validation (Section 3.3).
 
-**Input representation and architecture (E4).** Four alternatives were each pretrained and
-fine-tuned with the A4 recipe:
-- the log-reflectance channel only;
-- the continuum-removed channel only;
-- an MLP with the same trunk and heads;
-- a 1-D ResNet (three residual blocks, 64 channels).
+Four design alternatives were pretrained and fine-tuned with the A4 recipe and two members each, against members 0–1 of the main network (Table 8; FeO 1.32 wt% under LOSO and 2.62 wt% under LOMO). Log reflectance alone performs on par (no significant difference), so the continuum-removed channel adds nothing measurable, whereas the continuum-removed channel alone is significantly worse on 6 targets under LOSO and 8 under LOMO (FeO 2.09 and 3.86 wt%). The MLP is significantly worse for LCP under LOSO but significantly better on 4 targets under LOMO (PLG, FeO, Al₂O₃ and CaO; FeO 2.30 wt%), and the 1-D ResNet shows no significant difference.
 
-Each uses two members and is compared with members 0–1 of the main network, so ensemble size is
-equal (Table 8). With two members, the main network's FeO MAE is 1.32 wt% (LOSO) and 2.62 wt%
-(LOMO).
-- **Log reflectance only** is lower on 10 of 13 targets under LOSO and 5 of 13 under LOMO. No
-  difference is significant, so the continuum-removed channel adds nothing measurable.
-- **Continuum-removed only** is clearly worse. It is significantly worse on 6 targets under LOSO
-  and 8 under LOMO; for FeO, 2.09 vs 1.32 wt% (LOSO) and 3.86 vs 2.62 wt% (LOMO).
-- **MLP.** Under LOSO it is lower on no target, and significantly worse for LCP. Under LOMO,
-  however, it is lower on 9 of 13 targets and **significantly better** on 4: PLG, FeO, Al₂O₃ and
-  CaO. For FeO, 2.30 vs 2.62 wt%.
-- **1-D ResNet** is lower on 7 of 13 targets under LOSO and 8 of 13 under LOMO. No difference is
-  significant.
-
-**Table 8.** Design alternatives against the main network (2 members each, 13 targets, Holm
-correction over targets). "Lower MAE": number of targets on which the variant's per-soil MAE is
-below the main network's. "Better / worse": number of targets with a Holm-significant difference
-in the variant's favour or against it.
+**Table 8.** Design alternatives against the main network (2 members each, 13 targets, Holm correction over targets). "Lower MAE": number of targets on which the variant's per-soil MAE is below the main network's. "Better / worse": number of targets with a Holm-significant difference in the variant's favour or against it.
 
 | Variant | Parameters | LOSO: lower MAE | LOSO: better / worse | LOMO: lower MAE | LOMO: better / worse |
 |---|---|---|---|---|---|
@@ -469,33 +213,8 @@ in the variant's favour or against it.
 
 ### 3.8. Application to M³ Scenes
 
-**Calibration**
-- On the Apollo 16 landing-site pixel, the published laboratory-scale calibration (Equation (10))
-  reproduces the LSCC 62231 spectrum to 9.1% RMS.
-- A line re-derived from that pixel reproduces it to 1.4%.
-- LUMEN estimates FeO there at 5.0 wt%, against 4.9 wt% measured for 62231 and 4.6 wt% for the
-  Apollo 16 mean. It over-estimates TiO₂ (2.1 vs 0.6 wt%).
-- Because 62231 is in the final training set, this is a sanity check, not a validation.
+On the Apollo 16 landing-site pixel the published calibration (Equation (10)) reproduces the LSCC 62231 spectrum to 9.1% RMS, and a line re-derived from that pixel to 1.4%; LUMEN estimates 5.0 wt% FeO there (62231: 4.9 wt%; Apollo 16 mean: 4.6 wt%) and over-estimates TiO₂ (2.1 vs 0.6 wt%), a sanity check only, since 62231 is in the final training set. In the Shapley scene (Figure 9) the 11 identifiable targets show the expected contrasts (FeO 10.2 wt% on mare and 6.6 wt% on highland; Al₂O₃ 20.0 and 24.3 wt%) and fresh craters stand out as immature. The published high-Ca pyroxene map of the same strip [@korokhin2024] is anti-correlated with LUMEN's (r = −0.79), placing more clinopyroxene in the highlands than in the mare, and its maturity parameter is nearly unrelated to LUMEN's Is/FeO (r = −0.28). Destriping lowers stripe amplitude by 26–47% and leaves the maps correlated at r = 0.90–0.99 with the undestriped ones. At Aristarchus, LUMEN finds much less olivine and more plagioclase in the crystalline fraction than the posterior abundances of Jung et al. [@jung2026] (52% vs 29% plagioclase in region B); since LUMEN's olivine output fails the identifiability gate, this is a domain-shift warning, not evidence against that study.
 
-**Shapley scene** (Figure 6). The maps of the 11 identifiable targets show the expected contrasts:
-- FeO is 10.2 wt% on mare and 6.6 wt% on highland; Al₂O₃ is 20.0 and 24.3 wt%.
-- Fresh craters stand out as immature.
+![Figure 9](../figures/step07_shapley_maps.png)
 
-Comparison with the published maps of the same strip [@korokhin2024]:
-- Their high-Ca pyroxene map is anti-correlated with LUMEN's (r = −0.79), and places more
-  clinopyroxene in the highlands than in the mare.
-- Their maturity parameter is nearly unrelated to LUMEN's Is/FeO across the scene (r = −0.28).
-
-Destriping the strip lowers stripe amplitude by 26–47%. It leaves the maps correlated at
-r = 0.90–0.99 with the undestriped ones.
-
-**Aristarchus.** LUMEN finds much less olivine and much more plagioclase in the crystalline
-fraction than the posterior abundances of Jung et al. [@jung2026] (plagioclase 52% vs 29% in
-region B). LUMEN's olivine output fails the identifiability gate, and the training soils contain
-little olivine. The disagreement is therefore a domain-shift warning, not evidence against that
-study.
-
-![Figure 6](../figures/step07_shapley_maps.png)
-
-**Figure 6.** LUMEN maps of the Shapley-region M³ strip for identifiable targets. Olivine and
-"other" are withheld by the identifiability gate.
+**Figure 9.** LUMEN maps of the Shapley-region M³ strip for identifiable targets, with conformal interval half-widths. Olivine and "other" are withheld by the identifiability gate.

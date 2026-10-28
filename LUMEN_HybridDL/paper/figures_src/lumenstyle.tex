@@ -1,0 +1,46 @@
+% Shared style for the LUMEN manuscript diagrams (\input by every fig_*.tex; class: article).
+% Uses only fonts and packages of a basic TeX installation (Computer Modern Sans), so compiling
+% never triggers a package download. Each figure is wrapped in the lumenfig environment, which
+% ships the picture out as a single page cropped to the drawing plus a 3 pt margin.
+\usepackage{amsmath,amssymb}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit,backgrounds,calc,shapes.geometric,decorations.pathreplacing}
+\pagestyle{empty}
+
+\newsavebox{\lumenfigbox}
+\newenvironment{lumenfig}%
+  {\begin{lrbox}{\lumenfigbox}}%
+  {\end{lrbox}%
+   \pdfpagewidth=\dimexpr\wd\lumenfigbox+6pt\relax
+   \pdfpageheight=\dimexpr\ht\lumenfigbox+\dp\lumenfigbox+6pt\relax
+   \hoffset=-1in\voffset=-1in
+   \shipout\vbox{\kern3pt\hbox{\kern3pt\usebox{\lumenfigbox}}}}
+
+% palette: physics (blue), learning (green), data (amber), reporting (violet), neutral ink
+\definecolor{ink}{HTML}{1F2933}
+\definecolor{muted}{HTML}{52606D}
+\definecolor{rule}{HTML}{CBD2D9}
+\definecolor{phyE}{HTML}{3B6EA8}\definecolor{phyF}{HTML}{E8F1FB}
+\definecolor{lrnE}{HTML}{3C8C5A}\definecolor{lrnF}{HTML}{EAF6EE}
+\definecolor{datE}{HTML}{B7791F}\definecolor{datF}{HTML}{FDF3E4}
+\definecolor{outE}{HTML}{6B4FA0}\definecolor{outF}{HTML}{F3EEFB}
+\definecolor{grey}{HTML}{9AA5B1}
+
+\tikzset{
+  >={Stealth[length=2.4mm,width=1.8mm]},
+  every node/.style={font=\footnotesize, text=ink},
+  box/.style={draw, rounded corners=2.5pt, line width=0.7pt, align=center, inner sep=4pt,
+    execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000}},
+  phy/.style={box, draw=phyE, fill=phyF},
+  lrn/.style={box, draw=lrnE, fill=lrnF},
+  dat/.style={box, draw=datE, fill=datF},
+  rep/.style={box, draw=outE, fill=outF},
+  neutral/.style={box, draw=grey, fill=white},
+  flow/.style={->, line width=0.8pt, draw=ink},
+  soft/.style={->, line width=0.7pt, draw=muted, dashed},
+  title/.style={font=\footnotesize\bfseries},
+  note/.style={font=\scriptsize, text=muted, align=center},
+  stage/.style={draw=rule, rounded corners=4pt, line width=0.6pt, dashed, inner sep=6pt},
+  stagelabel/.style={font=\scriptsize\bfseries, text=muted, anchor=south west, inner sep=1pt},
+}
