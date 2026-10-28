@@ -8,29 +8,13 @@
 
 **What are the main findings?**
 
-- LUMEN is a one-dimensional convolutional network. It is pretrained on 400,000 Hapke-simulated
-  lunar soils and fine-tuned on 19 returned soils. From a spectrum on the Moon Mineralogy Mapper
-  (M³) band set it predicts:
-  - FeO, TiO₂, Al₂O₃, CaO and MgO;
-  - a seven-part modal mineralogy;
-  - soil maturity.
-- On identical laboratory spectra and folds, it reduces FeO error by 42% relative to a published
-  wavelet–autoencoder pipeline.
-- With its configuration chosen inside the cross-validation, it is significantly more accurate
-  than a tuned random forest on 8 of 13 laboratory targets.
-- Conformal calibration gives intervals with nominal coverage. An identifiability gate withholds
-  the two targets that no method predicts better than a zero-information baseline (olivine and
-  minor glasses).
+- LUMEN, a one-dimensional network pretrained on 400,000 Hapke-simulated lunar soils and fine-tuned on 19 returned soils, predicts FeO, four other oxides, seven-part mineralogy and maturity from M³-band spectra. On identical laboratory data it cuts FeO error by 42% relative to a published wavelet–autoencoder pipeline, and it is significantly more accurate than a tuned random forest on 8 of 13 targets.
+- Conformal intervals reach nominal coverage. An identifiability gate withholds olivine and minor glasses, which no method predicts better than a zero-information baseline.
 
 **What are the implications of the main findings?**
 
-- Most of the error of physics-only inversions is removed by calibrating against returned
-  soils, not by adding model complexity.
-- Laboratory skill does not transfer to orbital spectra without orbital labels. Fine-tuning on
-  M³ spectra at returned-sample sites halves the error but does not make the deep model the best
-  orbital FeO method: under leave-one-landing-site-out it reaches 3.27 wt% (R² = 0.34). That is
-  lower than the published wavelet–autoencoder pipeline (3.58 wt%), though not significantly,
-  and significantly higher than a linear regression on two M³ bands (2.11 wt%, R² = 0.74).
+- Most of the error of physics-only inversions is removed by calibrating against returned soils, not by adding model complexity.
+- Laboratory skill does not transfer to orbit. At 49 returned-sample sites, orbitally fine-tuned LUMEN (3.27 wt% FeO) is not significantly better than the published pipeline (3.58 wt%) and is outperformed by a two-band linear regression (2.11 wt%).
 
 ## Abstract
 
@@ -441,3 +425,7 @@ learning rate 10⁻⁴, weight decay 10⁻⁴, cosine decay). Each batch holds:
 - 16 laboratory spectra from that model's own training soils, with all targets.
 
 The held-out site is predicted from its site spectrum.
+
+### 2.4. Use of Generative Artificial Intelligence
+
+Parts of the analysis code and of the manuscript text were drafted with the assistance of a generative AI system (Anthropic Claude). The AI system was not used to generate data. Every reported number was produced by the released code from the staged input data, and the evaluation protocol was fixed in version control before scoring. The authors reviewed the code, the analysis and the text, and take full responsibility for the content.
