@@ -278,6 +278,21 @@ stage is re-run unchanged in every other respect.
      in `paper/` and numbers read from `tables/`.
    - Every directional claim in the prose is asserted against the numbers before the draft
      is written.
+6. **E1 (D32) implementation readings (written before any real-fold run of step13; no
+   pre-registered choice changed).** `scripts/step13_nested_selection.py` fixes four points
+   that D32 leaves implicit:
+   - **Inner job seed.** `zlib.crc32("E1|<protocol>|<fold>|inner<j>|<config>|<k>") % 2**31`,
+     with j = 0..4 the GroupKFold split index. The `% 2**31` is the convention of every
+     other job seed in the repository (step04 `_job_seed`, step11).
+   - **Outer job seed.** Unchanged from step04 (`_job_seed(protocol, fold, config, k)`), so
+     that `stepD_regeneration_check.csv` compares like with like.
+   - **Inner MAE_t.** Each outer training soil is predicted by the 2-member ensemble of the
+     inner fold that held it out. Inner MAE_t is the mean of these per-soil errors over the
+     outer training soils, the D15 headline definition. The mean-of-others reference is
+     scored the same way, from each inner fold's own training soils.
+   - **GroupKFold input.** The outer training spectra, sorted by soil id, with soil as the
+     group. GroupKFold's assignment is deterministic; the splits are written to
+     `tables/step13_inner_folds.csv`.
 
 ## Addendum A — M³ landing-site validation (pre-registered before any site spectrum was fetched)
 
