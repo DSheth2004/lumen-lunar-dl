@@ -442,6 +442,15 @@ Each one answers a specific objection that a reviewer could raise against the ma
   themselves (about 2 min).
 - **Windows support.** The multiprocessing pools use `fork` on POSIX and `spawn` on Windows. This
   is a code-path change only; job seeds depend only on the job tuple (D19).
+- **Amendment (2026-10-28, before any Addendum D result existed).** The shared checkpoints are
+  produced by the E1 cloud session (Ubuntu, x86-64, 4 vCPU) instead of the Windows laptop. Pretraining
+  on the laptop ran at about a third of the cloud speed, so any laptop-pretrained members are
+  not used.
+  - The cloud session runs `step02_simulator.py` and then `step04_lumen.py pretrain --threads 4`.
+  - It reports whether its `step02_synthetic_product.csv` sha256 equals the committed one
+    (e416ea1a…). If it does, the checkpoints are expected to reproduce the original ones.
+  - It commits the 5 members to `LUMEN_HybridDL/checkpoints/pretrained/` on `paper-experiments`.
+  - Every other Addendum D experiment uses exactly those files.
 
 ### D32 E1 — choosing the configuration inside the cross-validation
 
