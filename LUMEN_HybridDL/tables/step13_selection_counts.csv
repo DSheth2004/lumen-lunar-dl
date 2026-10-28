@@ -1,0 +1,3 @@
+protocol,selected,n_selected,n_folds
+LOMO,A2_pretrain_real,6,6
+LOSO,A2_pretrain_real,19,19
