@@ -16,6 +16,8 @@
   - soil maturity.
 - On identical laboratory spectra and folds, it reduces FeO error by 42% relative to a published
   wavelet–autoencoder pipeline.
+- With its configuration chosen inside the cross-validation, it is significantly more accurate
+  than a tuned random forest on 8 of 13 laboratory targets.
 - Conformal calibration gives intervals with nominal coverage. An identifiability gate withholds
   the two targets that no method predicts better than a zero-information baseline (olivine and
   minor glasses).
@@ -32,32 +34,7 @@
 
 ## Abstract
 
-Retrievals of lunar surface composition from reflectance spectra fall into three groups:
-- empirical band-ratio and machine-learning regressions calibrated on a few dozen returned-sample
-  sites;
-- radiative-transfer inversions;
-- physics-guided neural networks.
-
-They are rarely compared on identical data, and their uncertainties are seldom calibrated. We
-present LUMEN (LUnar Mineralogy Estimation Network), a hybrid of physics simulation and deep
-learning:
-- a domain-randomised Hapke simulator, built from 49 lunar mineral and glass spectra and including
-  nanophase-iron space weathering, generates 400,000 synthetic soils;
-- a compact one-dimensional convolutional network is pretrained on them, then fine-tuned on
-  laboratory spectra of the 19 Lunar Soil Characterization Consortium soils;
-- a deep ensemble with conformal calibration supplies prediction intervals;
-- an identifiability gate withholds outputs without demonstrable skill.
-
-Under leave-one-soil-out evaluation, with the protocol fixed and committed before scoring, LUMEN
-predicts FeO to 1.26 wt% and TiO₂ to 0.70 wt%. It reduces the FeO error of a re-implemented
-wavelet–autoencoder pipeline by 42% (1.26 vs. 2.17 wt%) and the mineral-proportion errors of a
-Shkuratov-model inversion by 54–74%. Conformal intervals reach nominal coverage. Olivine is not
-identifiable from these spectra.
-
-On M³ spectra at 49 returned-sample sites, a lab-only model does not transfer (FeO MAE 6.81
-wt%). With orbital fine-tuning it reaches 3.27 wt% (R² = 0.34) under leave-one-landing-site-out:
-below the published pipeline's 3.58 wt%, but not significantly (Holm p = 1.00). Two-band linear
-regressions are significantly more accurate (M³: 2.11 wt%; Clementine: 1.82 wt%).
+Lunar soil composition is retrieved from reflectance spectra by empirical regressions, radiative-transfer inversions and physics-guided networks, which are rarely compared on identical data or given calibrated uncertainties. We present LUMEN, a one-dimensional convolutional network pretrained on 400,000 soils from a domain-randomised Hapke simulator with nanophase-iron space weathering, fine-tuned on laboratory spectra of the 19 Lunar Soil Characterization Consortium soils, with conformal prediction intervals and an identifiability gate that withholds outputs without demonstrable skill. Under leave-one-soil-out evaluation with a protocol fixed before scoring, LUMEN predicts FeO to 1.26 wt% and TiO₂ to 0.70 wt%, reduces the FeO error of a published wavelet–autoencoder pipeline by 42% and the mineral-proportion errors of a Shkuratov-model inversion by 54–74%, and, with its configuration chosen inside the cross-validation, is significantly more accurate than a tuned random forest on 8 of 13 targets. Intervals reach nominal coverage; olivine is not identifiable. On Moon Mineralogy Mapper spectra at 49 returned-sample sites, the laboratory model does not transfer (6.81 wt%); after orbital fine-tuning it reaches 3.27 wt% under leave-one-landing-site-out, not significantly better than the published pipeline (3.58 wt%) and significantly worse than a two-band linear regression (2.11 wt%).
 
 **Keywords:** lunar regolith; FeO; mineral abundance; space weathering; Moon Mineralogy Mapper;
 Hapke model; deep learning; transfer learning; conformal prediction; uncertainty quantification
