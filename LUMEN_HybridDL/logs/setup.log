@@ -1,0 +1,92 @@
+
+==============================================================================
+[step00] stage inputs into data/ and write the SHA-256 manifest
+==============================================================================
+  source folders not present -> verifying the shipped data/ against its manifest
+  data/ verified: 171 files
+
+==============================================================================
+[step01] labelled LSCC dataset on the M3 band grid
+==============================================================================
+  70181 10-20: no spectrum in Kdata -> skipped
+  spectra: 75   (soils 19)   with composition: 56   chemistry: 75   Is/FeO: 75
+  printed modal totals: 99.7 - 100.1 %
+  missions: {'A11': 1, 'A12': 2, 'A14': 4, 'A15': 2, 'A16': 6, 'A17': 4}
+           FeO        TiO2         Al2O3          CaO         MgO       IsFeO       
+           min   max   min    max    min   max    min   max   min   max   min    max
+set                                                                                 
+highland  3.35  11.6  0.34   2.07  15.00  29.4  10.10  17.1  3.83  11.0   5.8  174.8
+mare      9.59  18.5  1.57  10.70   9.33  17.1   9.09  12.3  7.20  11.4   9.0  169.0
+[step01] done in 0.6 s (manifest re-verified)
+
+==============================================================================
+[step02] physics simulator: self-tests, label model, coverage, synthetic set
+==============================================================================
+  (a) library built in 2.6 s
+                                  test        value  threshold  pass
+                   ssa_inverse_max_abs 6.619010e-10   0.000001  True
+    k_roundtrip_max_abs_all_endmembers 7.803735e-11   0.000001  True
+           k_roundtrip_n_bands_clamped 0.000000e+00   0.000000  True
+random_forward_inverse_forward_max_abs 3.718535e-10   0.000001  True
+            npFe0_darkening_R750_ratio 1.832476e-01   1.000000  True
+           npFe0_reddening_slope_ratio 2.927752e+00   1.000000  True
+  open issue 1: spectra below the slab R(k=1) (clamped by the old bracket):
+spectrum_id em_class  d_eff_um  n_bands_below_R_k1  lam_min_um  lam_max_um  R_min_measured  R_slab_at_k1  R_slab_floor_min  k_max_now
+     c1sc50      HGL      50.0                  13     0.54084     0.87021        0.023069      0.036018          0.015745   0.002015
+  open issue 2: oxide percentiles, prior v0 (hand-off) vs v1 (D2b + D3b):
+        prior  quantile  FeO  TiO2  Al2O3  CaO  MgO  ILM_of_crystalline_pct  OLV_of_crystalline_pct
+           v0       1.0 31.8  30.5   31.7 17.8 27.8                    49.1                    53.7
+           v1       1.0 24.4  14.0   31.7 17.8 26.1                    19.1                    48.4
+LSCC_measured       1.0 18.5  10.7   29.4 17.1 11.4                     NaN                     NaN
+  (b) label model: LSCC bulk oxides from modal x class-average phase chemistry
+set oxide  n  mae  bias  pearson_r  meas_mean
+all   FeO 56 1.84  0.84       0.95      10.41
+all  TiO2 56 1.74  1.73       0.98       3.15
+all Al2O3 56 1.41  1.00       0.98      18.49
+all   CaO 56 0.73  0.34       0.96      12.39
+all   MgO 56 1.49  0.06       0.93       8.28
+  (c) coverage of the real data
+                                            quantity      value
+               synthetic_to_synthetic_nn_dist_median      0.144
+                  synthetic_to_synthetic_nn_dist_p95      0.233
+                                 real_nn_dist_median      0.102
+                                    real_nn_dist_max      0.363
+                      real_nn_dist_percentile_median     16.100
+                          real_frac_beyond_synth_p95      0.040
+                  real_nn_rms_log_reflectance_median      0.047
+                          auc_real_vs_synth_logistic      0.952
+                     auc_real_vs_synth_random_forest      0.971
+     auc_real_vs_synth_logistic_noise_free_synthetic      0.976
+auc_real_vs_synth_random_forest_noise_free_synthetic      0.993
+                               n_reference_synthetic 100000.000
+  (e) <45 um spectrum vs its three sieve fractions (18 soils)
+      chemistry-solved masses: median bootstrap sd of m(<10) = 0.11
+                     rule  n_soils  fwd_rms_rel_err_median  fwd_rms_rel_err_max  inv_chi2_implied_median  fwd_n_lumen_rule_better  fwd_wilcoxon_p_vs_lumen_rule  inv_n_lumen_rule_better  inv_wilcoxon_p_vs_lumen_rule
+        ssa_cross_section     18.0                   7.704               13.195                    8.902                      NaN                           NaN                      NaN                           NaN
+                 ssa_mass     18.0                   6.071               12.889                    9.835                      9.0                         0.495                      7.0                         0.702
+         reflectance_mass     18.0                   5.171               12.820                    6.276                      9.0                         0.167                      7.0                         0.369
+reflectance_cross_section     18.0                   8.637               16.186                   13.186                     12.0                         0.008                     16.0                         0.000
+    single_fraction_10_20     18.0                   6.078               13.174                      NaN                      8.0                         0.523                      NaN                           NaN
+        chemistry_optimum      NaN                     NaN                  NaN                    3.065                      NaN                           NaN                      NaN                           NaN
+             uniform_mass      NaN                     NaN                  NaN                    5.672                      NaN                           NaN                      NaN                           NaN
+           oracle_ssa_fit      NaN                   0.643                1.014                      NaN                      NaN                           NaN                      NaN                           NaN
+   oracle_reflectance_fit      NaN                   0.564                0.995                      NaN                      NaN                           NaN                      NaN                           NaN
+  (d) 400000 synthetic spectra in 10.6 s (seed 1); composition sums 100.000-100.000 %
+   label    p01   p05    p50    p95    p99  finite_frac
+     PLG  1.354 4.805 28.177 70.052 83.284          1.0
+     LCP  0.150 0.640  6.388 29.419 46.991          1.0
+     HCP  0.007 0.100  6.505 34.140 49.521          1.0
+     OLV  0.002 0.028  1.906 18.118 32.594          1.0
+     ILM  0.000 0.000  1.022 10.236 14.635          1.0
+     AGG  0.000 0.000 32.583 68.142 75.000          1.0
+     OTH  0.002 0.061  6.234 22.465 24.480          1.0
+     FeO  2.084 3.521 12.268 21.127 24.480          1.0
+    TiO2  0.109 0.199  2.599 11.586 13.961          1.0
+   Al2O3  3.176 5.470 16.289 29.336 31.741          1.0
+     CaO  4.900 7.008 12.560 16.756 17.791          1.0
+     MgO  1.917 3.287  9.542 19.951 26.225          1.0
+logIsFeO -0.839 0.233  1.740  2.458  2.749          1.0
+    logD  0.618 0.681  1.389  2.097  2.160          1.0
+ npfe_wt  0.001 0.009  0.279  0.915  1.223          1.0
+       R  0.022 0.035  0.162  0.487  0.627          1.0
+[step02] done in 123.9 s (manifest re-verified)
