@@ -24,8 +24,11 @@
 
 - Most of the error of physics-only inversions is removed by calibrating against returned
   soils, not by adding model complexity.
-- Laboratory skill does not transfer to orbital spectra without orbital labels. A small orbital
-  fine-tuning set closes most of the gap: [[PENDING-E2: orbital headline from step14, P2]].
+- Laboratory skill does not transfer to orbital spectra without orbital labels. Fine-tuning on
+  M³ spectra at returned-sample sites halves the error but does not make the deep model the best
+  orbital FeO method: under leave-one-landing-site-out it reaches 3.27 wt% (R² = 0.34). That is
+  lower than the published wavelet–autoencoder pipeline (3.58 wt%), though not significantly,
+  and significantly higher than a linear regression on two M³ bands (2.11 wt%, R² = 0.74).
 
 ## Abstract
 
@@ -51,9 +54,10 @@ wavelet–autoencoder pipeline by 42% (1.26 vs. 2.17 wt%) and the mineral-propor
 Shkuratov-model inversion by 54–74%. Conformal intervals reach nominal coverage. Olivine is not
 identifiable from these spectra.
 
-On M³ spectra at 49 returned-sample sites, a lab-only model does not transfer. After orbital
-fine-tuning, [[PENDING-E2: P2 MAE, R², comparison with the published pipeline and band-ratio
-baselines, significance]].
+On M³ spectra at 49 returned-sample sites, a lab-only model does not transfer (FeO MAE 6.81
+wt%). With orbital fine-tuning it reaches 3.27 wt% (R² = 0.34) under leave-one-landing-site-out:
+below the published pipeline's 3.58 wt%, but not significantly (Holm p = 1.00). Two-band linear
+regressions are significantly more accurate (M³: 2.11 wt%; Clementine: 1.82 wt%).
 
 **Keywords:** lunar regolith; FeO; mineral abundance; space weathering; Moon Mineralogy Mapper;
 Hapke model; deep learning; transfer learning; conformal prediction; uncertainty quantification
@@ -161,8 +165,9 @@ methods (wavelet–autoencoder regression [@fernandez2026], Shkuratov-model inve
 on which the base method was calibrated [@fernandez2026; @qiu2025].
 - It uses both that method's own cross-validation and a spatially honest leave-one-landing-site-out
   protocol.
-- It shows that laboratory accuracy does not carry over to orbit without orbital labels, and how
-  much a small orbital fine-tuning set recovers.
+- It shows that laboratory accuracy does not carry over to orbit without orbital labels, how
+  much a small orbital fine-tuning set recovers, and that simple two-band regressions remain more
+  accurate on orbit.
 
 The remainder of this article is organised as follows:
 - Section 2 describes the data, the physical preliminaries and the proposed method.
@@ -450,7 +455,7 @@ calibration of Korokhin et al. [@korokhin2024]:
 $$ A_{lab} = 1.685\,A_{M^3} + 0.0355. \tag{10} $$
 
 For a site of Apollo mission X, the zero-shot model is the ensemble fine-tuned with all of mission
-X's soils held out.
+X's soils held out. For the Luna and Chang'e sites it is the ensemble fine-tuned on all 19 soils.
 
 **Orbital fine-tuning (LUMEN-M3-FT).** The network is further fine-tuned for 600 steps (AdamW,
 learning rate 10⁻⁴, weight decay 10⁻⁴, cosine decay). Each batch holds:

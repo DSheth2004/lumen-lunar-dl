@@ -13,8 +13,15 @@ the data is not, by itself, good enough to be inverted.
 
 **Network architecture, physics and augmentation each contribute differently.**
 - **The network itself.** The same network trained from scratch on 18 soils already beats a tuned
-  random forest on the same inputs, significantly on five targets. The convolutional architecture
-  over log and continuum-removed reflectance is therefore a real part of the gain.
+  random forest on the same inputs, significantly on five targets. Learning a network on the whole
+  spectrum is therefore a real part of the gain.
+- **But the specific design is not uniquely good (E4).**
+  - The continuum-removed channel adds nothing measurable to log reflectance.
+  - A 1-D ResNet performs about the same as the main network.
+  - A pretrained MLP has a higher error on all 13 targets in distribution (significantly only for
+    LCP), but out of distribution it is significantly better on four targets, FeO included.
+  - The convolutional design is therefore a reasonable choice, not an optimal one: a smaller,
+    less structured network may generalise better to an unseen mission.
 - **Physics pretraining.** It lowers the error on every target under leave-one-soil-out. However,
   that improvement is not significant for any single target after correction. Out of
   distribution, it is significant for high-Ca pyroxene and maturity.
@@ -30,7 +37,10 @@ the data is not, by itself, good enough to be inverted.
 
 We kept the pre-registered configuration as the primary model and report the simpler one's better
 numbers as an ablation. The nested selection of Section 3.3 turns that choice into part of the
-method. [[PENDING-E1: one-sentence interpretation]]
+method. Chosen inside each training fold, the configuration is A2 in every fold, and the selected
+model remains significantly more accurate than the random forest on 8 of 13 targets, FeO
+included. The advantage over RF therefore does not depend on picking the configuration after
+seeing the results.
 
 ### 4.2. Discussion of the Comparison with Published Methods
 
@@ -54,8 +64,50 @@ calibrating against returned soils.
 
 ### 4.3. Discussion of the M³ Results: Laboratory-to-Orbit Transfer
 
-[[PENDING-E2: discussion of P1 vs P2; whether LUMEN-M3-FT beats FD-as-published and the band
-ratios; size of the lab-to-orbit gap; what the in-sample Lucey/Clementine result means]]
+**The orbital result goes against LUMEN.** On the base method's own task, LUMEN-M3-FT is not the
+most accurate orbital FeO estimator.
+
+**Grouping by landing site changes the ranking.** Holding out whole landing sites (P2) raises the
+error of almost every fitted method relative to random folds (P1), but by very different amounts:
+- the random-forest and RBF-SVR models lose most, 55–88%; FD as published rises from 1.90 to 3.58
+  wt%;
+- LUMEN-M3-FT rises by 49% (2.20 → 3.27 wt%);
+- the two-M³-band regression and the linear SVRs lose least: 6% (1.99 → 2.11 wt%) and −1 to +2%.
+
+Under random folds, flexible models can learn the spectral signature of a landing site from its
+neighbouring stations. P2 removes that, so random-fold errors at these sites overstate how well a
+model will do at a new location. FD's published 2.29 wt% and our P1 numbers should be read in that
+light.
+
+**Against the comparators.**
+- Under P2, LUMEN-M3-FT is lower than FD as published, but not significantly. It is significantly
+  worse than the two-band regressions on M³ (2.11 wt%) and on Clementine reflectances (1.82 wt%),
+  and than FD-AE-M3 / SVR-lin (2.27 wt%).
+- Under P1, FD as published is the lower of the two for every seed tested.
+- LUMEN-M3-FT's predictions are compressed toward the mean (Figure 5). It over-estimates the
+  Apollo 16 highland sites by 4.8 wt% on average, and under-estimates the FeO-rich Chang'e-3,
+  Chang'e-5 and Luna 24 sites by 6.3–7.5 wt%.
+- With a few dozen training sites per fold, a linear model on two band parameters is the better
+  use of the orbital labels. A ridge regression on LUMEN's embedding (2.60 wt%) also does better than
+  fine-tuning the whole network (3.27 wt%), though this difference was not tested.
+
+**The laboratory-to-orbit gap is large.**
+- The zero-shot model, fine-tuned only on laboratory spectra, has an MAE of 6.81 wt% with a bias
+  of −5.29 wt%. That is worse than predicting the training-fold mean (4.78 wt% under P2).
+- A linear recalibration on the training sites removes the bias but not the error (5.11 wt%).
+- Fine-tuning on orbital spectra halves the error (3.27 wt%) but does not close the gap.
+- The laboratory skill (1.26 wt% on the LSCC soils) therefore does not carry over to M³ pixels
+  through a linear calibration plus a few dozen orbital labels.
+
+**What the in-sample Lucey/Clementine result shows.** The published Lucey et al. constants reach
+1.25 wt% (R² = 0.88) on the Clementine reflectances of the same sites. These constants were
+derived from returned-sample sites, so this is an in-sample fit, not a held-out estimate, and it
+does not show that the Lucey algorithm beats the other methods at a new site. What it does show is
+that a single spectral parameter, θ, carries most of the FeO signal at these sites. Refitted inside
+each fold, the same two-band model is also more accurate on the table's Clementine reflectances
+than on our M³ site spectra (1.82 vs 2.11 wt% under P2). Part of the remaining orbital error may
+therefore lie in the M³ site spectra themselves (calibration, photometry, site localisation), not
+only in the regressors.
 
 **Calibration.** The laboratory–orbital calibration is itself uncertain. The published linear
 transfer (Equation (10)) reproduces the Apollo 16 laboratory spectrum to 9.1% RMS, against 1.4%
@@ -72,7 +124,10 @@ and an orbital training signal is needed.
 
 **Coverage.** Deep ensembles alone are over-confident, more so out of distribution. Normalised
 conformal calibration restores nominal coverage in distribution and comes close out of
-distribution, at no extra training cost. Exact CV+ confirms the approximation.
+distribution, at no extra training cost. Exact CV+ confirms the approximation. On orbit, the same
+calibration gives LUMEN-M3-FT coverage of 0.63/0.92/0.98 at the 49 sites under P2. Those
+intervals are close to nominal, but at 95% they average ±10.6 wt%, so they are honest rather than
+useful.
 
 **What can be identified.**
 - The gate makes explicit a limitation that other methods leave implicit: from VNIR spectra of
@@ -87,6 +142,8 @@ distribution, at no extra training cost. Exact CV+ confirms the approximation.
 
 **Small ground truth.**
 - There are 19 laboratory soils (75 spectra, 56 with modal mineralogy) and 49 orbital sites.
+- The orbital sites are unevenly spread: 20 are Apollo 17 stations, and 8 of the 12 landing-site
+  groups hold a single site.
 - Every significance statement is over these units. Several numerically large differences do not
   survive correction.
 
@@ -105,8 +162,11 @@ distribution, at no extra training cost. Exact CV+ confirms the approximation.
   printed numbers, not through the authors' own runs.
 - The Fernández-Díaz pipeline was re-implemented from its description.
 
-**Configuration.** The pre-registered configuration was not the best one. E1 addresses this for
-the laboratory soils, but the same question for the orbital model awaits more ground truth.
+**Configuration.**
+- The pre-registered configuration was not the best one. Choosing it inside the cross-validation
+  (E1) resolves this for the laboratory soils.
+- The orbital fine-tuning recipe was fixed in advance and not tuned. A fair search over it, or
+  over smaller networks (Section 3.7), needs more orbital ground truth.
 
 **Scope.** The method uses M³ global-mode bands. Its transfer to other sensors such as
 Chandrayaan-2 IIRS, whose radiometry and band set differ, is not tested here.
@@ -121,14 +181,19 @@ explicit statement of which outputs are identifiable.
 - LUMEN reduces FeO error by 42% relative to a published wavelet–autoencoder pipeline;
 - it reduces mineral-proportion errors by 54–74% relative to a Shkuratov-model inversion;
 - it meets the published accuracy bounds of a Hapke–Bayesian inversion;
-- its advantage over a well-tuned conventional regressor is large in magnitude but only partly
-  significant with 19 soils.
+- with its configuration chosen inside the cross-validation, it is significantly more accurate
+  than a tuned random forest on 8 of 13 targets, FeO included.
 
 **How much each part contributes.** Most of the improvement over physics-only methods comes from
-calibrating against returned soils. The network architecture and physics pretraining add to it,
-and the proposed SSA-space augmentation does not.
+calibrating against returned soils. Learning a network on the whole spectrum and physics
+pretraining add to it. The convolutional design is not uniquely good: an MLP is better out of
+distribution on four targets. The proposed SSA-space augmentation does not help.
 
-**Orbital M³ spectra.** [[PENDING-E2: one-sentence orbital conclusion]]
+**Orbital M³ spectra.** On M³ spectra at 49 returned-sample sites, LUMEN does not transfer
+zero-shot (6.81 wt%). Fine-tuned on orbital FeO, it reaches 3.27 wt% under leave-one-landing-site-out,
+not significantly different from the published pipeline (3.58 wt%) and significantly worse than a
+linear regression on two M³ bands (2.11 wt%). For orbital FeO at these sites, the deep model
+therefore offers no advantage over simple band regressions.
 
 **Identifiability.** Olivine and minor glass abundances are not identifiable from these spectra by
 any method we tested. Maps of them should be treated with caution.

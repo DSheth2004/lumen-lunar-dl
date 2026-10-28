@@ -1,0 +1,6 @@
+network,n_params
+A4_main_cnn,355799
+E4a_logR_only,355575
+E4b_CR_only,355575
+E4c_MLP,72471
+E4d_ResNet1D,423383

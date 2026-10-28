@@ -1,0 +1,2 @@
+spectra,protocol,p1_seed,run,versus,n_sites,mae_ft,mae_other,n_ft_better,n_ties,wilcoxon_p,holm_p
+block3x3,P2,-1,P2,FD-AE-M3/RF,49,3.2725167694748665,3.5752852060421962,24,0,0.7449024811260578,1.0
