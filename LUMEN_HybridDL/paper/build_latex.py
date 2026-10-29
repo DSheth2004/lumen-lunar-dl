@@ -27,6 +27,26 @@ ZIP = HERE / "LUMEN_latex_overleaf.zip"
 FIG_DIR = HERE.parent / "figures"
 VECTOR = {"fig01_framework.png": "fig_framework.pdf", "fig02_simulator.png": "fig_simulator.pdf",
           "fig03_architecture.png": "fig_architecture.pdf", "fig04_evaluation.png": "fig_evaluation.pdf"}
+MAX_PX = 2400  # 300 dpi across the full 20 cm figure width; larger PNGs only slow pdfLaTeX down
+
+
+def write_light_png(src: Path, dst: Path) -> None:
+    """Copy a raster figure flattened onto white (no alpha channel) and capped at MAX_PX wide.
+    pdfLaTeX has to split and recompress PNG alpha on every compile, which is what pushes the
+    manuscript past Overleaf's free compile-time limit."""
+    from PIL import Image
+
+    im = Image.open(src)
+    if im.mode in ("RGBA", "LA", "P"):
+        im = im.convert("RGBA")
+        bg = Image.new("RGB", im.size, "white")
+        bg.paste(im, mask=im.split()[-1])
+        im = bg
+    else:
+        im = im.convert("RGB")
+    if im.width > MAX_PX:
+        im = im.resize((MAX_PX, round(im.height * MAX_PX / im.width)), Image.LANCZOS)
+    im.save(dst, optimize=True)
 
 SUP = dict(zip("⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺ᵃ", "0123456789-+a"))
 SUB = dict(zip("₀₁₂₃₄₅₆₇₈₉", "0123456789"))
@@ -306,7 +326,7 @@ The following abbreviations are used in this manuscript:
         if png in VECTOR:
             shutil.copy(HERE / "figures_src" / VECTOR[png], OUT_DIR / "figures" / VECTOR[png])
         else:
-            shutil.copy(FIG_DIR / png, OUT_DIR / "figures" / png)
+            write_light_png(FIG_DIR / png, OUT_DIR / "figures" / png)
     OUT_TEX.write_text(doc, encoding="utf-8", newline="\n")
     with zipfile.ZipFile(ZIP, "w", zipfile.ZIP_DEFLATED) as z:
         for p in sorted(OUT_DIR.rglob("*")):
