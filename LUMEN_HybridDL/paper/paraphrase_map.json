@@ -1,0 +1,481 @@
+{
+ "citations": [
+  "pieters2009",
+  "green2011",
+  "lucey2000",
+  "bhatt2012",
+  "bhatt2015",
+  "sun2016",
+  "xia2019",
+  "wang2021",
+  "qiu2022",
+  "yang2023",
+  "zhang2023",
+  "shi2026",
+  "ma2022",
+  "wu2024",
+  "fernandez2025",
+  "fernandez2026",
+  "hapke1993",
+  "hapke2001",
+  "lucey2011",
+  "pieters2016",
+  "lili2011",
+  "sunlucey2021",
+  "trang2019",
+  "shkuratov1999",
+  "korokhin2024",
+  "jung2026",
+  "lin2026",
+  "li2012",
+  "grumpe2018",
+  "surkov2025",
+  "qiu2025",
+  "taylor2001",
+  "taylor2010",
+  "relab2004",
+  "qiu2025jgr",
+  "seitzer2022",
+  "lakshminarayanan2017",
+  "barber2021",
+  "wilcoxon1945",
+  "holm1979"
+ ],
+ "blocks": {
+  "P001": {
+   "file": "01_front_intro_methods.md",
+   "line": "- A one-dimensional network pretrained on 400,000 Hapke-simulated lunar soils and fine-tuned on 19 returned soils predicts FeO, four other oxides, seven-part mineralogy and maturity. On identical laboratory data it cuts FeO error by 42% relative to a published wavelet–autoencoder pipeline and is significantly more accurate than a tuned random forest on 8 of 13 targets.",
+   "prefix": "- "
+  },
+  "P002": {
+   "file": "01_front_intro_methods.md",
+   "line": "- Conformal intervals reach nominal coverage, and an identifiability gate withholds olivine and minor glasses, which no tested method predicts better than a zero-information baseline.",
+   "prefix": "- "
+  },
+  "P003": {
+   "file": "01_front_intro_methods.md",
+   "line": "- Most of the error of physics-only inversions is removed by calibrating against returned soils, not by added model complexity.",
+   "prefix": "- "
+  },
+  "P004": {
+   "file": "01_front_intro_methods.md",
+   "line": "- Laboratory skill does not transfer to orbit: at 49 returned-sample sites, orbitally fine-tuned LUMEN (3.27 wt% FeO) does not significantly improve on the published pipeline (3.58 wt%) and is outperformed by a two-band linear regression (2.11 wt%).",
+   "prefix": "- "
+  },
+  "P005": {
+   "file": "01_front_intro_methods.md",
+   "line": "Lunar soil composition is retrieved from reflectance spectra by empirical regressions, radiative-transfer inversions and physics-guided networks, which are rarely compared on identical data or given calibrated uncertainties. We present LUMEN, a one-dimensional convolutional network pretrained on 400,000 soils from a domain-randomised Hapke simulator with nanophase-iron space weathering, fine-tuned on laboratory spectra of the 19 Lunar Soil Characterization Consortium soils, with conformal prediction intervals and an identifiability gate that withholds outputs without demonstrable skill. Under leave-one-soil-out evaluation with a protocol fixed before scoring, LUMEN predicts FeO to 1.26 wt% and TiO₂ to 0.70 wt%, reduces the FeO error of a published wavelet–autoencoder pipeline by 42% and the mineral-proportion errors of a Shkuratov-model inversion by 54–74%, and, with its configuration chosen inside the cross-validation, is significantly more accurate than a tuned random forest on 8 of 13 targets. Intervals reach nominal coverage; olivine is not identifiable. On Moon Mineralogy Mapper spectra at 49 returned-sample sites, the laboratory model does not transfer (6.81 wt%); after orbital fine-tuning it reaches 3.27 wt% under leave-one-landing-site-out, not significantly better than the published pipeline (3.58 wt%) and significantly worse than a two-band linear regression (2.11 wt%).",
+   "prefix": ""
+  },
+  "P006": {
+   "file": "01_front_intro_methods.md",
+   "line": "The iron and titanium content, modal mineralogy and space-weathering maturity of the lunar regolith record the Moon's crustal and volcanic history and constrain the use of its resources. The Moon Mineralogy Mapper (M³) on Chandrayaan-1 acquired visible to near-infrared reflectance spectra over most of the surface [@pieters2009; @green2011]. These spectra carry the crystal-field absorptions of Fe²⁺ in pyroxene and olivine near 1 and 2 µm, overprinted by the darkening and reddening of nanophase metallic iron, and turning them into quantitative composition remains an inverse problem with little ground truth.",
+   "prefix": ""
+  },
+  "P007": {
+   "file": "01_front_intro_methods.md",
+   "line": "Empirical methods relate spectral parameters to the composition of returned samples at their landing sites. The Clementine band-ratio algorithms of Lucey et al. [@lucey2000] remain the reference for FeO and TiO₂, and band parameters of the 1 and 2 µm absorptions have been calibrated for M³ [@bhatt2012; @bhatt2015]. Regressions range from partial least squares [@sun2016], neural networks [@xia2019] and support vector machines [@wang2021] to systematic comparisons of regressors [@qiu2022], and convolutional networks on Kaguya Multiband Imager spectra produced global oxide maps once Chang'e-5 [@yang2023; @zhang2023] and Chang'e-6 [@shi2026] samples were added; Diviner data [@ma2022], gradient boosting [@wu2024] and random forests [@fernandez2025] have also been used. The method this study builds on, by Fernández-Díaz et al. [@fernandez2026], combines a db4 wavelet decomposition, a deep autoencoder and a random-forest regressor into a global M³ FeO map at 150 m per pixel. All of these methods are trained on about 50 sampling sites and evaluated on random splits or small hold-out sets, rarely on identical data alongside competing methods or against a zero-information baseline.",
+   "prefix": ""
+  },
+  "P008": {
+   "file": "01_front_intro_methods.md",
+   "line": "Physics-based methods model reflectance with radiative transfer. The Hapke model [@hapke1993] and its treatment of nanophase iron [@hapke2001; @lucey2011; @pieters2016] support inversions for mineral abundance, grain size and submicroscopic iron [@lili2011; @sunlucey2021; @trang2019]; the Shkuratov model [@shkuratov1999] has been inverted on M³ by a network trained on synthetic spectra [@korokhin2024]; Hapke inversions have been embedded in Bayesian samplers [@jung2026]; and PGU-Net [@lin2026] placed a Hapke single-scattering-albedo mixing layer inside a deep autoencoder for unsupervised unmixing, validated on M³ only indirectly, against Kaguya products, with sample-informed priors named as the next step. Such inversions are interpretable but non-unique and sensitive to the end-member set and optical constants. Laboratory studies of the Lunar Soil Characterization Consortium (LSCC) soils have also combined spectra with measured mineralogy [@li2012; @grumpe2018; @surkov2025].",
+   "prefix": ""
+  },
+  "P009": {
+   "file": "01_front_intro_methods.md",
+   "line": "Our independent reproductions of three recent methods [@fernandez2026; @korokhin2024; @jung2026] show where these approaches fall short. The network of Korokhin et al. recovers orthopyroxene, olivine and the grey absorber on its own synthetic test set with R² of only 0.06, 0.17 and 0.32, yet these quantities are mapped; in Jung et al., abundances drawn from the prior alone already meet two of the three published accuracy bounds; and in Fernández-Díaz et al., a random forest on the raw wavelet coefficients is more accurate than one on the autoencoder codes. Each point concerns how much of a retrieved number the spectrum determines and how that is tested, not the physical models themselves. What is missing is a method that uses physics as a source of training data, lets returned soils correct it, states its uncertainty and which outputs it cannot identify, and is evaluated against published pipelines on identical data, under grouped cross-validation and against a zero-information baseline.",
+   "prefix": ""
+  },
+  "P010": {
+   "file": "01_front_intro_methods.md",
+   "line": "We propose LUMEN (LUnar Mineralogy Estimation Network) to fill this gap. The main contributions are:",
+   "prefix": ""
+  },
+  "P011": {
+   "file": "01_front_intro_methods.md",
+   "line": "(1) **A hybrid physics–learning method.** A domain-randomised Hapke simulator, built from 49 lunar mineral and glass end-members (none taken from an evaluation soil) with physically modelled nanophase- and microphase-iron weathering, generates 400,000 synthetic soils. A compact one-dimensional convolutional network is pretrained on them and fine-tuned on returned soils, and from one spectrum predicts seven-part modal mineralogy, five oxides and maturity. A deep ensemble with conformal calibration supplies intervals with verified coverage, and an identifiability gate withholds every target whose skill over a zero-information baseline is not demonstrable.",
+   "prefix": ""
+  },
+  "P012": {
+   "file": "01_front_intro_methods.md",
+   "line": "(2) **An identical-data, protocol-fixed comparison.** LUMEN is compared with wavelet–autoencoder regression [@fernandez2026], Shkuratov-model inversion [@korokhin2024], Hapke–Bayesian inversion [@jung2026] and classical regressors on the same 75 laboratory spectra and the same leave-one-soil-out and leave-one-mission-out folds, with paired tests corrected for multiple comparisons. Every evaluation choice was committed to version control before the first score was computed, and negative and null results are reported alongside positive ones.",
+   "prefix": ""
+  },
+  "P013": {
+   "file": "01_front_intro_methods.md",
+   "line": "(3) **A test of laboratory-to-orbit transfer.** Using M³ spectra at the returned-sample sites on which the base method was calibrated [@fernandez2026; @qiu2025], under both that method's own cross-validation and a spatially honest leave-one-landing-site-out protocol, we show that laboratory accuracy does not carry over to orbit without orbital labels, how much a small orbital fine-tuning set recovers, and that simple two-band regressions remain more accurate on orbit.",
+   "prefix": ""
+  },
+  "P014": {
+   "file": "01_front_intro_methods.md",
+   "line": "Section 2 describes the data, the physical preliminaries and the method; Section 3 reports the experiments; Section 4 discusses them, including limitations; and Section 5 concludes.",
+   "prefix": ""
+  },
+  "P015": {
+   "file": "01_front_intro_methods.md",
+   "line": "We use the LSCC suite [@taylor2001; @taylor2010] of nine mare soils (Apollo 11, 12, 15 and 17) and ten highland soils (Apollo 14 and 16), each sieved into <10, 10–20, 20–45 and <45 µm fractions and measured at the Reflectance Experiment Laboratory (RELAB) [@relab2004] at 30° incidence and 0° emission; the 10–20 µm spectrum of soil 70181 is absent, leaving 75 spectra. Point-count modal mineralogy (vol%), available for the three finer fractions (56 spectra), is merged into seven parts: plagioclase (PLG), low-Ca pyroxene (LCP, orthopyroxene plus pigeonite), high-Ca pyroxene (HCP), olivine (OLV), ilmenite (ILM), agglutinitic glass (AGG) and other phases (OTH). Bulk FeO, TiO₂, Al₂O₃, CaO and MgO (wt%) and the maturity index Is/FeO are available for all 75 spectra; the tables were checked against their own column sums and totals. Every spectrum is convolved to the 71 M³ global-mode bands between 540.8 and 2497.1 nm with Gaussian responses whose width equals the band spacing, excluding the thermally affected channels beyond 2.5 µm.",
+   "prefix": ""
+  },
+  "P016": {
+   "file": "01_front_intro_methods.md",
+   "line": "The simulator draws on 49 RELAB spectra of lunar mineral separates and glasses (17 plagioclase, 7 low-Ca and 11 high-Ca pyroxene, 6 olivine, 4 ilmenite, 2 volcanic and 2 synthetic glasses) from mare basalts, highland rocks, one non-LSCC soil (62241) and synthetic glasses, each verified against its PDS4 metadata. An automatic check ensures that no end-member derives from any of the 19 evaluation soils; because every RELAB agglutinate separate comes from an LSCC soil, agglutinates are modelled physically instead (Section 2.3.1).",
+   "prefix": ""
+  },
+  "P017": {
+   "file": "01_front_intro_methods.md",
+   "line": "All orbital data are M³ Level-2 global-mode reflectance [@green2011]. For mapping we use the Shapley-region strip M3G20090728T214215 analysed by Korokhin et al. [@korokhin2024], a block around the Apollo 16 landing site (M3G20090607T110414) and the two Aristarchus regions of interest of Jung et al. [@jung2026].",
+   "prefix": ""
+  },
+  "P018": {
+   "file": "01_front_intro_methods.md",
+   "line": "The FeO ground truth of the base method [@fernandez2026] is the compilation of Qiu et al. [@qiu2025jgr], available in open access as Supplementary Table 1 of Qiu et al. [@qiu2025]: 49 distinct, station-level sampling sites (Apollo 11–17 landing sites and traverse stations, Luna 16, 20 and 24, and Chang'e-3, -5 and -6) with laboratory FeO and Clementine reflectances at 415–1000 nm, which we verified against the worked example in [@fernandez2026] (Apollo 17 LRV-12, 17.4 wt% FeO). For each site, every M³ strip whose nearest pixel lies within 0.01° of the site, at least five samples from the swath edge, contributes its 3 × 3-pixel block if at least 5 of the 9 pixels are valid (finite, 0 < R < 1 on M³ bands 3–85, the band set of [@fernandez2026]); the site spectrum is the per-band median over contributing strips. All 49 sites are covered, Chang'e-5 included, by 183 strips (one to six per site, median four). Every input file is listed in a SHA-256 manifest that each processing stage verifies at start and end.",
+   "prefix": ""
+  },
+  "P019": {
+   "file": "01_front_intro_methods.md",
+   "line": "For an intimate particulate mixture we use the Hapke bidirectional reflectance [@hapke1993],",
+   "prefix": ""
+  },
+  "P020": {
+   "file": "01_front_intro_methods.md",
+   "line": "where $w$ is the single-scattering albedo (SSA) and $\\mu_0$ and $\\mu$ are the cosines of the incidence and emission angles (30° and 0° for RELAB). The phase function is isotropic and the opposition effect is neglected, which suits RELAB geometry, and $H$ is the approximate Chandrasekhar function",
+   "prefix": ""
+  },
+  "P021": {
+   "file": "01_front_intro_methods.md",
+   "line": "Equation (1) is monotonic in $w$ and is inverted numerically from a dense table.",
+   "prefix": ""
+  },
+  "P022": {
+   "file": "01_front_intro_methods.md",
+   "line": "The SSA of a grain population with absorption coefficient $\\alpha$, real index $n$, imaginary index $k$ and size $D$ follows the equivalent-slab model [@hapke1993],",
+   "prefix": ""
+  },
+  "P023": {
+   "file": "01_front_intro_methods.md",
+   "line": "with",
+   "prefix": ""
+  },
+  "P024": {
+   "file": "01_front_intro_methods.md",
+   "line": "and $\\alpha = 4\\pi k/\\lambda$ for a pure phase. For each end-member we invert Equations (1)–(4) at the separate's nominal grain size to obtain $k(\\lambda)$. Because the reflectance is not monotonic in $k$, falling to an opacity floor and then rising as surface reflection grows, the root is bracketed on the physical, falling branch; every end-member then reproduces its own measured reflectance to < 10⁻¹⁰.",
+   "prefix": ""
+  },
+  "P025": {
+   "file": "01_front_intro_methods.md",
+   "line": "Nanophase metallic iron (npFe⁰) at volume fraction $\\phi$ in a host of refractive index $n_h$ adds an absorption [@hapke2001; @lucey2011]",
+   "prefix": ""
+  },
+  "P026": {
+   "file": "01_front_intro_methods.md",
+   "line": "where $n_{Fe}$ and $k_{Fe}$ are the optical constants of iron. Microphase iron (mpFe⁰) is a grey absorber, $\\alpha_{mp} = 3\\phi_{mp}/(4 r_{mp})$ with $r_{mp} = 0.1$ µm, which darkens without reddening [@lucey2011]. Components with volume fractions $f_i$, grain sizes $D_i$ and SSAs $w_i$ mix in SSA with cross-section weights,",
+   "prefix": ""
+  },
+  "P027": {
+   "file": "01_front_intro_methods.md",
+   "line": "and the mixed SSA is converted to reflectance with Equation (1).",
+   "prefix": ""
+  },
+  "P028": {
+   "file": "01_front_intro_methods.md",
+   "line": "LUMEN has four stages (Figure 1): a physics simulator generates labelled synthetic soils; a network is pretrained on them; it is fine-tuned on returned soils and, for orbital use, on M³ spectra; and an uncertainty and identifiability layer decides what is reported.",
+   "prefix": ""
+  },
+  "P029": {
+   "file": "01_front_intro_methods.md",
+   "line": "**Figure 1.** Overview of LUMEN. Synthetic soils from the physics simulator (Figure 2) pretrain the network (Figure 3), which is then fine-tuned on laboratory spectra of returned soils and, optionally, on M³ spectra at returned-sample sites. A five-member ensemble with conformal calibration provides prediction intervals, and the identifiability gate decides which targets are mapped.",
+   "prefix": "**Figure 1.** "
+  },
+  "P030": {
+   "file": "01_front_intro_methods.md",
+   "line": "Each synthetic soil draws a petrological regime (feldspathic, basaltic or broad: Dirichlet priors on the crystalline proportions, truncated at ≤20% ilmenite and ≤60% olivine), a maturity that sets the agglutinate fraction, AGG = clip(0.65 · maturity + N(0, 0.12), 0, 0.75), and the npFe⁰ and mpFe⁰ loads, an \"other\" fraction, grain sizes of 4–150 µm and one end-member per phase (Figure 2). Agglutinates are a feldspathic–mafic synthetic-glass host carrying the iron loads, and a calibration tilt, a ±7% scale factor and 0.2–0.8% noise represent instrument effects. Chemistry labels follow from stoichiometry, with ±15% jitter and molar Fe–Mg exchange on the nominal phase chemistry, and the maturity target is set by Is/FeO = 2270 · npFe⁰ (wt%)/FeO (wt%), a constant that fixes only the scale, which fine-tuning re-learns. Four hundred thousand spectra are generated with a fixed seed.",
+   "prefix": ""
+  },
+  "P031": {
+   "file": "01_front_intro_methods.md",
+   "line": "**Figure 2.** The domain-randomised physics simulator. Each end-member's imaginary index k(λ) is obtained by inverting the equivalent-slab model; space weathering adds npFe⁰ and mpFe⁰ absorption; components mix in single-scattering albedo with cross-section weights and are converted to reflectance with the Hapke model; the spectrum is resampled to the 71 M³ bands. Composition, grain size, maturity and instrument effects are randomised, and labels follow from stoichiometry.",
+   "prefix": "**Figure 2.** "
+  },
+  "P032": {
+   "file": "01_front_intro_methods.md",
+   "line": "The network (Figure 3, Table 1) reads two channels on the 71 bands, log reflectance and convex-hull continuum-removed reflectance, each standardised with statistics of the synthetic set only. Five one-dimensional convolutions, each followed by group normalisation (preferred to batch normalisation because fine-tuning batches are small) and GELU, with two max-pooling steps, feed a 256–128 trunk (0.36 M parameters). A Dirichlet head outputs concentrations $\\boldsymbol\\alpha = \\mathrm{softplus}(\\cdot)+0.05$ whose mean $\\boldsymbol\\alpha/\\alpha_0$, with $\\alpha_0=\\sum_j\\alpha_j$, is the seven-part composition; heteroscedastic Gaussian heads give a mean and log-variance for each oxide and log₁₀(Is/FeO); and auxiliary heads for grain size and npFe⁰ are used during pretraining only.",
+   "prefix": ""
+  },
+  "P033": {
+   "file": "01_front_intro_methods.md",
+   "line": "**Figure 3.** Network architecture. Tensor shapes are given as channels × bands. Each convolution is followed by group normalisation (8 groups) and GELU. The auxiliary heads are used during pretraining only.",
+   "prefix": "**Figure 3.** "
+  },
+  "P034": {
+   "file": "01_front_intro_methods.md",
+   "line": "The composition loss is the Dirichlet negative log-likelihood of the label-smoothed proportions, $\\tilde{\\mathbf y} = (\\mathbf y+\\epsilon)/(1+7\\epsilon)$ with $\\epsilon = 0.005$, plus an $L_1$ term on the mean:",
+   "prefix": ""
+  },
+  "P035": {
+   "file": "01_front_intro_methods.md",
+   "line": "with $\\lambda_1 = 10$ fixed on synthetic data only. The scalar targets use the β-negative log-likelihood [@seitzer2022] with $\\beta=0.5$, which avoids the under-fitting of high-variance points caused by the plain Gaussian likelihood,",
+   "prefix": ""
+  },
+  "P036": {
+   "file": "01_front_intro_methods.md",
+   "line": "where $\\mathrm{sg}$ stops the gradient and $m_t$ masks targets that are unavailable for a sample (modal mineralogy for the <45 µm fraction; all targets except FeO for orbital spectra). The total loss is $\\mathcal L_{comp} + \\mathcal L_{scal}$, plus the auxiliary β-NLL terms during pretraining.",
+   "prefix": ""
+  },
+  "P037": {
+   "file": "01_front_intro_methods.md",
+   "line": "Five ensemble members are pretrained on the synthetic set with different seeds (15 epochs, AdamW, one-cycle schedule, 20,000 spectra held out) and fine-tuned per cross-validation fold for 1500 steps (Table 1). In the full configuration (A4) each step combines 16 real training spectra, 16 synthetic replay spectra and 32 SSA-space mixup spectra, each a Dirichlet-weighted mixture of 2–3 training spectra combined with Equation (6) and labelled exactly (composition by volume, chemistry by mass, Is/FeO weighted by mass × FeO); real and mixed spectra receive the simulator's calibration and noise randomisation. The simpler configuration A2 uses the real spectra only. All hyperparameters were fixed from synthetic-only development runs and committed before any model was scored on real folds.",
+   "prefix": ""
+  },
+  "P038": {
+   "file": "01_front_intro_methods.md",
+   "line": "The ensemble mean is the mean of the member means, and the ensemble variance is the mean of the member variances plus the variance of the member means [@lakshminarayanan2017]. Because raw ensemble intervals are over-confident (Section 3.5), we calibrate them conformally [@barber2021]: the normalised score $s_i = |y_i - \\mu_i|/\\sigma_i$ is computed from out-of-fold predictions of the other soils, and its $\\lceil (1-a)(n+1)\\rceil$-th smallest value $q_{1-a}$ gives the interval $\\mu \\pm q_{1-a}\\,\\sigma$. The exact CV+ variant uses models from which both the calibration soil and the test soil were held out (930 additional fine-tunes). For each target, the identifiability gate computes the skill",
+   "prefix": ""
+  },
+  "P039": {
+   "file": "01_front_intro_methods.md",
+   "line": "where $\\mathrm{MAE}_{ref}$ is the error of the fraction-matched mean of the other soils, a zero-information reference, with a 95% bootstrap interval over soils. A target is mapped only if the lower bound of that interval is above zero under leave-one-soil-out evaluation.",
+   "prefix": ""
+  },
+  "P040": {
+   "file": "01_front_intro_methods.md",
+   "line": "Laboratory and M³ reflectance differ in absolute scale. For zero-shot application, M³ spectra are brought to the laboratory scale with the linear calibration of Korokhin et al. [@korokhin2024],",
+   "prefix": ""
+  },
+  "P041": {
+   "file": "01_front_intro_methods.md",
+   "line": "and a site of Apollo mission X is predicted by the ensemble fine-tuned with all of mission X's soils held out (for the Luna and Chang'e sites, by the ensemble fine-tuned on all 19 soils). For orbital fine-tuning (LUMEN-M3-FT), the network is further trained for 600 steps (AdamW, learning rate 10⁻⁴, weight decay 10⁻⁴, cosine decay) on batches of 16 M³ pixel spectra from the training sites, labelled with their site FeO and all other targets masked, and 16 laboratory spectra from that model's own training soils with all targets. The held-out site is predicted from its site spectrum.",
+   "prefix": ""
+  },
+  "P042": {
+   "file": "02_results.md",
+   "line": "On the laboratory spectra every method uses identical spectra and folds. The classical baselines are the fraction-matched mean of the training soils (a zero-information reference); partial least squares (PLS), ridge regression and a random forest (RF) on LUMEN's 142 input values; and an RF on raw reflectance, all tuned by inner grouped cross-validation. The Fernández-Díaz et al. pipeline [@fernandez2026] is re-implemented in full on the same spectra (db4 A2 + D2 wavelet coefficients; a 42 → 32 → 16 → 6 → 16 → 32 → 42 autoencoder trained on M³ pixels as published or on our synthetic spectra; Lasso, linear SVR, RBF SVR and RF with the paper's search grids; and the no-autoencoder variant), giving twelve variants, of which \"FD as published\" is the M³-trained autoencoder with RF. The outputs of Korokhin et al. [@korokhin2024] and Jung et al. [@jung2026] come from independent reproductions validated against the papers' printed numbers (46 of 65 and 32 of 34 gated targets), each scored as the paper scores itself.",
+   "prefix": ""
+  },
+  "P043": {
+   "file": "02_results.md",
+   "line": "On M³ (Section 3.6) we compare zero-shot LUMEN, zero-shot LUMEN with a linear recalibration $y = a + b\\hat y$ fitted on the training sites, LUMEN-M3-FT, and a ridge regression on the 128-dimensional trunk embedding (\"LUMEN-embed + ridge\") with the Fernández-Díaz variants retrained on M³ site spectra, a linear model on two M³ bands (R950/R750 and R750), the Lucey θ parameter [@lucey2000] refitted on M³, the published Lucey et al. constants and a refitted two-band model on the table's Clementine reflectances, and the training-fold mean.",
+   "prefix": ""
+  },
+  "P044": {
+   "file": "02_results.md",
+   "line": "Table 1 lists the fixed settings. All LUMEN hyperparameters were set from synthetic-only development runs and committed to version control with the evaluation protocol before any model was scored on real folds, and the later experiments (Sections 3.3, 3.6 and 3.7) were committed in the same way before they were run.",
+   "prefix": ""
+  },
+  "P045": {
+   "file": "02_results.md",
+   "line": "**Table 1.** Fixed LUMEN settings.",
+   "prefix": "**Table 1.** "
+  },
+  "P046": {
+   "file": "02_results.md",
+   "line": "Figure 4 summarises the evaluation design. Under leave-one-soil-out (LOSO, 19 folds), all four fractions of the held-out soil are excluded from fine-tuning, mixup and normalisation statistics. Leave-one-mission-out (LOMO, 6 folds: A11, A12, A14, A15, A16, A17) is the out-of-distribution test: holding out A16 removes every feldspathic soil, and holding out A17 every high-Ti soil. The primary metric is the per-soil mean absolute error (MAE): each soil's labelled fractions are averaged and then the 19 soils are averaged, so the number of independent units is the number of soils, not of spectra. R² and RMSE are reported per spectrum. Methods are compared with paired Wilcoxon signed-rank tests over soils [@wilcoxon1945] with Holm correction [@holm1979] over the 13 targets or over the comparators, and bootstrap confidence intervals are computed over soils.",
+   "prefix": ""
+  },
+  "P047": {
+   "file": "02_results.md",
+   "line": "**Figure 4.** Evaluation design. Laboratory models are evaluated by leave-one-soil-out and leave-one-mission-out cross-validation, with the A2/A4 configuration chosen by an inner grouped five-fold split of each outer training set. Orbital FeO is evaluated at the 49 returned-sample sites by ten-fold cross-validation over sites (P1, the protocol of [@fernandez2026]) and by leave-one-landing-site-out (P2).",
+   "prefix": "**Figure 4.** "
+  },
+  "P048": {
+   "file": "02_results.md",
+   "line": "Every self-test of the simulator passes. Each end-member's k(λ) reproduces its measured reflectance to 7.8 × 10⁻¹¹. Truncating the composition prior lowers the 99th-percentile synthetic TiO₂ from 30.5 to 14.0 wt% (LSCC maximum 10.7) and FeO from 31.8 to 24.4 wt%. Modal composition multiplied by class-average phase chemistry reproduces the LSCC bulk oxides with r = 0.93–0.98, but mare TiO₂ is biased by +2.9 wt%, which affects only the scale of the pretraining labels. The measured <45 µm spectra are reproduced by mixing their sieve fractions to 0.6% RMS. The median nearest-synthetic-neighbour distance of the 75 LSCC spectra is 0.102, against 0.144 between synthetic spectra, so the real data lie inside the synthetic distribution; yet a classifier separates real from synthetic spectra with an AUC of 0.97 (0.99 against noise-free synthetics), real soils being redder than their nearest synthetic neighbours. This sim-to-real gap is what fine-tuning must close.",
+   "prefix": ""
+  },
+  "P049": {
+   "file": "02_results.md",
+   "line": "Table 2 gives per-soil MAEs. Under LOSO, LUMEN (A4) has a skill over the zero-information reference of 0.50 for composition and 0.72 for FeO. It has a lower error than each classical baseline on 12 of 13 targets, the exception always being olivine, and after Holm correction it is significantly better than PLS on 9 targets and than the mean of other soils on 10. Against the strongest baseline, a random forest on the same inputs, A4 is lower on 12 of 13 targets, but only maturity is significant after correction (for FeO, raw p = 0.005, Holm p = 0.064). Under LOMO every method degrades: A4's composition MAE rises from 2.66 to 4.70 vol% and its FeO MAE from 1.26 to 2.59 wt%. A4 remains lower than RF on 10 of 13 targets, significantly so for LCP, HCP and TiO₂, while for the \"other\" class no method beats the zero-information reference.",
+   "prefix": ""
+  },
+  "P050": {
+   "file": "02_results.md",
+   "line": "**Table 2.** Per-soil MAE, LOSO / LOMO (composition in vol%, oxides in wt%, maturity in log₁₀ Is/FeO). Bold: lowest per row and protocol.",
+   "prefix": "**Table 2.** "
+  },
+  "P051": {
+   "file": "02_results.md",
+   "line": "Because the pre-registered primary model A4 is not the best configuration (Section 3.7), we repeated the choice between A4 and the simpler A2 inside each outer training fold by inner five-fold grouped cross-validation, keeping the outer estimate confirmatory. A2 was selected in every fold (19 of 19 under LOSO, 6 of 6 under LOMO). The selected model reaches 1.23 wt% FeO, 0.55 wt% TiO₂ and 2.35 vol% composition under LOSO and, against RF, is lower on 12 of 13 targets (not olivine, 0.86 vs 0.84 vol%) and significantly better after Holm correction on 8: PLG, LCP, HCP, ILM, FeO, TiO₂, Al₂O₃ and maturity (FeO 1.23 vs 2.13 wt%, Holm p = 0.011). It is significant on 11 of 13 targets against PLS and ridge and on 10 against the mean of other soils. Under LOMO it is significantly better than RF on 6 targets (LCP, HCP, FeO, TiO₂, Al₂O₃ and maturity; FeO 2.63 wt%). No A4–A2 difference is significant under either protocol. These runs use pretrained members regenerated on a different machine, which reproduce the stored per-soil MAEs to within 0.06 for every target, configuration and protocol. Figure 5 shows the LOSO predictions for four headline targets.",
+   "prefix": ""
+  },
+  "P052": {
+   "file": "02_results.md",
+   "line": "**Figure 5.** LUMEN (A4) predictions against measured values for the 19 LSCC soils under leave-one-soil-out, for FeO, TiO₂, plagioclase and maturity. Each point is one sieve fraction; the line is 1:1.",
+   "prefix": "**Figure 5.** "
+  },
+  "P053": {
+   "file": "02_results.md",
+   "line": "This is the fairest comparison, because the pipeline is trained on exactly the same spectra and folds (Table 3, Figure 6). Under LOSO, LUMEN's FeO error (1.26 wt%, R² = 0.85) is 42% lower than that of FD as published (2.17 wt%, R² = 0.62) and lower than all twelve variants, the best being wavelet → RBF SVR without the autoencoder (1.91 wt%). Each paired test has p < 0.05, the test fixed in the protocol; with an additional Holm correction over the twelve variants, 3 of 12 remain significant (vs FD as published, Holm p = 0.069). Under LOMO, LUMEN has 2.59 wt% against 3.48 for FD as published (p = 0.018) and 2.91 for the best variant (p = 0.49). Under LOSO the M³-trained autoencoder is worse than the raw wavelet coefficients for 4 of 4 regressors, as in our reproduction of the original study (RF 1.55 vs 1.95 wt% with the autoencoder), whereas under LOMO it helps the two linear regressors.",
+   "prefix": ""
+  },
+  "P054": {
+   "file": "02_results.md",
+   "line": "**Table 3.** FeO (wt%) on identical spectra and folds. \"FD-AE-M3\" is the published autoencoder, trained on M³ pixels; \"FD-AE-synth\" is trained on our synthetic spectra; \"FD-wavelet\" has no autoencoder. The remaining FD variants are in the repository tables.",
+   "prefix": "**Table 3.** "
+  },
+  "P055": {
+   "file": "02_results.md",
+   "line": "**Figure 6.** Per-soil FeO error of LUMEN, the Fernández-Díaz et al. variants and the classical baselines on identical folds, under leave-one-soil-out (left) and leave-one-mission-out (right).",
+   "prefix": "**Figure 6.** "
+  },
+  "P056": {
+   "file": "02_results.md",
+   "line": "Each method is scored on five-mineral proportions (CPX, OPX, OLV, PLG, ILM, renormalised to 100%) over the three sieved fractions, as the reproduction of Korokhin et al. scores itself (Table 4). Under LOSO, LUMEN reduces the error for every mineral by 54–74%, every difference being Holm-significant; for example, olivine is 1.91 against 7.44 points and plagioclase 5.55 against 12.08. Under LOMO, LUMEN is still lower on four of five minerals, significantly only for olivine, and slightly worse for plagioclase (12.64 vs 12.08). The inversion never sees an LSCC soil, whereas LUMEN is fine-tuned on the others, so the like-for-like comparison is LUMEN's zero-shot model (A0, physics-trained only): it is lower on three of five minerals, significantly only for olivine. LUMEN's Is/FeO also ranks the soils better than the inversion's nFe parameter, with Spearman ρ of 0.72, 0.81 and 0.96 for the <10, 10–20 and 20–45 µm fractions against 0.55, 0.37 and 0.44.",
+   "prefix": ""
+  },
+  "P057": {
+   "file": "02_results.md",
+   "line": "**Table 4.** MAE of five-mineral proportions (percentage points), 19 soils.",
+   "prefix": "**Table 4.** "
+  },
+  "P058": {
+   "file": "02_results.md",
+   "line": "On the four test soils of Jung et al. (12001, 12030, 15071 and 71061, 20–45 µm), scored on crystalline proportions, LUMEN's worst-case LOSO errors are 1.00 points for olivine, 1.24 for ilmenite and 7.95 for plagioclase, meeting all three published accuracy bounds (7, 10 and 30 points), whereas the converged inversion reaches 17.56 points for ilmenite. With four soils this is weak evidence: the zero-shot model also meets every bound, while the mean of other soils misses the ilmenite and plagioclase bounds. Across the four soils, LUMEN's Is/FeO correlates with the measured value at r = 0.99, against r ≈ 0.00 for the inversion's maturity index.",
+   "prefix": ""
+  },
+  "P059": {
+   "file": "02_results.md",
+   "line": "Raw ensemble intervals are over-confident (Figure 7): for nominal 68/90/95% intervals, mean empirical coverage is 0.59/0.82/0.89 under LOSO and 0.33/0.55/0.64 under LOMO. Normalised conformal calibration restores 0.68/0.90/0.95 under LOSO and 0.64/0.86/0.92 under LOMO. Exact CV+, which uses models that saw neither the calibration soil nor the test soil, gives 0.69/0.90/0.96 (LOSO) and 0.70/0.88/0.93 (LOMO), so the approximation is slightly conservative out of distribution. The identifiability gate passes 11 of 13 targets (Table 5). It withholds olivine, whose LOSO skill is −0.06 (CI −0.40 to 0.22), and the \"other\" class (0.22, CI −0.03 to 0.42); under LOMO the agglutinate fraction also loses significance (0.04, CI −0.34 to 0.25).",
+   "prefix": ""
+  },
+  "P060": {
+   "file": "02_results.md",
+   "line": "**Table 5.** Skill over the zero-information reference with 95% bootstrap CI.",
+   "prefix": "**Table 5.** "
+  },
+  "P061": {
+   "file": "02_results.md",
+   "line": "**Figure 7.** Empirical against nominal interval coverage for the raw ensemble and after conformal calibration, under leave-one-soil-out and leave-one-mission-out.",
+   "prefix": "**Figure 7.** "
+  },
+  "P062": {
+   "file": "02_results.md",
+   "line": "This experiment tests the base method on its own task, orbital FeO, against the ground truth it was calibrated on [@fernandez2026; @qiu2025], under two protocols (Figure 4): P1, the base study's own 10-fold cross-validation over sites, comparable with its published MAE of 2.29 wt%; and P2, leave-one-landing-site-out, in which all stations of a mission are held out together because they share terrain and are spatially autocorrelated. All 49 sites have M³ coverage and are scored (Table 6, Figure 8).",
+   "prefix": ""
+  },
+  "P063": {
+   "file": "02_results.md",
+   "line": "**Table 6.** FeO (wt%) at the 49 returned-sample sites, P1 (10-fold, seed 42) / P2 (leave-one-landing-site-out), 3 × 3-pixel site spectra. Bias is predicted minus laboratory FeO. Every method except the zero-shot model and the Lucey et al. constants is fitted inside each training fold.",
+   "prefix": "**Table 6.** "
+  },
+  "P064": {
+   "file": "02_results.md",
+   "line": "ᵃ In-sample. The published constants [@lucey2000] were derived from returned-sample sites, and nothing is fitted here, so this row is not a held-out estimate and is not comparable with the others.",
+   "prefix": ""
+  },
+  "P065": {
+   "file": "02_results.md",
+   "line": "In the primary test (P2), LUMEN-M3-FT has a lower MAE than FD as published (3.27 vs 3.58 wt%) but is the more accurate of the two at only 24 of the 49 sites, and the difference is not significant (Wilcoxon p = 0.74; Holm p = 1.00 over 13 comparators). It is significantly better only than the training-fold mean (Holm p < 0.001) and significantly worse than the two M³ bands (Holm p = 0.009), FD-AE-M3 / SVR-lin (Holm p = 0.029), the two Clementine bands (Holm p = 0.001) and the in-sample Lucey et al. constants (Holm p < 0.001). Under P1, FD as published (1.90 wt%) is close to our reproduction of the original study (1.95 wt%) and below its published 2.29 wt% [@fernandez2026]; LUMEN-M3-FT (2.20 wt%) differs significantly from no FD variant and not from the two M³ bands, is significantly less accurate than the two Clementine bands (Holm p = 0.020) and significantly more accurate than the refitted Lucey θ on M³ (Holm p = 0.020).",
+   "prefix": ""
+  },
+  "P066": {
+   "file": "02_results.md",
+   "line": "The result is robust. Over six P1 seeds LUMEN-M3-FT averages 2.13 wt% (2.08–2.20) and FD as published 1.91 wt% (1.81–1.97), FD being lower under every seed, and with each strip's centre pixel instead of the 3 × 3 block LUMEN-M3-FT has 3.26 wt% against 3.35 wt% (Holm p = 1.00) and remains significantly worse than the two M³ bands (2.02 wt%, Holm p = 0.006). Under P2, conformal intervals for LUMEN-M3-FT cover 0.63, 0.92 and 0.98 of the sites at nominal 68, 90 and 95% (raw ensemble 0.51, 0.76 and 0.86), with mean half-widths of 4.6 wt% at 68% and 10.6 wt% at 95%.",
+   "prefix": ""
+  },
+  "P067": {
+   "file": "02_results.md",
+   "line": "**Figure 8.** Predicted against laboratory FeO at the 49 returned-sample sites under P2 (leave-one-landing-site-out), for LUMEN-M3-FT, FD as published and the two-M³-band linear model. Marker shape gives the landing site; the line is 1:1.",
+   "prefix": "**Figure 8.** "
+  },
+  "P068": {
+   "file": "02_results.md",
+   "line": "Pretraining helps, but the pre-registered primary model is not the best configuration (Table 7). The pretrained A2 has a lower error than the same network trained from scratch (A1) on all 13 targets under LOSO, although, the targets being correlated, no single difference is significant after Holm correction; under LOMO two are (HCP and maturity). SSA-mixup and synthetic replay lower the error of the pretrained network (A4 vs A2) on only 1 of 13 targets, with no significant difference, and help a network trained from scratch under LOSO (12 of 13 targets) but not under LOMO (2 of 13). The zero-shot A0, the physics-only analogue of a simulator-trained inversion, has a composition MAE of 9.1 vol%, far above every fine-tuned variant.",
+   "prefix": ""
+  },
+  "P069": {
+   "file": "02_results.md",
+   "line": "**Table 7.** Ablations: per-soil MAE, LOSO / LOMO. A4 is the pre-registered primary model.",
+   "prefix": "**Table 7.** "
+  },
+  "P070": {
+   "file": "02_results.md",
+   "line": "Without the physics, the network already improves on classical regression: A1 is significantly better than RF on 5 of 13 targets under LOSO (PLG, ILM, FeO, TiO₂ and Al₂O₃) and 3 under LOMO, and the pretrained A2 on 8 and 6 targets, which is why its choice is moved inside the cross-validation (Section 3.3).",
+   "prefix": ""
+  },
+  "P071": {
+   "file": "02_results.md",
+   "line": "Four design alternatives were pretrained and fine-tuned with the A4 recipe and two members each, against members 0–1 of the main network (Table 8; FeO 1.32 wt% under LOSO and 2.62 wt% under LOMO). Log reflectance alone performs on par (no significant difference), so the continuum-removed channel adds nothing measurable, whereas the continuum-removed channel alone is significantly worse on 6 targets under LOSO and 8 under LOMO (FeO 2.09 and 3.86 wt%). The MLP is significantly worse for LCP under LOSO but significantly better on 4 targets under LOMO (PLG, FeO, Al₂O₃ and CaO; FeO 2.30 wt%), and the 1-D ResNet shows no significant difference.",
+   "prefix": ""
+  },
+  "P072": {
+   "file": "02_results.md",
+   "line": "**Table 8.** Design alternatives against the main network (2 members each, 13 targets, Holm correction over targets). \"Lower MAE\": number of targets on which the variant's per-soil MAE is below the main network's. \"Better / worse\": number of targets with a Holm-significant difference in the variant's favour or against it.",
+   "prefix": "**Table 8.** "
+  },
+  "P073": {
+   "file": "02_results.md",
+   "line": "On the Apollo 16 landing-site pixel the published calibration (Equation (10)) reproduces the LSCC 62231 spectrum to 9.1% RMS, and a line re-derived from that pixel to 1.4%; LUMEN estimates 5.0 wt% FeO there (62231: 4.9 wt%; Apollo 16 mean: 4.6 wt%) and over-estimates TiO₂ (2.1 vs 0.6 wt%), a sanity check only, since 62231 is in the final training set. In the Shapley scene (Figure 9) the 11 identifiable targets show the expected contrasts (FeO 10.2 wt% on mare and 6.6 wt% on highland; Al₂O₃ 20.0 and 24.3 wt%) and fresh craters stand out as immature. The published high-Ca pyroxene map of the same strip [@korokhin2024] is anti-correlated with LUMEN's (r = −0.79), placing more clinopyroxene in the highlands than in the mare, and its maturity parameter is nearly unrelated to LUMEN's Is/FeO (r = −0.28). Destriping lowers stripe amplitude by 26–47% and leaves the maps correlated at r = 0.90–0.99 with the undestriped ones. At Aristarchus, LUMEN finds much less olivine and more plagioclase in the crystalline fraction than the posterior abundances of Jung et al. [@jung2026] (52% vs 29% plagioclase in region B); since LUMEN's olivine output fails the identifiability gate, this is a domain-shift warning, not evidence against that study.",
+   "prefix": ""
+  },
+  "P074": {
+   "file": "02_results.md",
+   "line": "**Figure 9.** LUMEN maps of the Shapley-region M³ strip for identifiable targets, with conformal interval half-widths. Olivine and \"other\" are withheld by the identifiability gate.",
+   "prefix": "**Figure 9.** "
+  },
+  "P075": {
+   "file": "03_discussion_conclusions.md",
+   "line": "The decisive step is calibration against real soils. The zero-shot network is the weakest LUMEN variant and, for composition, worse than the zero-information reference, whereas any fine-tuning on returned soils cuts the error by a factor of two to four. Together with the simulator analysis, in which the LSCC spectra lie inside the synthetic distribution yet remain separable from it, this shows that a physics model good enough to cover the data is not, by itself, good enough to be inverted.",
+   "prefix": ""
+  },
+  "P076": {
+   "file": "03_discussion_conclusions.md",
+   "line": "The other ingredients contribute differently. Learning on the whole spectrum is a real part of the gain, since the network trained from scratch already beats a tuned random forest, but the convolutional design is a reasonable rather than an optimal choice: the continuum-removed channel adds nothing measurable, a 1-D ResNet performs alike, and an MLP generalises better to an unseen mission on four targets. Physics pretraining helps consistently but is significant only out of distribution, so we regard the simulator as a source of a better starting representation rather than a calibrated forward model. SSA-space mixup and replay added nothing once the network was pretrained, either because pretraining already supplies the smoothness over composition space that mixup was meant to add, or because the cross-section mixing weights cannot be validated: sieve-fraction spectra mix linearly to 0.6% RMS, but the LSCC chemistry does not constrain the mass proportions well enough. Finally, choosing the configuration inside each training fold keeps the significant advantage over the random forest, which therefore does not depend on picking the configuration after seeing the results.",
+   "prefix": ""
+  },
+  "P077": {
+   "file": "03_discussion_conclusions.md",
+   "line": "The three comparisons are not equally informative. Only the Fernández-Díaz et al. [@fernandez2026] pipeline was trained on exactly the same spectra and folds, so LUMEN's 42% lower FeO error is the fair comparison; it also confirms that the autoencoder stage removes information. Korokhin et al. [@korokhin2024] and Jung et al. [@jung2026] never see an LSCC soil, so LUMEN's margins over them mostly measure the value of calibrating against returned soils: like for like, the zero-shot model beats the Shkuratov inversion significantly only for olivine, and Jung et al.'s four test soils are too few for strong conclusions. A practically relevant difference is maturity, which both physics methods rank worse than LUMEN's calibrated Is/FeO.",
+   "prefix": ""
+  },
+  "P078": {
+   "file": "03_discussion_conclusions.md",
+   "line": "On the base method's own task the result goes against LUMEN. Holding out whole landing sites (P2) raises the error of almost every fitted method relative to random folds (P1), but by very different amounts: the random-forest and RBF-SVR models lose most, 55–88% (FD as published rises from 1.90 to 3.58 wt%), LUMEN-M3-FT 49%, and the two-M³-band regression and linear SVRs least (6% and −1 to +2%). Under random folds, flexible models can learn the spectral signature of a landing site from its neighbouring stations, so random-fold errors at these sites, including FD's published 2.29 wt%, overstate the accuracy expected at a new location.",
+   "prefix": ""
+  },
+  "P079": {
+   "file": "03_discussion_conclusions.md",
+   "line": "LUMEN-M3-FT's predictions are compressed toward the mean (Figure 8), over-estimating the Apollo 16 highland sites by 4.8 wt% on average and under-estimating the FeO-rich Chang'e-3, Chang'e-5 and Luna 24 sites by 6.3–7.5 wt%. With a few dozen training sites per fold, a linear model on two band parameters makes better use of the orbital labels, and even a ridge regression on LUMEN's embedding (2.60 wt%, not tested for significance) does better than fine-tuning the whole network. The laboratory-to-orbit gap is large: zero-shot predictions are worse than the training-fold mean, linear recalibration removes their bias but not their error, and orbital fine-tuning halves the error without closing the gap. The calibration itself is uncertain, since the published transfer reproduces the Apollo 16 laboratory spectrum to 9.1% RMS against 1.4% for a line re-derived from that pixel.",
+   "prefix": ""
+  },
+  "P080": {
+   "file": "03_discussion_conclusions.md",
+   "line": "The in-sample Lucey/Clementine result does not show that the Lucey algorithm beats the other methods at a new site, because its constants were derived from returned-sample sites; it does show that a single parameter, θ, carries most of the FeO signal there. Refitted inside each fold, the two-band model is also more accurate on the table's Clementine reflectances than on our M³ site spectra (1.82 vs 2.11 wt% under P2), so part of the orbital error may lie in the M³ site spectra themselves (calibration, photometry, site localisation) rather than in the regressors. In the mapped scenes, the largest disagreements with published maps occur exactly where LUMEN's gate withholds the output (olivine) or where the published network itself recovers poorly (pyroxene split, maturity).",
+   "prefix": ""
+  },
+  "P081": {
+   "file": "03_discussion_conclusions.md",
+   "line": "Deep ensembles alone are over-confident, more so out of distribution, and normalised conformal calibration restores near-nominal coverage at no extra training cost, also on orbit, where at 95% the intervals average ±10.6 wt% and are therefore honest rather than useful. The gate makes explicit a limitation that other methods leave implicit: olivine abundance in these soils cannot be predicted better than by the mean of the other soils, by any method we tested, so olivine and \"other\" maps from physics inversions reflect their priors and end-member sets unless independently supported. Because the soils contain little olivine (≤5 vol%), this is a statement about the LSCC domain, not a claim that olivine is undetectable where it is abundant.",
+   "prefix": ""
+  },
+  "P082": {
+   "file": "03_discussion_conclusions.md",
+   "line": "The ground truth is small (19 laboratory soils, 56 spectra with modal mineralogy, and 49 orbital sites, 20 of them Apollo 17 stations), and several numerically large differences do not survive correction. Laboratory spectra of sieved fractions under fixed geometry differ from M³ pixels that integrate rock, regolith and topography over about 140 m, and the orbital comparison relies on site coordinates and a single linear calibration. The simulator's chemistry labels are biased for mare TiO₂ (+2.9 wt%) and its maturity scale rests on one constant, which limits the zero-shot model. The physics baselines enter through independent reproductions, and the Fernández-Díaz pipeline was re-implemented from its description. The orbital fine-tuning recipe was fixed in advance and not tuned; searching it, or smaller networks, needs more orbital ground truth. Transfer to other sensors, such as Chandrayaan-2 IIRS, is not tested here.",
+   "prefix": ""
+  },
+  "P083": {
+   "file": "03_discussion_conclusions.md",
+   "line": "LUMEN, a physics-pretrained and sample-calibrated network, retrieves lunar soil mineralogy, chemistry and maturity from M³-band reflectance with calibrated intervals and an explicit statement of which outputs are identifiable. On identical laboratory spectra and folds, under a protocol fixed before scoring, it reduces FeO error by 42% relative to a published wavelet–autoencoder pipeline and mineral-proportion errors by 54–74% relative to a Shkuratov-model inversion, meets the published accuracy bounds of a Hapke–Bayesian inversion, and, with its configuration chosen inside the cross-validation, is significantly more accurate than a tuned random forest on 8 of 13 targets. Most of the improvement over physics-only methods comes from calibrating against returned soils; learning on the whole spectrum and physics pretraining add to it, the convolutional design is not uniquely good, and the proposed SSA-space augmentation does not help.",
+   "prefix": ""
+  },
+  "P084": {
+   "file": "03_discussion_conclusions.md",
+   "line": "On M³ spectra at 49 returned-sample sites, LUMEN does not transfer zero-shot, and after orbital fine-tuning it is not significantly better than the published pipeline and significantly worse than a two-band linear regression, so for orbital FeO at these sites the deep model offers no advantage over simple band regressions. Olivine and minor glass abundances are not identifiable from these spectra by any method we tested. Future work should enlarge the orbital ground truth, which is now the limiting resource, add independent map-level checks against Kaguya and Clementine FeO products, and extend the approach to IIRS with an explicit sensor model.",
+   "prefix": ""
+  },
+  "P085": {
+   "file": "03_discussion_conclusions.md",
+   "line": "---",
+   "prefix": ""
+  },
+  "P086": {
+   "file": "03_discussion_conclusions.md",
+   "line": "**Data Availability Statement:** All code, the version-controlled evaluation protocol, every intermediate table and the staged input data, with their SHA-256 manifests, are available at https://github.com/DSheth2004/lumen-lunar-dl. RELAB spectra are available from the PDS Geosciences Node spectral library, and M³ data from the NASA Planetary Data System. The returned-sample FeO table is Supplementary Table 1 of Qiu et al. [@qiu2025].",
+   "prefix": "**Data Availability Statement:** "
+  },
+  "P087": {
+   "file": "03_discussion_conclusions.md",
+   "line": "**Acknowledgments:** We thank the RELAB facility at Brown University and the Lunar Soil Characterization Consortium for the laboratory data, and the M³ team and the Planetary Data System for the orbital data.",
+   "prefix": "**Acknowledgments:** "
+  }
+ }
+}
