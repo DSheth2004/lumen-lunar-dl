@@ -293,6 +293,56 @@ stage is re-run unchanged in every other respect.
    - **GroupKFold input.** The outer training spectra, sorted by soil id, with soil as the
      group. GroupKFold's assignment is deterministic; the splits are written to
      `tables/step13_inner_folds.csv`.
+7. **D33 (E2 + E3 + E6, `scripts/step14_m3_qiu_sites.py`): implementation details fixed
+   before any step14 score existed (2026-10-28, cloud session on branch `exp-e2`).**
+   - **Sites.** All 49 Qiu sites have at least one contributing strip under D21, Chang'E-5
+     included (3 strips), so none is excluded.
+   - **Single-pixel sensitivity (forced).** The single-pixel spectra of the user's FD
+     reproduction are not in the repository. The sensitivity instead uses the centre pixel of
+     every staged 3 × 3 block: a strip contributes if that pixel is valid, and the site
+     spectrum is the per-band median over the contributing strips. LUMEN-M3-FT is then
+     trained on those centre pixels (one per strip). To bound compute, the sensitivity is run
+     under P2 and P1 seed 42 only, not under the 5 extra P1 seeds.
+   - **P1 seeds.** The primary P1 is `KFold(n_splits=10, shuffle=True, random_state=42)`; the
+     user's reproduction uses seed 42 (its `config.yaml`, `regression.seed`). The 5 further
+     seeds are 0, 1, 2, 3 and 4.
+   - **P2 groups.** The table's mission codes: A11, A12, A14, A15, A16, A17, L16, L20, L24,
+     CE3, CE5 and CE6 (12 folds).
+   - **Folds with several test sites.** D27 and D28 were written for leave-one-site-out. Under
+     P1 a test fold mixes missions, so each fold has one fine-tune (and one embed-ridge fit) per
+     start model that a test site needs under the D22 rule. Every test site is still predicted
+     by members that never saw a laboratory soil of its own mission.
+     - Fine-tune seed: `crc32("m3ft-qiu|<protocol>|<P1 seed, -1 for P2>|<fold>|<start model>|<member>")`.
+       The seed leaves out the spectra variant, so the centre-pixel sensitivity differs only in
+       its inputs.
+     - Embed + ridge: α is chosen by inner leave-one-site-out over the training sites, as in D28.
+   - **Lab-side models.** The A4 LOMO members and the final A4 ensemble are regenerated from
+     the shared pretrained members (D31) by `step04_lumen.py regen-m3-models`. That runs only
+     those 35 step04 jobs, with the step04 recipe and seeds unchanged. The regenerated LOMO
+     ensemble is compared with the stored step04 LOMO A4 predictions in
+     `tables/step14_lab_model_regeneration_check.csv`; this is a reproducibility check only.
+   - **FD.** One autoencoder (seed 0, the step10 seed) is trained unsupervised on the
+     Shapley-scene pixels and shared by all folds, because it sees no site data. Each Qiu site
+     is one sample, so the training rows are the training sites, and the inner CV is
+     `GroupKFold(5)` by site (D22).
+   - **E3 baselines.**
+     - *Two M³ bands:* OLS with an intercept, FeO ~ R950/R750 + R750, on the M³ bands nearest
+       750 and 950 nm.
+     - *Lucey θ (M³), refitted:* the step10 θ (origin 0.08, 1.19), with a linear fit.
+     - *Lucey 2000 published:* FeO = 17.427 θ − 7.565, θ = −arctan((R950/R750 − 1.19) /
+       (R750 − 0.08)), on the table's Clementine R750 and R950. Nothing is fitted, and it is
+       flagged in-sample.
+     - *Two Clementine bands, refitted:* the same OLS as the two-M³-band baseline, on the
+       Clementine reflectances.
+   - **Holm family.** Within each run, LUMEN-M3-FT is tested against every non-LUMEN method:
+     8 FD variants + 5 E3 baselines = 13 comparators. The primary test is the FD-AE-M3/RF row
+     under P2 with the 3 × 3 spectra.
+   - **E6 σ.** σ is the ensemble's predictive sd, √(mean member variance + variance of member
+     means), as in D17 and step05. The sd of the member means alone is reported as a
+     sensitivity. The quantile is step05's `conformal_q` (the ⌈(1 − α)(n + 1)⌉-th smallest
+     score). The raw Gaussian μ ± zσ coverage is shown for context.
+   - **Run order (no effect on results).** The comparators (FD, E3) are run before the shared
+     checkpoints exist; LUMEN is run once they are pushed.
 
 ## Addendum A — M³ landing-site validation (pre-registered before any site spectrum was fetched)
 
