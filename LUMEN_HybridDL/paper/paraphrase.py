@@ -1,7 +1,8 @@
 """Round-trip the manuscript prose through a plain-text file for rewriting by hand.
 
     python paraphrase.py export   -> paper/PARAPHRASE.txt (+ paper/paraphrase_map.json)
-    python paraphrase.py import   -> writes the edited paragraphs back into manuscript_src/*.md
+    python paraphrase.py import [file] [--accept-math]   -> writes the edited paragraphs (default PARAPHRASE.txt)
+                                            back into manuscript_src/*.md
 
 Only prose is exported: highlights, abstract, body paragraphs, list items, figure and table
 captions and the filled back-matter statements. Headings appear as context lines. Equations, tables,
@@ -85,12 +86,12 @@ def export() -> int:
     return 0
 
 
-def import_() -> int:
+def import_(txt: Path = TXT, check_math: bool = True) -> int:
     mp = json.loads(MAP.read_text(encoding="utf-8"))
     order, blocks = mp["citations"], mp["blocks"]
 
     new, cur, buf = {}, None, []
-    for line in TXT.read_text(encoding="utf-8").split("\n") + ["=== end ==="]:
+    for line in txt.read_text(encoding="utf-8").replace("\r", "").split("\n") + ["=== end ==="]:
         m = MARK.match(line.strip())
         if m or line.startswith("==="):
             if cur:
@@ -128,7 +129,7 @@ def import_() -> int:
             continue
         old_math = re.findall(r"\$[^$]+\$", b["line"])
         body = NUMCITE.sub(lambda m: to_keys(pid, m), new[pid])
-        if sorted(re.findall(r"\$[^$]+\$", body)) != sorted(old_math):
+        if check_math and sorted(re.findall(r"\$[^$]+\$", body)) != sorted(old_math):
             errors.append("%s: the $...$ maths was changed" % pid)
             continue
         line = b["prefix"] + body
@@ -159,6 +160,7 @@ if __name__ == "__main__":
     if cmd == "export":
         sys.exit(export())
     if cmd == "import":
-        sys.exit(import_())
+        args = [a for a in sys.argv[2:] if not a.startswith("--")]
+        sys.exit(import_(HERE / args[0] if args else TXT, "--accept-math" not in sys.argv))
     print(__doc__)
     sys.exit(2)
