@@ -74,6 +74,93 @@ def n_params(model) -> int:
 
 
 # --------------------------------------------------------------------------
+# E4 ablation networks (METHOD_NOTES.md D34). LumenNet above is unchanged; every variant
+# takes the same (n, 2, 71) input, has LumenNet's trunk widths (256 -> 128) and heads, and
+# returns the same output dict, so pretrain / finetune / member_outputs apply as they are.
+# --------------------------------------------------------------------------
+class _LumenHeads(nn.Module):
+    """LumenNet's trunk (Flatten -> n_in -> 256 -> 128) and heads, on a body's output."""
+
+    def __init__(self, n_in: int, dropout: float):
+        super().__init__()
+        self.trunk = nn.Sequential(nn.Flatten(), nn.Linear(n_in, 256), nn.GELU(),
+                                   nn.Dropout(dropout), nn.Linear(256, 128), nn.GELU())
+        self.comp = nn.Linear(128, N_COMP)
+        self.scal = nn.Linear(128, 2 * len(SCALARS))
+        self.aux = nn.Linear(128, 2 * len(AUX))
+
+    def forward(self, z):
+        h = self.trunk(z)
+        alpha = F.softplus(self.comp(h)) + 0.05
+        alpha = alpha.clamp(max=1e4)
+        s = self.scal(h)
+        a = self.aux(h)
+        nS, nA = len(SCALARS), len(AUX)
+        return {"alpha": alpha,
+                "mu": s[:, :nS], "logvar": s[:, nS:].clamp(-10, 6),
+                "aux_mu": a[:, :nA], "aux_logvar": a[:, nA:].clamp(-10, 6)}
+
+
+class LumenNetChannel(nn.Module):
+    """E4 (a)/(b): LumenNet's CNN on one input channel (0 = log R, 1 = continuum-removed R).
+    The other channel is dropped inside forward; only the first conv's input width changes."""
+
+    def __init__(self, channel: int, n_bands: int = 71, dropout: float = 0.1):
+        super().__init__()
+        self.channel = channel
+        self.body = nn.Sequential(
+            _block(1, 32, 7), _block(32, 32, 5), nn.MaxPool1d(2),
+            _block(32, 64, 5), _block(64, 64, 3), nn.MaxPool1d(2),
+            _block(64, 64, 3),
+        )
+        self.heads = _LumenHeads(64 * (n_bands // 2 // 2), dropout)
+
+    def forward(self, x):
+        return self.heads(self.body(x[:, self.channel:self.channel + 1]))
+
+
+class LumenMLP(nn.Module):
+    """E4 (c): no convolutional body; the flattened 2 x 71 input goes into the trunk."""
+
+    def __init__(self, n_bands: int = 71, dropout: float = 0.1):
+        super().__init__()
+        self.heads = _LumenHeads(2 * n_bands, dropout)
+
+    def forward(self, x):
+        return self.heads(x)
+
+
+class _ResBlock(nn.Module):
+    def __init__(self, ch, k):
+        super().__init__()
+        self.c1 = nn.Conv1d(ch, ch, k, padding=k // 2)
+        self.n1 = nn.GroupNorm(8, ch)
+        self.c2 = nn.Conv1d(ch, ch, k, padding=k // 2)
+        self.n2 = nn.GroupNorm(8, ch)
+
+    def forward(self, x):
+        h = F.gelu(self.n1(self.c1(x)))
+        return F.gelu(x + self.n2(self.c2(h)))
+
+
+class LumenResNet1D(nn.Module):
+    """E4 (d): 1-D ResNet, 64 channels, 3 residual blocks with GroupNorm.
+    Stem conv (k = 7) -> block (k = 5) -> pool -> block (k = 5) -> pool -> block (k = 3), so
+    the length (71 -> 17) and the trunk input (64 x 17) equal LumenNet's."""
+
+    def __init__(self, n_bands: int = 71, dropout: float = 0.1):
+        super().__init__()
+        self.body = nn.Sequential(
+            _block(2, 64, 7), _ResBlock(64, 5), nn.MaxPool1d(2),
+            _ResBlock(64, 5), nn.MaxPool1d(2), _ResBlock(64, 3),
+        )
+        self.heads = _LumenHeads(64 * (n_bands // 2 // 2), dropout)
+
+    def forward(self, x):
+        return self.heads(self.body(x))
+
+
+# --------------------------------------------------------------------------
 # losses
 # --------------------------------------------------------------------------
 def dirichlet_nll(alpha, y):
@@ -196,10 +283,10 @@ def synthetic_targets(syn, idx):
 
 
 def pretrain(feat, syn, train_idx, val_idx, seed, epochs, batch=512, lr=2e-3, wd=1e-4,
-             comp_l1=0.0, aux_weight=0.5, log=print):
+             comp_l1=0.0, aux_weight=0.5, log=print, make_net=LumenNet):
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
-    model = LumenNet()
+    model = make_net()
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=wd)
     steps_per_epoch = len(train_idx) // batch
     total = epochs * steps_per_epoch
@@ -295,13 +382,13 @@ FT_WD = 1e-4
 
 
 def finetune(config, init_state, real, syn_feat, syn_targets, syn_pool, scaler, seed, lam,
-             steps=FT_STEPS):
+             steps=FT_STEPS, make_net=LumenNet):
     """real: dict with R (n, L), comp (n, 7, NaN where absent), chem (n, 5), logIsFeO (n,),
     d_nom (n,). Returns the fine-tuned model."""
     init, n_real, n_mix, n_rep, lr = CONFIGS[config]
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
-    model = LumenNet()
+    model = make_net()
     if init == "pretrained":
         model.load_state_dict(init_state)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=FT_WD)
