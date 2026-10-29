@@ -59,6 +59,7 @@ LUMEN is not better than FD's pipeline, and it is worse than a two-band regressi
 | What | Where |
 |---|---|
 | Paper, MDPI *Remote Sensing* Word layout | `paper/MANUSCRIPT_MDPI.docx`, `paper/MANUSCRIPT_MDPI.pdf` (21 pages) |
+| Paper, MDPI LaTeX | `paper/latex/LUMEN_RemoteSensing.tex` (MDPI class, same content); `paper/LUMEN_latex_overleaf.zip` to upload to Overleaf (pdfLaTeX) |
 | Paper text (edit here) | `paper/manuscript_src/*.md`, 40 references in `references.tsv` (checked against Crossref) |
 | Figures | `figures/fig01–06_*.png`; vector diagram sources in `paper/figures_src/` (TikZ) |
 | Result tables | `tables/step13_*`, `step14_*`, `step15_*`, `stepD_regeneration_check.csv` |
@@ -71,6 +72,7 @@ python build_manuscript.py
 python check_numbers.py
 python build_mdpi_docx.py
 python build_pdf.py
+python build_latex.py        # LaTeX version + Overleaf zip (compiles on Overleaf; local MiKTeX lacks MDPI packages)
 ```
 
 **What the checks do:**
