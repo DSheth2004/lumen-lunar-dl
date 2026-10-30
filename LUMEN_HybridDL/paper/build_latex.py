@@ -25,8 +25,9 @@ OUT_DIR = HERE / "latex"
 OUT_TEX = OUT_DIR / "LUMEN_RemoteSensing.tex"
 ZIP = HERE / "LUMEN_latex_overleaf.zip"
 FIG_DIR = HERE.parent / "figures"
-VECTOR = {"fig01_framework.png": "fig_framework.pdf", "fig02_simulator.png": "fig_simulator.pdf",
-          "fig03_architecture.png": "fig_architecture.pdf", "fig04_evaluation.png": "fig_evaluation.pdf"}
+VECTOR_DIR = HERE / "figures_src" / "drawio" / "rendered"  # vector PDFs of the draw.io diagrams
+VECTOR = {"fig01_framework.png": "01_framework.pdf", "fig02_simulator.png": "02_simulator.pdf",
+          "fig03_architecture.png": "03_network.pdf", "fig04_evaluation.png": "05_evaluation.pdf"}
 MAX_PX = 2400  # 300 dpi across the full 20 cm figure width; larger PNGs only slow pdfLaTeX down
 
 
@@ -324,7 +325,7 @@ The following abbreviations are used in this manuscript:
     shutil.copytree(TPL, OUT_DIR / "Definitions")
     for png in sorted(set(re.findall(r"figures/([\w.-]+\.png)", main_md))):
         if png in VECTOR:
-            shutil.copy(HERE / "figures_src" / VECTOR[png], OUT_DIR / "figures" / VECTOR[png])
+            shutil.copy(VECTOR_DIR / VECTOR[png], OUT_DIR / "figures" / VECTOR[png])
         else:
             write_light_png(FIG_DIR / png, OUT_DIR / "figures" / png)
     OUT_TEX.write_text(doc, encoding="utf-8", newline="\n")

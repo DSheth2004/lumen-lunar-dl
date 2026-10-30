@@ -1,8 +1,9 @@
 """Build the manuscript figures.
 
-- Diagrams (Figures 1-4): figures_src/fig_*.tex (TikZ; shared style lumenstyle.tex) compiled with
-  pdflatex and rasterised at 600 dpi with pdftoppm into figures/fig0N_*.png. fig_evaluation.tex is
-  first regenerated from the staged site table by figures_src/gen_fig_evaluation.py.
+- Diagrams (Figures 1-4): D. Sheth's draw.io diagrams, figures_src/drawio/ (make_diagrams.py writes
+  the .drawio files), rendered with headless Chrome by figures_src/drawio/render_drawio.py to vector
+  PDF (LaTeX build) and 3x PNG, copied to figures/fig0N_*.png (Word build). The earlier TikZ
+  versions (figures_src/fig_*.tex) are no longer used.
 - Data figures (Figures 5-6), from the committed tables:
     fig05_pred_true.png  A4 LOSO predictions vs measured for FeO, TiO2, PLG, log10 Is/FeO
                          (tables/step04_predictions.csv + step01_lab_dataset.csv)
@@ -27,25 +28,17 @@ SRC = HERE / "figures_src"
 FIG = ROOT / "figures"
 TAB = ROOT / "tables"
 
-DIAGRAMS = {"fig_framework": "fig01_framework.png", "fig_simulator": "fig02_simulator.png",
-            "fig_architecture": "fig03_architecture.png", "fig_evaluation": "fig04_evaluation.png"}
+DRAWIO = SRC / "drawio"
+DIAGRAMS = {"01_framework": "fig01_framework.png", "02_simulator": "fig02_simulator.png",
+            "03_network": "fig03_architecture.png", "05_evaluation": "fig04_evaluation.png"}
 BLUE, AMBER, GREY, INK, MUTED, RULE = "#3B6EA8", "#B7791F", "#7B8794", "#1F2933", "#52606D", "#D9DEE3"
 
 
 def build_diagrams() -> None:
-    subprocess.run([sys.executable, str(SRC / "gen_fig_evaluation.py")], check=True)
+    subprocess.run([sys.executable, str(DRAWIO / "render_drawio.py")], check=True)
     for stem, png in DIAGRAMS.items():
-        r = subprocess.run(["pdflatex", "-interaction=nonstopmode", "-halt-on-error", stem + ".tex"],
-                           cwd=SRC, capture_output=True, text=True, timeout=180)
-        if r.returncode != 0:
-            sys.exit("pdflatex failed for %s:\n%s" % (stem, r.stdout[-1500:]))
-        out = FIG / png
-        subprocess.run(["pdftoppm", "-png", "-r", "600", "-singlefile", str(SRC / (stem + ".pdf")),
-                        str(out.with_suffix(""))], check=True)
-        print("  %s" % out.name)
-    for ext in ("aux", "log"):
-        for p in SRC.glob("*." + ext):
-            p.unlink()
+        shutil.copy(DRAWIO / "rendered" / (stem + ".png"), FIG / png)
+        print("  %s <- drawio/rendered/%s.png" % (png, stem))
 
 
 def style(ax):
@@ -134,8 +127,6 @@ def fig_fd_feo(plt) -> None:
 
 
 def main() -> int:
-    if not shutil.which("pdflatex") or not shutil.which("pdftoppm"):
-        sys.exit("pdflatex and pdftoppm are required")
     print("diagrams:")
     build_diagrams()
     import matplotlib
