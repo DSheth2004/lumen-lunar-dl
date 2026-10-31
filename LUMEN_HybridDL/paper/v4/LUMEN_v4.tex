@@ -108,7 +108,7 @@ r(w) = \frac{w}{4(\mu_0+\mu)}\,H(w,\mu_0)\,H(w,\mu)
 where $w$ is the single scattering albedo (SSA), $\mu_0$ and $\mu$ are the cosines of the incidence and emission angles (30$^{\circ}$ and 0$^{\circ}$ for RELAB). Ignoring the opposition effect and using an isotropic phase function is appropriate for RELAB geometry. $H$ is the approximate Chandrasekhar function
 
 \begin{equation}
-H(w,x) = \left[1 - w\,x\left(r_0 + \frac{1-2r_0x}{2}\ln\frac{1+x}{x}\right)\right]^{-1},\qquad r_0=\frac{1-\gamma}{1+\gamma},\ \gamma=\sqrt{1-w}
+H(w,\xi) = \left[1 - w\,\xi\left(r_0 + \frac{1-2r_0\xi}{2}\ln\frac{1+\xi}{\xi}\right)\right]^{-1},\qquad r_0=\frac{1-\gamma}{1+\gamma},\ \gamma=\sqrt{1-w}
 \label{eq2}
 \end{equation}
 
@@ -137,10 +137,10 @@ Nanophase metallic iron (npFe$^{0}$) at volume fraction $\phi$ in a host of refr
 \label{eq5}
 \end{equation}
 
-where $n_{Fe}$ and $k_{Fe}$ are the optical constants of iron. Microphase iron (mpFe$^{0}$) is a grey absorber, $\alpha_{mp} = 3\phi_{mp}/(4 r_{mp})$ with $r_{mp} = 0.1$ $\upmu$m, which darkens without reddening~\cite{lucey2011}. Components with volume fractions $f_i$, grain sizes $D_i$ and SSAs $w_i$ mix in SSA with cross-section weights,
+where $n_{Fe}$ and $k_{Fe}$ are the optical constants of iron. Microphase iron (mpFe$^{0}$) is a grey absorber, $\alpha_{mp} = 3\phi_{mp}/(4 r_{mp})$ with $r_{mp} = 0.1$ $\upmu$m, which darkens without reddening~\cite{lucey2011}. Components with volume fractions $\nu_i$, grain sizes $D_i$ and SSAs $w_i$ mix in SSA with cross-section weights,
 
 \begin{equation}
-w_{mix} = \frac{\sum_i (f_i/D_i)\,w_i}{\sum_i f_i/D_i}
+w_{\Sigma} = \frac{\sum_i (\nu_i/D_i)\,w_i}{\sum_i \nu_i/D_i}
 \label{eq6}
 \end{equation}
 
@@ -172,7 +172,7 @@ A synthetic soil defines its petrology regime, which may be feldspathic, basalti
 
 \subsubsection{Network}
 
-The network (see Figures 3 and Table 1) uses two channels: log reflectance and convex hull continuum-removed reflectance for 71 bands, where standardization takes place according to statistics that is estimated based solely on the artificial dataset. This design includes five 1D convolutional layers, followed by group normalization (a better choice than batch normalization since fine-tuning is based on very small mini-batches) and activation GELU, then two max-pooling. This results in a trunk with dimensions 256 -- 128 and 0.36 million parameters. Then a Dirichlet head generates concentrations $\boldsymbol\alpha = \mathrm{softplus}(\cdot)+0.05$, where its mean $\boldsymbol\alpha/\alpha_0$, with $\alpha_0=\sum_j\alpha_j$, is equivalent to seven-part composition. There are heteroscedastic Gaussian heads generating means and logs of variance for oxides and log$_{10}$(Is/FeO). Auxiliary heads for grain size and npFe$^{0}$ are used during pre-training only.
+The network (see Figures 3 and Table 1) uses two channels: log reflectance and convex hull continuum-removed reflectance for 71 bands, where standardization takes place according to statistics that is estimated based solely on the artificial dataset. This design includes five 1D convolutional layers, followed by group normalization (a better choice than batch normalization since fine-tuning is based on very small mini-batches) and activation GELU, then two max-pooling. This results in a trunk with dimensions 256 -- 128 and 0.36 million parameters. Then a Dirichlet head generates concentrations $\boldsymbol\kappa = \mathrm{softplus}(\cdot)+0.05$, where its mean $\boldsymbol\kappa/\kappa_\Sigma$, with $\kappa_\Sigma=\sum_c\kappa_c$, is equivalent to seven-part composition. There are heteroscedastic Gaussian heads generating means and logs of variance for oxides and log$_{10}$(Is/FeO). Auxiliary heads for grain size and npFe$^{0}$ are used during pre-training only.
 
 \begin{figure}[H]
 \begin{adjustwidth}{-\extralength}{0cm}
@@ -184,21 +184,21 @@ The network (see Figures 3 and Table 1) uses two channels: log reflectance and c
 
 \subsubsection{Objective Functions}
 
-The compositional loss is equivalent to the negative log-likelihood of the smoothed labels with respect to the Dirichlet distribution where $\tilde{\mathbf y} = (\mathbf y + \epsilon)/(1 + 7\epsilon)$ and $\epsilon = 0.005$, augmented by $L_1$ regularizer on the mean:
+The compositional loss is equivalent to the negative log-likelihood of the smoothed labels with respect to the Dirichlet distribution where $\tilde{\mathbf q} = (\mathbf q + \delta)/(1 + 7\delta)$ and $\delta = 0.005$, augmented by $L_1$ regularizer on the mean:
 
 \begin{equation}
-\mathcal L_{comp} = -\frac{1}{7}\left[\ln\Gamma(\alpha_0) - \sum_j \ln\Gamma(\alpha_j) + \sum_j(\alpha_j-1)\ln\tilde y_j\right] + \lambda_1\,\frac{1}{7}\sum_j\left|\frac{\alpha_j}{\alpha_0} - y_j\right|
+\mathcal J_{mod} = -\frac{1}{7}\left[\ln\Gamma(\kappa_\Sigma) - \sum_c \ln\Gamma(\kappa_c) + \sum_c(\kappa_c-1)\ln\tilde q_c\right] + \eta\,\frac{1}{7}\sum_c\left|\frac{\kappa_c}{\kappa_\Sigma} - q_c\right|
 \label{eq7}
 \end{equation}
 
-using $\lambda_1 = 10$ with synthetic data only. Scalar output variables use $\beta$-log likelihood~\cite{seitzer2022} for $\beta=0.5$ to reduce the problem of underfitting of high variance data due to Gaussian likelihood.
+using $\eta = 10$ with synthetic data only. Scalar output variables use $\beta$-log likelihood~\cite{seitzer2022} for $\beta=0.5$ to reduce the problem of underfitting of high variance data due to Gaussian likelihood.
 
 \begin{equation}
-\mathcal L_{scal} = \frac{\sum_t m_t\,\mathrm{sg}\!\left[\sigma_t^{2\beta}\right]\tfrac12\left(\ln\sigma_t^2 + \frac{(y_t-\mu_t)^2}{\sigma_t^2}\right)}{\sum_t m_t}
+\mathcal J_{ox} = \frac{\sum_u \omega_u\,\mathrm{sg}\!\left[\zeta_u^{2\beta}\right]\tfrac12\left(\ln\zeta_u^2 + \frac{(g_u-\hat g_u)^2}{\zeta_u^2}\right)}{\sum_u \omega_u}
 \label{eq8}
 \end{equation}
 
-In places where the gradient is blocked by $\mathrm{sg}$, and $m_t$ prevents those targets from being used which are not available for that particular sample (mineral composition of the <45 $\upmu$m size; all targets excluding FeO for orbital spectra). The total loss includes $\mathcal L_{comp}$ and $\mathcal L_{scal}$ along with $\beta$-NLL auxiliary terms during pretraining.
+In places where the gradient is blocked by $\mathrm{sg}$, and $\omega_u$ prevents those targets from being used which are not available for that particular sample (mineral composition of the <45 $\upmu$m size; all targets excluding FeO for orbital spectra). The total loss includes $\mathcal J_{mod}$ and $\mathcal J_{ox}$ along with $\beta$-NLL auxiliary terms during pretraining.
 
 \subsubsection{Training}
 
@@ -209,18 +209,18 @@ The five models comprising the ensemble were pretrained on the synthetic set wit
 The definition of an ensemble mean is the average of the means of all members, whereas that of an ensemble variance is the average of all member variances, plus the variance of the means of the member~\cite{lakshminarayanan2017}. Raw ensemble prediction intervals are over-confident (Section 3.5) and hence conformally calibrated~\cite{barber2021} using the normalized score, $s_i = |y_i - \mu_i|/\sigma_i$, that uses out-of-fold predictions of other soils to calculate the $\lceil (1-a)(n+1)\rceil$-th smallest value $q_{1-a}$, giving rise to the interval, $\mu \pm q_{1-a}\,\sigma$. The CV+ version uses models where not only the calibration soil but also the test soil was left out (930 more fine-tunes). Identifiability gates are used to determine the skill for every target.
 
 \begin{equation}
-S = 1 - \frac{\mathrm{MAE}}{\mathrm{MAE}_{ref}}
+\Psi = 1 - \frac{\mathrm{MAE}}{\mathrm{MAE}_{base}}
 \label{eq9}
 \end{equation}
 
-In this case, $\mathrm{MAE}_{ref}$ represents the error of the fraction-matched mean of the other soils used as zero information, with 95\% bootstrap confidence interval estimated across soils. Only those targets for which the lower end of the confidence interval is above zero are considered to be mapped.
+In this case, $\mathrm{MAE}_{base}$ represents the error of the fraction-matched mean of the other soils used as zero information, with 95\% bootstrap confidence interval estimated across soils. Only those targets for which the lower end of the confidence interval is above zero are considered to be mapped.
 
 \subsubsection{Transfer to M$^{3}$}
 
 Laboratory and M$^{3}$ reflectance differ in absolute scale. In zero-shot tasks, M$^{3}$ spectral data is scaled to the laboratory scale based on the linear scaling algorithm suggested by Korokhin et al.~\cite{korokhin2024}.
 
 \begin{equation}
-A_{lab} = 1.685\,A_{M^3} + 0.0355
+\rho_{lab} = 1.685\,\rho_{M^3} + 0.0355
 \label{eq10}
 \end{equation}
 
@@ -250,7 +250,7 @@ Table 1 contains the fixed parameters. All LUMEN hyperparameters were tuned usin
 Simulator & 400,000 spectra; 49 end-members; grain size 4--150 $\upmu$m; scale $\pm$7\%; noise 0.2--0.8\% \\
 Input & 2 $\times$ 71 (log R, continuum-removed R), standardised with synthetic statistics \\
 Network & 5 conv layers (32/32/64/64/64; kernels 7/5/5/3/3), GroupNorm, GELU, 2 max-pools, trunk 256$\rightarrow$128; 0.36 M parameters \\
-Losses & Dirichlet NLL + L1 ($\lambda_{1}$ = 10, $\epsilon$ = 0.005); $\beta$-NLL ($\beta$ = 0.5) \\
+Losses & Dirichlet NLL + L1 ($\eta$ = 10, $\delta$ = 0.005); $\beta$-NLL ($\beta$ = 0.5) \\
 Pretraining & 5 members, 15 epochs, AdamW, one-cycle, batch 512 \\
 Fine-tuning & 1500 steps, AdamW lr 3 $\times$ 10$^{-4}$, wd 10$^{-4}$, warm-up 100, cosine; batch 16 real + 32 SSA-mixup + 16 replay (A4) \\
 Orbital fine-tuning & 600 steps, lr 10$^{-4}$, batch 16 M$^{3}$ + 16 lab spectra \\
